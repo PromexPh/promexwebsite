@@ -1,0 +1,318 @@
+<!-- ── HERO ─────────────────────────────────────── -->
+<section class="contact-hero">
+  <div class="contact-hero-overlay"></div>
+  <div class="contact-hero-content">
+    <span class="contact-hero-badge">GET IN TOUCH</span>
+    <h1 class="contact-hero-title">
+      Contact <span class="accent">Promex Company</span>
+    </h1>
+    <p class="contact-hero-sub">
+      Whether you're looking to hire skilled Filipino professionals or seeking international employment, we're<br>
+      here to help you every step of the way.
+    </p>
+  </div>
+  <div class="hero-wave">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 80" preserveAspectRatio="none">
+      <path fill="#f4f6f9" d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ── RECRUITMENT PROCESS ─────────────────────── -->
+<section class="process-section">
+  <div class="container">
+    <div class="section-header" [reveal]="'fade-up'">
+      <span class="section-badge">HOW IT WORKS</span>
+      <h2 class="section-title">Our Recruitment Process</h2>
+      <p class="section-sub">
+        A transparent, end-to-end recruitment process designed for both employers and<br>job seekers.
+      </p>
+    </div>
+
+    <div class="timeline">
+      @for (step of processSteps; track step.title; let i = $index) {
+        <div class="timeline-item" [reveal]="'fade-up'" [revealDelay]="i * 100">
+          <div class="timeline-number">{{ i + 1 }}</div>
+          <div class="timeline-line" [class.last]="i === processSteps.length - 1"></div>
+          <div class="timeline-card">
+            <div class="timeline-icon-wrap">
+              <i class="fa-solid {{ step.icon }}"></i>
+            </div>
+            <div class="timeline-body">
+              <h3 class="timeline-card-title">{{ step.title }}</h3>
+              <p class="timeline-card-desc">{{ step.description }}</p>
+              @if (step.link) {
+                <div class="timeline-link">
+                  <i class="fa-solid fa-external-link"></i>
+                  <a [href]="step.link.url" target="_blank" rel="noopener noreferrer">
+                    {{ step.link.text }}
+                  </a>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ── FOR EMPLOYERS ───────────────────────────── -->
+<section id="employers" class="employers-section">
+  <div class="container">
+    <div class="employers-grid" [reveal]="'fade-up'">
+      <!-- Left: info -->
+      <div class="employers-info">
+        <span class="section-badge section-badge--blue">FOR EMPLOYERS</span>
+        <h2 class="employers-title">Looking for Skilled Professionals?</h2>
+        <p class="employers-desc">
+          Tell us about your manpower requirements and we'll match you with the most qualified Filipino
+          professionals. Our team will respond within 24–48 business hours.
+        </p>
+        <ul class="employers-checklist">
+          <li><i class="fa-regular fa-circle-check"></i> Customized recruitment solutions</li>
+          <li><i class="fa-regular fa-circle-check"></i> Pre-screened &amp; trade-tested candidates</li>
+          <li><i class="fa-regular fa-circle-check"></i> Full documentation support</li>
+          <li><i class="fa-regular fa-circle-check"></i> Post-deployment follow-through</li>
+        </ul>
+      </div>
+
+      <!-- Right: form -->
+      <div class="employers-form-card">
+        <form class="employers-form" (submit)="$event.preventDefault()">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Company Name <span class="req">*</span></label>
+              <input type="text" placeholder="e.g. Gulf Medical University">
+            </div>
+            <div class="form-group">
+              <label>Contact Person <span class="req">*</span></label>
+              <input type="text" placeholder="Full name">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Email Address <span class="req">*</span></label>
+              <input type="email" placeholder="company&#64;email.com">
+            </div>
+            <div class="form-group">
+              <label>Phone Number <span class="req">*</span></label>
+              <input type="tel" placeholder="+971 xx xxx xxxx">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Country <span class="req">*</span></label>
+              <input type="text" placeholder="e.g. United Arab Emirates">
+            </div>
+            <div class="form-group">
+              <label>Industry <span class="req">*</span></label>
+              <input type="text" placeholder="e.g. Healthcare">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Number of Workers Needed <span class="req">*</span></label>
+              <input type="number" placeholder="e.g. 20">
+            </div>
+            <div class="form-group">
+              <label>Job Title / Position <span class="req">*</span></label>
+              <input type="text" placeholder="e.g. Registered Nurse">
+            </div>
+          </div>
+          <div class="form-group form-group--full">
+            <label>Job Description</label>
+            <textarea rows="4" placeholder="Describe the roles, responsibilities, and requirements..."></textarea>
+          </div>
+          <div class="form-group form-group--full">
+            <label>Preferred Start Date <span class="req">*</span></label>
+            <input type="date" placeholder="mm/dd/yyyy">
+          </div>
+          <button type="submit" class="submit-btn submit-btn--blue">
+            <i class="fa-regular fa-paper-plane"></i> Submit Employer Inquiry
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOR JOB SEEKERS ─────────────────────────── -->
+<section id="apply" class="seekers-section">
+  <div class="container">
+    <div class="section-header" [reveal]="'fade-up'">
+      <span class="section-badge section-badge--green">FOR JOB SEEKERS</span>
+      <h2 class="section-title">Seeking International Employment?</h2>
+      <p class="section-sub">
+        Browse our open vacancies and apply online. Our recruitment team will review<br>your application and contact you for next steps.
+      </p>
+    </div>
+
+    <!-- Open Vacancies -->
+    <div [reveal]="'fade-up'">
+      <h3 class="subsection-title">Open Vacancies</h3>
+      <div class="vacancies-grid">
+        @for (job of vacancies; track job.title) {
+          <div class="vacancy-card">
+            <div class="vacancy-top">
+              <span class="vacancy-category {{ getCategoryClass(job.category) }}">{{ job.category }}</span>
+              @if (job.urgent) {
+                <span class="vacancy-urgent">Urgent</span>
+              }
+            </div>
+            <h4 class="vacancy-title">{{ job.title }}</h4>
+            <p class="vacancy-location"><i class="fa-solid fa-location-dot"></i> {{ job.location }}</p>
+            <p class="vacancy-slots">{{ job.slots }} slots available</p>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Job Application Form -->
+    <div class="app-form-card" [reveal]="'fade-up'">
+      <h3 class="app-form-title">Job Application Form</h3>
+      <form class="app-form" (submit)="$event.preventDefault()">
+        <div class="form-row form-row--3">
+          <div class="form-group">
+            <label>Full Name <span class="req">*</span></label>
+            <input type="text" placeholder="Your full name">
+          </div>
+          <div class="form-group">
+            <label>Email Address <span class="req">*</span></label>
+            <input type="email" placeholder="your&#64;email.com">
+          </div>
+          <div class="form-group">
+            <label>Phone Number <span class="req">*</span></label>
+            <input type="tel" placeholder="+63 9xx xxx xxxx">
+          </div>
+        </div>
+        <div class="form-row form-row--3">
+          <div class="form-group">
+            <label>Date of Birth <span class="req">*</span></label>
+            <input type="date" placeholder="mm/dd/yyyy">
+          </div>
+          <div class="form-group">
+            <label>Nationality <span class="req">*</span></label>
+            <input type="text" placeholder="e.g. Filipino">
+          </div>
+          <div class="form-group">
+            <label>Current Location <span class="req">*</span></label>
+            <input type="text" placeholder="e.g. Metro Manila">
+          </div>
+        </div>
+        <div class="form-row form-row--3">
+          <div class="form-group">
+            <label>Desired Position <span class="req">*</span></label>
+            <select>
+              <option value="" disabled selected>Select a position...</option>
+              @for (pos of desiredPositions; track pos) {
+                <option>{{ pos }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Years of Experience <span class="req">*</span></label>
+            <input type="number" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label>Highest Education <span class="req">*</span></label>
+            <select>
+              <option value="" disabled selected>Select education level...</option>
+              @for (lvl of educationLevels; track lvl) {
+                <option>{{ lvl }}</option>
+              }
+            </select>
+          </div>
+        </div>
+        <div class="form-group form-group--full">
+          <label>Resume / CV Upload <span class="req">*</span></label>
+          <label class="file-upload-area" for="resumeUpload">
+            @if (selectedFile()) {
+              <i class="fa-regular fa-file-lines upload-icon"></i>
+              <span class="upload-filename">{{ selectedFile() }}</span>
+            } @else {
+              <i class="fa-solid fa-arrow-up-from-bracket upload-icon"></i>
+              <span class="upload-label">Click to upload or drag and drop</span>
+              <span class="upload-hint">PDF, DOCX, up to 5MB</span>
+            }
+          </label>
+          <input id="resumeUpload" type="file" accept=".pdf,.docx" (change)="onFileSelected($event)" hidden>
+        </div>
+        <div class="form-group form-group--full">
+          <label>Cover Letter</label>
+          <textarea rows="4" placeholder="Tell us about yourself, your experience, and why you want to work abroad..."></textarea>
+        </div>
+        <button type="submit" class="submit-btn submit-btn--green">
+          <i class="fa-regular fa-paper-plane"></i> Submit Application
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT INFORMATION ─────────────────────── -->
+<section class="contact-info-section">
+  <div class="container">
+    <div class="contact-info-grid" [reveal]="'fade-up'">
+      <!-- Map placeholder -->
+      <div class="map-placeholder">
+        <div class="map-inner">
+          <i class="fa-solid fa-location-dot map-pin-icon"></i>
+          <p class="map-address">
+            Suite A, 2/F Vision Building,<br>162 Pasig Blvd, Pasig, 1800 Metro Manila
+          </p>
+          <a
+            href="https://maps.google.com/?q=Vision+Building+162+Pasig+Blvd+Pasig+Metro+Manila+Philippines"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="map-link-btn"
+          >View on Google Maps</a>
+        </div>
+      </div>
+
+      <!-- Contact details -->
+      <div class="contact-details">
+        <span class="section-badge section-badge--blue">FIND US</span>
+        <h2 class="contact-details-title">Contact Information</h2>
+        <ul class="contact-details-list">
+          <li>
+            <div class="contact-detail-icon"><i class="fa-solid fa-location-dot"></i></div>
+            <div>
+              <p class="contact-detail-label">OFFICE ADDRESS</p>
+              <p class="contact-detail-value">Suite A, Second Floor, Vision Building, 162 Pasig Blvd, Pasig, 1800 Metro Manila, Philippines</p>
+            </div>
+          </li>
+          <li>
+            <div class="contact-detail-icon contact-detail-icon--green"><i class="fa-solid fa-phone"></i></div>
+            <div>
+              <p class="contact-detail-label">PHONE NUMBERS</p>
+              <p class="contact-detail-value">+63 2 7746 4689</p>
+            </div>
+          </li>
+          <li>
+            <div class="contact-detail-icon"><i class="fa-regular fa-envelope"></i></div>
+            <div>
+              <p class="contact-detail-label">EMAIL ADDRESS</p>
+              <p class="contact-detail-value">inquiries&#64;promexph.com</p>
+            </div>
+          </li>
+
+          <li>
+            <div class="contact-detail-icon contact-detail-icon--green"><i class="fa-regular fa-id-badge"></i></div>
+            <div>
+              <p class="contact-detail-label ">LICENSE NUMBER</p>
+              <p class="contact-detail-value">149-LB-051316-R</p>
+            </div>
+          </li>
+        </ul>
+        <p class="follow-us-label">FOLLOW US</p>
+        <div class="social-btns">
+          <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i> Facebook</a>
+          <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i> LinkedIn</a>
+          <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i> Instagram</a>
+          <a href="#" class="social-btn"><i class="fa-brands fa-x-twitter"></i> Twitter</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

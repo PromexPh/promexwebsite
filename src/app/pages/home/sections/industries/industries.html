@@ -1,0 +1,42 @@
+<section class="industries-section">
+  <div class="container">
+
+    <!-- Header -->
+    <div reveal="fade-up" [revealDelay]="0" class="industries-header">
+      <span class="section-badge">Industries</span>
+      <h2 class="industries-heading">Industries We Serve</h2>
+      <p class="industries-sub">We provide skilled professionals for a wide range of sectors globally.</p>
+    </div>
+
+    <!-- Grid -->
+    <div class="industries-grid">
+      @for (industry of industries; track industry.title; let i = $index) {
+        <div
+          class="industry-card"
+          reveal="fade-up"
+          [revealDelay]="60 * (i % 4)">
+
+          <div class="industry-icon-wrap industry-icon-wrap--{{ industry.color }}">
+            <i [class]="industry.icon"></i>
+          </div>
+
+          <h3 class="industry-title">{{ industry.title }}</h3>
+          <p class="industry-roles">{{ industry.roles }}</p>
+
+        </div>
+      }
+    </div>
+
+    <!-- CTA -->
+    <div reveal="fade-up" [revealDelay]="200" class="industries-cta">
+      <app-button
+        variant="primary"
+        size="lg"
+        routerLink="/industries"
+        label="View All Industries"
+        icon="fa-solid fa-arrow-right"
+        iconPosition="right" />
+    </div>
+
+  </div>
+</section>

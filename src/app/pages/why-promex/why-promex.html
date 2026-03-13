@@ -1,0 +1,131 @@
+<!-- =============================================
+     WHY PROMEX PAGE
+     ============================================= -->
+
+<!-- 1. Hero Banner (home-hero style) -->
+<section class="why-hero">
+  <div class="why-hero-overlay"></div>
+
+  <div class="container why-hero-content">
+    <div class="why-hero-badge" reveal="fade-down" [revealDelay]="0">
+      <span class="badge-dot"></span>
+      WHY CHOOSE US
+    </div>
+
+    <h1 class="why-hero-heading" reveal="fade-up" [revealDelay]="120">
+      Why Choose <span class="accent">Promex Company?</span>
+    </h1>
+
+    <p class="why-hero-sub" reveal="fade-up" [revealDelay]="240">
+      We combine 28+ years of expertise with unwavering ethical standards and a global network &mdash;
+      making us the recruitment partner of choice for employers and job seekers alike.
+    </p>
+  </div>
+
+  <!-- Wave divider -->
+  <div class="why-hero-wave">
+    <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="var(--color-bg)" />
+    </svg>
+  </div>
+</section>
+
+<!-- 2. Why Employers Choose Promex -->
+<section class="why-employers">
+  <div class="container">
+
+    <div class="section-header" reveal="fade-up">
+      <span class="section-badge">For Employers</span>
+      <h2 class="section-heading">Why Employers Choose <span class="accent">Promex</span></h2>
+      <p class="section-sub">Trusted by global companies for our commitment to excellence, compliance, and delivering top-tier Filipino talent.</p>
+    </div>
+
+    <div class="employer-reasons-grid">
+      @for (reason of employerReasons; track reason.title; let i = $index) {
+        <div class="employer-reason-card" reveal="fade-up" [revealDelay]="i * 80">
+          <div class="reason-icon-wrapper">
+            <i [class]="reason.icon + ' reason-icon'"></i>
+          </div>
+          <h3 class="reason-title">{{ reason.title }}</h3>
+          <p class="reason-description">{{ reason.description }}</p>
+        </div>
+      }
+    </div>
+
+  </div>
+</section>
+
+<!-- 3. Feature Cards (alternating layout) -->
+<section class="why-features">
+  <div class="container">
+
+    <div class="section-header" reveal="fade-up">
+      <span class="section-badge">Our Advantages</span>
+      <h2 class="section-heading">5 Reasons Employers &amp; Workers Trust Promex</h2>
+      <p class="section-sub">Every detail of our process is designed to deliver the best outcome for both employers and overseas Filipino workers.</p>
+    </div>
+
+    <div class="features-list">
+      @for (feat of features; track feat.title; let i = $index) {
+        <div class="feature-row" [class.feature-row--reverse]="i % 2 !== 0" reveal="fade-up" [revealDelay]="80">
+
+          <!-- Text panel -->
+          <div class="feature-text-panel">
+            <div class="feature-icon-sm">
+              <i [class]="feat.icon"></i>
+            </div>
+            <span class="feature-subbadge">{{ feat.subbadge }}</span>
+            <h3 class="feature-title">{{ feat.title }}</h3>
+            <p class="feature-body">{{ feat.body }}</p>
+            <ul class="feature-bullets">
+              @for (b of feat.bullets; track b) {
+                <li>
+                  <i class="fa-solid fa-circle-check bullet-icon"></i>
+                  {{ b }}
+                </li>
+              }
+            </ul>
+            @if (feat.link) {
+              <div class="feature-link">
+                <i class="fa-solid fa-external-link"></i>
+                <a [href]="feat.link.url" target="_blank" rel="noopener noreferrer">
+                  {{ feat.link.text }}
+                </a>
+              </div>
+            }
+          </div>
+
+          <!-- Visual panel -->
+          <div class="feature-visual-panel">
+            <div class="feature-visual-inner">
+              <i [class]="feat.icon + ' feature-big-icon'"></i>
+            </div>
+          </div>
+
+        </div>
+      }
+    </div>
+
+  </div>
+</section>
+
+<!-- 4. Bottom CTA -->
+<section class="why-cta">
+  <div class="why-cta-blobs" aria-hidden="true">
+    <div class="cta-blob cta-blob--l"></div>
+    <div class="cta-blob cta-blob--r"></div>
+  </div>
+  <div class="container why-cta-inner">
+    <div reveal="fade-up">
+      <h2 class="why-cta-heading">Ready to Experience the Promex Difference?</h2>
+      <p class="why-cta-sub">
+        Join hundreds of global employers and thousands of Filipino professionals
+        who have already made Promex their recruitment partner of choice.
+      </p>
+      <div class="why-cta-actions">
+        <app-button label="Request Talent" variant="primary" size="lg" routerLink="/employer-inquiry" />
+        <app-button label="View Overseas Jobs" variant="accent" size="lg" routerLink="/jobs" />
+      </div>
+    </div>
+  </div>
+</section>

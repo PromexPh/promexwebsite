@@ -1,0 +1,97 @@
+<!-- =============================================
+     INDUSTRIES PAGE
+     ============================================= -->
+
+<!-- Hero -->
+<section class="ind-hero">
+  <div class="ind-hero-overlay"></div>
+  <div class="container ind-hero-content">
+    <div class="ind-hero-badge" reveal="fade-down" [revealDelay]="0">
+      <span class="badge-dot"></span>
+      SECTORS WE COVER
+    </div>
+    <h1 class="ind-hero-heading" reveal="fade-up" [revealDelay]="120">
+      Industries We <span class="accent">Serve</span>
+    </h1>
+    <p class="ind-hero-sub" reveal="fade-up" [revealDelay]="240">
+      We provide skilled Filipino professionals for a wide range of industries worldwide. Explore
+      the sectors where we have the deepest expertise and the strongest global networks.
+    </p>
+  </div>
+  <div class="ind-hero-wave">
+    <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="var(--color-bg)" />
+    </svg>
+  </div>
+</section>
+
+<!-- Industry Cards -->
+<section class="ind-list">
+  <div class="container">
+
+    @for (ind of industries; track ind.id; let i = $index) {
+      <div class="ind-card" [class.ind-card--reverse]="i % 2 !== 0" reveal="fade-up" [revealDelay]="60">
+
+        <!-- Image panel -->
+        <div class="ind-image-panel">
+          <img [src]="ind.image" [alt]="ind.name" class="ind-image" loading="lazy" />
+          <button class="ind-fav-btn" aria-label="Save industry">
+            <i class="fa-regular fa-heart"></i>
+          </button>
+        </div>
+
+        <!-- Content panel -->
+        <div class="ind-content-panel">
+
+          <div class="ind-content-top">
+            <div>
+              <h2 class="ind-name">{{ ind.name }}</h2>
+              <p class="ind-tagline">{{ ind.tagline }}</p>
+            </div>
+            @if (ind.badge) {
+              <span class="ind-badge">{{ ind.badge }}</span>
+            }
+          </div>
+
+          <p class="ind-desc">{{ ind.description }}</p>
+
+          <div class="ind-roles">
+            <span class="roles-label">ROLES WE PLACE</span>
+            <ul class="roles-grid">
+              @for (role of ind.roles; track role) {
+                <li>
+                  <i class="fa-solid fa-chevron-right role-icon"></i>
+                  {{ role }}
+                </li>
+              }
+            </ul>
+          </div>
+
+          <a class="ind-apply-link" routerLink="/apply">
+            Apply for {{ ind.name }} positions
+            <i class="fa-solid fa-arrow-right"></i>
+          </a>
+
+        </div>
+      </div>
+    }
+
+  </div>
+</section>
+
+<!-- Bottom CTA -->
+<section class="ind-cta">
+  <div class="ind-cta-blob ind-cta-blob--l" aria-hidden="true"></div>
+  <div class="ind-cta-blob ind-cta-blob--r" aria-hidden="true"></div>
+  <div class="container ind-cta-inner" reveal="fade-up">
+    <h2 class="ind-cta-heading">Don't See Your Industry?</h2>
+    <p class="ind-cta-sub">
+      Promex has experience across many other sectors. Contact us to discuss your
+      specific workforce needs and we'll find the right solution.
+    </p>
+    <div class="ind-cta-actions">
+      <app-button label="Request Talent" variant="primary" size="lg" routerLink="/employer-inquiry" />
+      <app-button label="View Overseas Jobs" variant="accent" size="lg" routerLink="/jobs" />
+    </div>
+  </div>
+</section>

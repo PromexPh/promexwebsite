@@ -1,0 +1,83 @@
+<section class="about-section" id="about">
+  <div class="container about-grid">
+
+    <!-- ── Left: Text ── -->
+    <div class="about-text">
+
+      <div reveal="fade-right" [revealDelay]="0" class="section-badge">About Us</div>
+
+      <h2 reveal="fade-up" [revealDelay]="100" class="about-heading">
+        About Promex Company
+      </h2>
+
+      <p reveal="fade-up" [revealDelay]="180" class="about-lead">
+        A legacy of excellence in overseas recruitment, trusted by hundreds of companies worldwide.
+      </p>
+
+      <p reveal="fade-up" [revealDelay]="260" class="about-body">
+        Founded in 1996, Promex Company has been at the forefront of overseas recruitment in the
+        Philippines for over 28 years. As a Department of Migrant Workers (DMW) accredited agency,
+        we specialize in connecting highly skilled Filipino professionals with reputable employers
+        across the Middle East, Europe, and Asia.
+      </p>
+
+      <p reveal="fade-up" [revealDelay]="320" class="about-body">
+        Our commitment to ethical recruitment, comprehensive candidate screening, and dedicated
+        post-deployment support has earned us the trust of both workers and employers across continents.
+      </p>
+
+      <!-- Credential badges -->
+      <div reveal="fade-up" [revealDelay]="400" class="about-badges">
+        @for (b of badges; track b.label) {
+          <span class="about-badge">
+            <i [class]="b.icon"></i>
+            {{ b.label }}
+          </span>
+        }
+      </div>
+
+      <!-- CTA -->
+      <div reveal="fade-up" [revealDelay]="480">
+        <app-button
+          variant="outline"
+          size="md"
+          routerLink="/about-us"
+          label="Learn More About Us"
+          icon="fa-solid fa-arrow-right"
+          iconPosition="right" />
+      </div>
+
+    </div>
+
+    <!-- ── Right: Image ── -->
+    <div reveal="fade-left" [revealDelay]="200" class="about-visual">
+
+      <!-- Main image -->
+      <div class="about-img-wrap">
+        <img
+          src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=700&q=80&auto=format&fit=crop"
+          alt="Promex recruitment consultation"
+          class="about-img" />
+
+        <!-- Floating green badge top-right -->
+        <div class="float-badge float-badge--green">
+          <i class="fa-solid fa-globe"></i>
+          <span>Global Reach</span>
+        </div>
+
+        <!-- Floating stat bottom-left -->
+        <div class="float-stat">
+          <span
+            class="float-stat__value"
+            [countUp]="28"
+            countSuffix="+"
+            [countDuration]="2000">
+          </span>
+          <span class="float-stat__label">Years of Trust</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>

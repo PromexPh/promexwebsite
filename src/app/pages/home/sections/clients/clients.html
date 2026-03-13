@@ -1,0 +1,27 @@
+<section class="clients-section">
+  <div class="container">
+
+    <!-- Header -->
+    <div reveal="fade-up" [revealDelay]="0" class="clients-header">
+      <span class="section-badge">Our Clients</span>
+      <h2 class="clients-heading">Trusted By Leading Organizations Worldwide</h2>
+    </div>
+
+  </div>
+
+  <!-- Marquee track (full-width, outside container) -->
+  <div reveal="fade-up" [revealDelay]="120" class="marquee-wrapper">
+    <div class="marquee-track" [style.animation-play-state]="'running'">
+      @for (client of marqueeItems; track $index) {
+        <div class="client-card">
+          @if (client.logo) {
+            <img [src]="client.logo" [alt]="client.name + ' logo'" class="client-logo" />
+          } @else {
+            <div class="client-text">{{ client.name }}</div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+</section>

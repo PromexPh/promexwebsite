@@ -1,0 +1,95 @@
+/* =============================================
+   CTA BANNER SECTION
+   ============================================= */
+
+.cta-banner-section {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    125deg,
+    var(--color-primary) 0%,
+    #3a8ab5 30%,
+    #7a5cbf 65%,
+    var(--color-purple) 100%
+  );
+  padding: 88px 0;
+}
+
+/* ---- Decorative blobs ---- */
+.cta-blob {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.cta-blob--left {
+  width: 300px;
+  height: 300px;
+  bottom: -80px;
+  left: -60px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.cta-blob--right {
+  width: 280px;
+  height: 280px;
+  top: -60px;
+  right: 80px;
+  background: rgba(106, 44, 145, 0.55);
+}
+
+/* ---- Inner layout ---- */
+.cta-inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- Content ---- */
+.cta-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.cta-heading {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: clamp(1.9rem, 3.5vw, 2.6rem);
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.cta-sub {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0;
+}
+
+/* ---- Buttons ---- */
+.cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 480px) {
+  .cta-banner-section {
+    padding: 64px 0;
+  }
+
+  .cta-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+}

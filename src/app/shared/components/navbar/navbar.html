@@ -1,0 +1,82 @@
+<nav class="navbar" [class.scrolled]="isScrolled()">
+  <div class="nav-container">
+
+    <!-- Logo -->
+    <a class="nav-logo" routerLink="/" (click)="closeMobileMenu()">
+      <div class="logo-icon">
+        <i class="fa-solid fa-globe"></i>
+      </div>
+      <div class="logo-text">
+        <span class="logo-name">Promex</span>
+      </div>
+    </a>
+
+    <!-- Desktop Nav Links -->
+    <ul class="nav-links">
+      @for (link of navLinks; track link.label) {
+        <li>
+          @if (link.fragment) {
+            <a class="nav-link" [routerLink]="link.path" [fragment]="link.fragment">
+              {{ link.label }}
+            </a>
+          } @else {
+            <a
+              class="nav-link"
+              [routerLink]="link.path"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: link.path === '/' }">
+              {{ link.label }}
+            </a>
+          }
+        </li>
+      }
+    </ul>
+
+    <!-- Desktop CTA Buttons -->
+    <div class="nav-actions">
+      <app-button variant="primary" size="md" routerLink="/employer-inquiry" label="Request Talent" />
+      <app-button variant="accent" size="md" routerLink="/jobs" label="View Overseas Jobs" />
+    </div>
+
+    <!-- Mobile Hamburger -->
+    <button
+      class="hamburger"
+      [class.open]="isMobileMenuOpen()"
+      (click)="toggleMobileMenu()"
+      aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" [class.open]="isMobileMenuOpen()">
+    <ul class="mobile-nav-links">
+      @for (link of navLinks; track link.label) {
+        <li>
+          @if (link.fragment) {
+            <a class="nav-link" [routerLink]="link.path" [fragment]="link.fragment" (click)="closeMobileMenu()">
+              {{ link.label }}
+            </a>
+          } @else {
+            <a
+              class="nav-link"
+              [routerLink]="link.path"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: link.path === '/' }"
+              (click)="closeMobileMenu()">
+              {{ link.label }}
+            </a>
+          }
+        </li>
+      }
+    </ul>
+    <div class="mobile-actions">
+      <app-button variant="primary" routerLink="/employer-inquiry" label="Request Talent" [fullWidth]="true" (clicked)="closeMobileMenu()" />
+      <app-button variant="accent" routerLink="/jobs" label="View Overseas Jobs" [fullWidth]="true" (clicked)="closeMobileMenu()" />
+    </div>
+  </div>
+
+</nav>

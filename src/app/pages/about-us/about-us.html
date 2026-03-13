@@ -1,0 +1,218 @@
+<!-- =============================================
+     ABOUT US PAGE
+     ============================================= -->
+
+<!-- Hero Section -->
+<section class="about-hero">
+  <div class="about-hero-overlay"></div>
+
+  <div class="container about-hero-content">
+    <div class="about-hero-badge" reveal="fade-down" [revealDelay]="0">
+      <span class="badge-dot"></span>
+      ABOUT PROMEX
+    </div>
+
+    <h1 class="about-hero-heading" reveal="fade-up" [revealDelay]="120">
+      28+ Years of <span class="accent">Ethical Recruitment</span>
+    </h1>
+
+    <p class="about-hero-sub" reveal="fade-up" [revealDelay]="240">
+      Since 1996, Promex Company has been empowering Filipino professionals with dignified overseas employment opportunities while maintaining the highest standards of integrity and compliance.
+    </p>
+  </div>
+
+  <!-- Wave divider -->
+  <div class="about-hero-wave">
+    <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="var(--color-bg)" />
+    </svg>
+  </div>
+</section>
+
+<!-- Company Stats -->
+<section class="stats-section">
+  <div class="container">
+    <div class="stats-grid" reveal="fade-up">
+      @for (stat of stats; track stat.label) {
+        <div class="stat-item">
+          <div class="stat-number">{{ stat.number }}</div>
+          <div class="stat-label">{{ stat.label }}</div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Founder Section -->
+<section class="founder-section">
+  <div class="container">
+    <div class="founder-grid">
+
+      <!-- Founder Image -->
+      <div class="founder-image-col" reveal="fade-right">
+        <div class="founder-image-wrapper">
+          <img [src]="founder.image" [alt]="founder.name" class="founder-image">
+          <div class="founder-badge">
+            <i class="fa-solid fa-star"></i>
+            <span>Founder & CEO</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Founder Info -->
+      <div class="founder-info-col" reveal="fade-left">
+        <span class="section-badge">OUR FOUNDER</span>
+        <h2 class="founder-name">{{ founder.name }}</h2>
+        <p class="founder-title">{{ founder.title }} · Founded {{ founder.foundedYear }}</p>
+
+        <p class="founder-bio">{{ founder.bio }}</p>
+
+        <div class="founder-quote">
+          <i class="fa-solid fa-quote-left quote-icon"></i>
+          <p>{{ founder.quote }}</p>
+        </div>
+
+        <div class="founder-achievements">
+          <h3 class="achievements-title">Key Achievements</h3>
+          <ul class="achievements-list">
+            @for (achievement of founder.achievements; track achievement) {
+              <li>
+                <i class="fa-solid fa-trophy"></i>
+                {{ achievement }}
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Company Story / Timeline -->
+<section class="story-section">
+  <div class="container">
+
+    <div class="section-header" reveal="fade-up">
+      <span class="section-badge">OUR JOURNEY</span>
+      <h2 class="section-heading">Company Story & Milestones</h2>
+      <p class="section-sub">Over two decades of growth, innovation, and commitment to Filipino workers</p>
+    </div>
+
+    <div class="timeline">
+      @for (milestone of milestones; track milestone.year; let i = $index) {
+        <div class="timeline-item" [class.timeline-item--right]="i % 2 !== 0" reveal="fade-up" [revealDelay]="i * 80">
+          <div class="timeline-year">{{ milestone.year }}</div>
+          <div class="timeline-connector"></div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">{{ milestone.title }}</h3>
+            <p class="timeline-description">{{ milestone.description }}</p>
+          </div>
+        </div>
+      }
+    </div>
+
+  </div>
+</section>
+
+<!-- Leadership Team -->
+<section class="leadership-section">
+  <div class="container">
+
+    <div class="section-header" reveal="fade-up">
+      <span class="section-badge">OUR TEAM</span>
+      <h2 class="section-heading">Leadership Team</h2>
+      <p class="section-sub">Meet the experienced professionals driving Promex forward</p>
+    </div>
+
+    <div class="leadership-grid">
+      @for (leader of leadership; track leader.name) {
+        <div class="leader-card" reveal="fade-up" [revealDelay]="80">
+          <div class="leader-image-wrapper">
+            <img [src]="leader.image" [alt]="leader.name" class="leader-image">
+          </div>
+          <div class="leader-info">
+            <h3 class="leader-name">{{ leader.name }}</h3>
+            <p class="leader-position">{{ leader.position }}</p>
+            <p class="leader-bio">{{ leader.bio }}</p>
+          </div>
+        </div>
+      }
+    </div>
+
+  </div>
+</section>
+
+<!-- Company Values -->
+<section class="values-section">
+  <div class="container">
+
+    <div class="section-header" reveal="fade-up">
+      <span class="section-badge">OUR VALUES</span>
+      <h2 class="section-heading">What We Stand For</h2>
+      <p class="section-sub">The principles that guide everything we do</p>
+    </div>
+
+    <div class="values-grid">
+      @for (value of values; track value.title) {
+        <div class="value-card" reveal="fade-up" [revealDelay]="80">
+          <div class="value-icon">
+            <i [class]="value.icon"></i>
+          </div>
+          <h3 class="value-title">{{ value.title }}</h3>
+          <p class="value-description">{{ value.description }}</p>
+        </div>
+      }
+    </div>
+
+  </div>
+</section>
+
+<!-- Certifications & Accreditations -->
+<section class="certifications-section">
+  <div class="container">
+
+    <div class="section-header" reveal="fade-up">
+      <span class="section-badge">CREDENTIALS</span>
+      <h2 class="section-heading">Certifications & Accreditations</h2>
+      <p class="section-sub">Recognized by government agencies and international standards bodies</p>
+    </div>
+
+    <div class="certifications-grid">
+      @for (cert of certifications; track cert.name) {
+        <div class="cert-card" reveal="fade-up" [revealDelay]="80">
+          <div class="cert-icon-wrapper">
+            <i [class]="cert.icon + ' cert-icon'"></i>
+          </div>
+          <div class="cert-content">
+            <h3 class="cert-name">{{ cert.name }}</h3>
+            <p class="cert-issuer">{{ cert.issuer }} · {{ cert.year }}</p>
+            <p class="cert-description">{{ cert.description }}</p>
+          </div>
+        </div>
+      }
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="about-cta-section">
+  <div class="about-cta-blobs" aria-hidden="true">
+    <div class="cta-blob cta-blob--l"></div>
+    <div class="cta-blob cta-blob--r"></div>
+  </div>
+  <div class="container about-cta-inner">
+    <div reveal="fade-up">
+      <h2 class="about-cta-heading">Ready to Work With Us?</h2>
+      <p class="about-cta-sub">
+        Whether you're an employer seeking skilled talent or a professional looking for overseas opportunities,
+        Promex is here to help you succeed.
+      </p>
+      <div class="about-cta-actions">
+        <app-button label="Request Talent" variant="primary" size="lg" routerLink="/employer-inquiry" />
+        <app-button label="View Overseas Jobs" variant="accent" size="lg" routerLink="/jobs" />
+      </div>
+    </div>
+  </div>
+</section>

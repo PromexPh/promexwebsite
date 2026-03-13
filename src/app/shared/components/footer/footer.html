@@ -1,0 +1,90 @@
+<footer class="footer">
+  <div class="footer-main">
+    <div class="footer-container">
+
+      <!-- Brand Column -->
+      <div class="footer-brand">
+        <a routerLink="/" class="footer-logo">
+          <div class="logo-icon">
+            <i class="fa-solid fa-globe"></i>
+          </div>
+          <div class="logo-text">
+            <span class="logo-name">Promex</span>
+          </div>
+        </a>
+        <p class="footer-tagline">
+          Your Trusted Overseas Recruitment Partner Since 1996. Connecting world-class Filipino talent with global opportunities.
+        </p>
+        <div class="social-links">
+          @for (social of socialLinks; track social.label) {
+            <a [href]="social.url" class="social-btn" [attr.aria-label]="social.label" target="_blank" rel="noopener">
+              <i [class]="social.icon"></i>
+            </a>
+          }
+        </div>
+      </div>
+
+      <!-- Quick Links Column -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Quick Links</h4>
+        <ul class="footer-links">
+          @for (link of quickLinks; track link.path) {
+            <li>
+              <a [routerLink]="link.path" class="footer-link">{{ link.label }}</a>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Contact Information Column -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Contact Information</h4>
+        <ul class="contact-list">
+          @for (item of contactItems; track item.text) {
+            <li class="contact-item">
+              <span class="contact-icon">
+                <i [class]="item.icon"></i>
+              </span>
+              <span class="contact-text" [innerHTML]="item.text.replace('\n', '<br>')"></span>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Stay Updated Column -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Stay Updated</h4>
+        <p class="footer-sub-text">
+          Subscribe to receive updates on new job opportunities and company news.
+        </p>
+        @if (!subscribed) {
+          <form class="subscribe-form" (ngSubmit)="onSubscribe()">
+            <input
+              type="email"
+              class="subscribe-input"
+              placeholder="Your email address"
+              [(ngModel)]="emailInput"
+              name="email"
+              required />
+            <app-button variant="primary" type="submit" label="Subscribe" [fullWidth]="true" />
+          </form>
+        } @else {
+          <div class="subscribed-msg">
+            <i class="fa-solid fa-circle-check"></i>
+            Thank you for subscribing!
+          </div>
+        }
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer Bottom Bar -->
+  <div class="footer-bottom">
+    <div class="footer-container footer-bottom-inner">
+      <p class="copyright">&copy; {{ currentYear }} Promex Company. All rights reserved.</p>
+      <p class="footer-badges">Established 1996 &middot; DMW Accredited &middot; Overseas Recruitment Agency</p>
+    </div>
+  </div>
+
+</footer>

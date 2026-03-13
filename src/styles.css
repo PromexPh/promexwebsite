@@ -1,1 +1,166 @@
-/* You can add global styles to this file, and also import other style files */
+/* =============================================
+   PROMEX GLOBAL STYLES & DESIGN TOKENS
+   ============================================= */
+
+/* --- Color Tokens --- */
+:root {
+  --color-primary:       #4FA3C7;
+  --color-primary-dark:  #3C8DB1;
+  --color-accent:        #8CC63F;
+  --color-accent-dark:   #78B52E;
+  --color-purple:        #6A2C91;
+  --color-magenta:       #C2188B;
+  --color-orange:        #E67E22;
+
+  --color-dark-text:     #2E2E2E;
+  --color-secondary-text:#6C757D;
+  --color-bg:            #F7F9FB;
+  --color-bg-alt:        #ffffffd3;
+  --color-card:          #FFFFFF;
+  --color-border:        #E5E7EB;
+
+  --gradient-hero: linear-gradient(135deg, #4FA3C7, #6A2C91);
+
+  /* Typography */
+  --font-heading: 'Montserrat', sans-serif;
+  --font-body:    'Open Sans', sans-serif;
+
+  /* Spacing & Radius */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-pill: 50px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.14);
+}
+
+/* --- Reset & Base --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-dark-text);
+  background-color: var(--color-bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--color-dark-text);
+  line-height: 1.2;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* --- Utility Classes --- */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* --- Button System --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  box-shadow: 0 4px 14px rgba(79,163,199,.35);
+}
+
+.btn-accent {
+  background: var(--color-accent);
+  color: #fff;
+  border-color: var(--color-accent);
+}
+.btn-accent:hover {
+  background: var(--color-accent-dark);
+  border-color: var(--color-accent-dark);
+  box-shadow: 0 4px 14px rgba(140,198,63,.35);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.btn-outline:hover {
+  background: rgba(79,163,199,.08);
+  box-shadow: 0 4px 14px rgba(79,163,199,.15);
+}
+
+/* =============================================
+   SCROLL REVEAL ANIMATIONS
+   ============================================= */
+
+/* Base hidden state — set before the element is observed */
+.reveal {
+  opacity: 0;
+  transition:
+    opacity    var(--reveal-duration, 600ms) cubic-bezier(.22,.61,.36,1) var(--reveal-delay, 0ms),
+    transform  var(--reveal-duration, 600ms) cubic-bezier(.22,.61,.36,1) var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+/* Per-direction starting transforms */
+.reveal--fade-up    { transform: translateY(36px); }
+.reveal--fade-down  { transform: translateY(-36px); }
+.reveal--fade-left  { transform: translateX(36px); }
+.reveal--fade-right { transform: translateX(-36px); }
+.reveal--fade       { transform: none; }
+.reveal--zoom       { transform: scale(0.88); }
+
+/* Visible state — added by the directive */
+.reveal--visible {
+  opacity: 1;
+  transform: none !important;
+}
+
+/* Honour user's reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { transition: none; opacity: 1; transform: none !important; }
+}

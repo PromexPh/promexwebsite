@@ -1,0 +1,66 @@
+<section class="testimonials-section">
+  <div class="container">
+
+    <!-- Header -->
+    <div class="testimonials-header" reveal="fade-up">
+      <span class="section-badge">Testimonials</span>
+      <h2 class="testimonials-heading">What Our Clients Say</h2>
+      <p class="testimonials-sub">Hear directly from the employers and organizations who trust Promex.</p>
+    </div>
+
+    <!-- Carousel Card -->
+    <div class="testimonials-carousel" reveal="fade-up" [revealDelay]="120">
+      <div class="testimonial-card">
+
+        <!-- Stars -->
+        <div class="testimonial-stars">
+          @for (star of stars(); track $index) {
+            <i class="fas fa-star"></i>
+          }
+        </div>
+
+        <!-- Quote -->
+        <p class="testimonial-quote">{{ current().quote }}</p>
+
+        <!-- Author -->
+        <div class="testimonial-author">
+          <img
+            [src]="current().avatar"
+            [alt]="current().name"
+            class="testimonial-avatar"
+          />
+          <div class="testimonial-author-info">
+            <span class="testimonial-name">{{ current().name }}</span>
+            <span class="testimonial-title">{{ current().title }}</span>
+            <span class="testimonial-company">{{ current().company }}</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation -->
+      <div class="testimonial-nav">
+        <button class="nav-arrow" (click)="prev()" aria-label="Previous">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <div class="testimonial-dots">
+          @for (t of testimonials; track $index) {
+            <button
+              class="dot"
+              [class.dot--active]="activeIndex() === $index"
+              (click)="goTo($index)"
+              [aria-label]="'Go to testimonial ' + ($index + 1)"
+            ></button>
+          }
+        </div>
+
+        <button class="nav-arrow" (click)="next()" aria-label="Next">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</section>

@@ -1,0 +1,144 @@
+<section class="exp-hero">
+  <div class="exp-hero-overlay"></div>
+  <div class="container exp-hero-content">
+    <div class="exp-hero-badge" reveal="fade-down" [revealDelay]="0">
+      <span class="badge-dot"></span>
+      GLOBAL FOOTPRINT
+    </div>
+    <h1 class="exp-hero-heading" reveal="fade-up" [revealDelay]="120">
+      Our <span class="accent">Experience</span>
+    </h1>
+    <p class="exp-hero-sub" reveal="fade-up" [revealDelay]="240">
+      With over 28 years of operation, Promex Company has built a powerful global network spanning the
+      Middle East, Europe, and Asia &mdash; deploying over 50,000 Filipino professionals worldwide.
+    </p>
+  </div>
+  <div class="exp-hero-wave">
+    <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="var(--color-bg)" />
+    </svg>
+  </div>
+</section>
+
+<!-- Countries Section -->
+<section class="countries-section">
+  <div class="container">
+    <div class="section-header" reveal="fade-up">
+      <span class="section-badge">Deployment Countries</span>
+      <h2 class="section-heading">Countries We Work With</h2>
+      <p class="section-sub">We have established partnerships with employers in 15+ countries across three major global regions.</p>
+    </div>
+
+    <!-- Region Tabs -->
+    <div class="region-tabs" reveal="fade-up" [revealDelay]="80">
+      @for (region of regions; track region) {
+        <button
+          class="region-tab"
+          [class.region-tab--active]="regionFilter() === region"
+          (click)="regionFilter.set(region)">
+          {{ region }}
+        </button>
+      }
+    </div>
+
+    <!-- Country Cards -->
+    <div class="countries-grid" reveal="fade-up" [revealDelay]="120">
+      @for (country of filteredCountries(); track country.name) {
+        <div class="country-card">
+          <div class="country-card-top">
+            <span class="country-flag">{{ country.flag }}</span>
+            <div>
+              <h3 class="country-name">{{ country.name }}</h3>
+              <span class="country-deployed">{{ country.deployed }} Deployed</span>
+            </div>
+          </div>
+          <p class="country-sectors">
+            <i class="fa-solid fa-location-dot sector-icon"></i>
+            {{ country.sectors }}
+          </p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Trusted By Section -->
+<section class="clients-section">
+  <div class="container">
+    <div class="section-header" reveal="fade-up">
+      <span class="section-badge section-badge--green">Our Clients</span>
+      <h2 class="section-heading">Trusted By Leading Organizations</h2>
+    </div>
+
+    <!-- Category Filters -->
+    <div class="client-filters" reveal="fade-up" [revealDelay]="80">
+      @for (cat of clientCategories; track cat) {
+        <button
+          class="client-filter"
+          [class.client-filter--active]="clientFilter() === cat"
+          (click)="clientFilter.set(cat)">
+          {{ cat }}
+        </button>
+      }
+    </div>
+
+    <!-- Client Grid -->
+    <div class="clients-grid" reveal="fade-up" [revealDelay]="120">
+      @for (client of filteredClients(); track client.name) {
+        <div class="client-chip">
+          <i class="fa-regular fa-building client-chip-icon"></i>
+          <span class="client-chip-name">{{ client.name }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="reviews-section">
+  <div class="container">
+    <div class="section-header" reveal="fade-up">
+      <span class="section-badge">Client Reviews</span>
+      <h2 class="section-heading">What Our Clients Say</h2>
+    </div>
+
+    <div class="reviews-grid">
+      @for (t of testimonials; track t.name; let i = $index) {
+        <div class="review-card" reveal="fade-up" [revealDelay]="i * 100">
+          <span class="review-category">{{ t.category }}</span>
+          <div class="review-stars">
+            @for (s of stars(t.rating); track $index) {
+              <i class="fas fa-star"></i>
+            }
+          </div>
+          <p class="review-quote">{{ t.quote }}</p>
+          <div class="review-author">
+            <img [src]="t.avatar" [alt]="t.name" class="review-avatar" />
+            <div class="review-author-info">
+              <span class="review-name">{{ t.name }}</span>
+              <span class="review-title">{{ t.title }}</span>
+              <span class="review-company">{{ t.company }}</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Bottom CTA -->
+<section class="exp-cta">
+  <div class="exp-cta-blob exp-cta-blob--l" aria-hidden="true"></div>
+  <div class="exp-cta-blob exp-cta-blob--r" aria-hidden="true"></div>
+  <div class="container exp-cta-inner" reveal="fade-up">
+    <h2 class="exp-cta-heading">Join Our Global Network</h2>
+    <p class="exp-cta-sub">
+      Partner with Promex and gain access to a proven pipeline of skilled Filipino
+      professionals ready to contribute to your organisation.
+    </p>
+    <div class="exp-cta-actions">
+      <app-button label="Request Talent" variant="primary" size="lg" routerLink="/employer-inquiry" />
+      <app-button label="View Overseas Jobs" variant="accent" size="lg" routerLink="/jobs" />
+    </div>
+  </div>
+</section>

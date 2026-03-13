@@ -1,0 +1,28 @@
+<section class="stats-section">
+  <div class="container">
+    <div class="stats-grid">
+      @for (stat of stats; track stat.label; let i = $index) {
+        <div
+          class="stat-card"
+          reveal="fade-up"
+          [revealDelay]="i * 120">
+
+          <div class="stat-icon-wrap">
+            <i [class]="stat.icon"></i>
+          </div>
+
+          <span
+            class="stat-value"
+            [countUp]="stat.value"
+            [countSuffix]="stat.suffix"
+            [countDuration]="2200">
+          </span>
+
+          <p class="stat-label">{{ stat.label }}</p>
+          <span class="stat-sub">{{ stat.sub }}</span>
+
+        </div>
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,424 @@
+<!-- =============================================
+     EMPLOYER INQUIRY FORM
+     ============================================= -->
+
+<!-- Hero Section -->
+<section class="employer-hero">
+  <div class="employer-hero-overlay"></div>
+
+  <div class="container employer-hero-content">
+    <div class="employer-hero-badge" reveal="fade-down" [revealDelay]="0">
+      <span class="badge-dot"></span>
+      FOR EMPLOYERS
+    </div>
+
+    <h1 class="employer-hero-heading" reveal="fade-up" [revealDelay]="120">
+      Request <span class="accent">Top Talent</span> Today
+    </h1>
+
+    <p class="employer-hero-sub" reveal="fade-up" [revealDelay]="240">
+      Connect with skilled Filipino professionals ready to join your team. Fill out the form below and our corporate recruitment team will contact you within 24 hours.
+    </p>
+  </div>
+
+  <!-- Wave divider -->
+  <div class="employer-hero-wave">
+    <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="var(--color-bg)" />
+    </svg>
+  </div>
+</section>
+
+<!-- Inquiry Form Section -->
+<section class="employer-form-section">
+  <div class="container">
+
+    <!-- Success Message -->
+    @if (submitSuccess) {
+      <div class="alert alert-success" reveal="fade-up">
+        <i class="fa-solid fa-circle-check"></i>
+        <div>
+          <h3>Inquiry Submitted Successfully!</h3>
+          <p>Thank you for your interest. Our corporate recruitment team will review your requirements and contact you within 24 hours.</p>
+        </div>
+      </div>
+    }
+
+    <!-- Error Message -->
+    @if (submitError) {
+      <div class="alert alert-error" reveal="fade-up">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <div>
+          <h3>Something went wrong</h3>
+          <p>Please try again or contact us directly at corporate@promex.ph</p>
+        </div>
+      </div>
+    }
+
+    <div class="form-wrapper" reveal="fade-up">
+      <form (ngSubmit)="onSubmit()" #inquiryForm="ngForm">
+
+        <!-- Company Information -->
+        <div class="form-section">
+          <h2 class="form-section-title">
+            <i class="fa-solid fa-building"></i>
+            Company Information
+          </h2>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="companyName">Company Name <span class="required">*</span></label>
+              <input
+                type="text"
+                id="companyName"
+                name="companyName"
+                [(ngModel)]="formData.companyName"
+                required
+                class="form-input"
+                placeholder="Your Company Ltd.">
+            </div>
+
+            <div class="form-group">
+              <label for="industry">Industry <span class="required">*</span></label>
+              <select
+                id="industry"
+                name="industry"
+                [(ngModel)]="formData.industry"
+                required
+                class="form-input">
+                <option value="">Select Industry</option>
+                @for (ind of industries; track ind) {
+                  <option [value]="ind">{{ ind }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="companySize">Company Size <span class="required">*</span></label>
+              <select
+                id="companySize"
+                name="companySize"
+                [(ngModel)]="formData.companySize"
+                required
+                class="form-input">
+                <option value="">Select Company Size</option>
+                @for (size of companySizes; track size) {
+                  <option [value]="size">{{ size }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="country">Company Location <span class="required">*</span></label>
+              <select
+                id="country"
+                name="country"
+                [(ngModel)]="formData.country"
+                required
+                class="form-input">
+                <option value="">Select Country</option>
+                @for (country of countries; track country) {
+                  <option [value]="country">{{ country }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="website">Company Website</label>
+              <input
+                type="url"
+                id="website"
+                name="website"
+                [(ngModel)]="formData.website"
+                class="form-input"
+                placeholder="https://www.yourcompany.com">
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Person -->
+        <div class="form-section">
+          <h2 class="form-section-title">
+            <i class="fa-solid fa-user-tie"></i>
+            Contact Person
+          </h2>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="contactPerson">Full Name <span class="required">*</span></label>
+              <input
+                type="text"
+                id="contactPerson"
+                name="contactPerson"
+                [(ngModel)]="formData.contactPerson"
+                required
+                class="form-input"
+                placeholder="John Smith">
+            </div>
+
+            <div class="form-group">
+              <label for="position">Position/Title <span class="required">*</span></label>
+              <input
+                type="text"
+                id="position"
+                name="position"
+                [(ngModel)]="formData.position"
+                required
+                class="form-input"
+                placeholder="HR Manager">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email Address <span class="required">*</span></label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                [(ngModel)]="formData.email"
+                required
+                class="form-input"
+                placeholder="john.smith@company.com">
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone Number <span class="required">*</span></label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                [(ngModel)]="formData.phone"
+                required
+                class="form-input"
+                placeholder="+971 50 123 4567">
+            </div>
+          </div>
+        </div>
+
+        <!-- Hiring Needs -->
+        <div class="form-section">
+          <h2 class="form-section-title">
+            <i class="fa-solid fa-users"></i>
+            Hiring Requirements
+          </h2>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="positionsNeeded">Position(s) Needed <span class="required">*</span></label>
+              <input
+                type="text"
+                id="positionsNeeded"
+                name="positionsNeeded"
+                [(ngModel)]="formData.positionsNeeded"
+                required
+                class="form-input"
+                placeholder="e.g., Hotel Staff, Engineers, Nurses">
+            </div>
+
+            <div class="form-group">
+              <label for="numberOfWorkers">Number of Workers <span class="required">*</span></label>
+              <input
+                type="text"
+                id="numberOfWorkers"
+                name="numberOfWorkers"
+                [(ngModel)]="formData.numberOfWorkers"
+                required
+                class="form-input"
+                placeholder="e.g., 5-10">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="targetIndustry">Target Industry <span class="required">*</span></label>
+              <select
+                id="targetIndustry"
+                name="targetIndustry"
+                [(ngModel)]="formData.targetIndustry"
+                required
+                class="form-input">
+                <option value="">Select Industry</option>
+                @for (ind of industries; track ind) {
+                  <option [value]="ind">{{ ind }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="urgency">Urgency <span class="required">*</span></label>
+              <select
+                id="urgency"
+                name="urgency"
+                [(ngModel)]="formData.urgency"
+                required
+                class="form-input">
+                <option value="">Select Urgency</option>
+                @for (level of urgencyLevels; track level) {
+                  <option [value]="level">{{ level }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="requiredSkills">Required Skills & Qualifications <span class="required">*</span></label>
+            <textarea
+              id="requiredSkills"
+              name="requiredSkills"
+              [(ngModel)]="formData.requiredSkills"
+              required
+              class="form-input form-textarea"
+              rows="4"
+              placeholder="List the skills, experience, and qualifications you're looking for..."></textarea>
+          </div>
+        </div>
+
+        <!-- Employment Details -->
+        <div class="form-section">
+          <h2 class="form-section-title">
+            <i class="fa-solid fa-file-contract"></i>
+            Employment Details
+          </h2>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="employmentType">Employment Type <span class="required">*</span></label>
+              <select
+                id="employmentType"
+                name="employmentType"
+                [(ngModel)]="formData.employmentType"
+                required
+                class="form-input">
+                <option value="">Select Type</option>
+                @for (type of employmentTypes; track type) {
+                  <option [value]="type">{{ type }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="contractDuration">Contract Duration</label>
+              <input
+                type="text"
+                id="contractDuration"
+                name="contractDuration"
+                [(ngModel)]="formData.contractDuration"
+                class="form-input"
+                placeholder="e.g., 2 years">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="salaryRange">Salary Range (Monthly USD) <span class="required">*</span></label>
+              <input
+                type="text"
+                id="salaryRange"
+                name="salaryRange"
+                [(ngModel)]="formData.salaryRange"
+                required
+                class="form-input"
+                placeholder="e.g., $2,000 - $3,000">
+            </div>
+
+            <div class="form-group">
+              <label for="accommodationProvided">Accommodation Provided? <span class="required">*</span></label>
+              <select
+                id="accommodationProvided"
+                name="accommodationProvided"
+                [(ngModel)]="formData.accommodationProvided"
+                required
+                class="form-input">
+                <option value="">Select</option>
+                <option value="Yes">Yes - Fully provided</option>
+                <option value="Partial">Yes - With allowance</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Information -->
+        <div class="form-section">
+          <h2 class="form-section-title">
+            <i class="fa-solid fa-circle-info"></i>
+            Additional Information
+          </h2>
+
+          <div class="form-group">
+            <label for="additionalRequirements">Additional Requirements</label>
+            <textarea
+              id="additionalRequirements"
+              name="additionalRequirements"
+              [(ngModel)]="formData.additionalRequirements"
+              class="form-input form-textarea"
+              rows="3"
+              placeholder="Any specific requirements, certifications, or preferences..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea
+              id="message"
+              name="message"
+              [(ngModel)]="formData.message"
+              class="form-input form-textarea"
+              rows="4"
+              placeholder="Tell us more about your company and hiring needs..."></textarea>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-actions">
+          <app-button
+            label="Submit Inquiry"
+            variant="primary"
+            size="lg"
+            type="submit"
+            [disabled]="isSubmitting || !inquiryForm.valid"
+            icon="fa-solid fa-paper-plane"
+            iconPosition="right" />
+
+          @if (isSubmitting) {
+            <span class="form-loading">
+              <i class="fa-solid fa-spinner fa-spin"></i>
+              Processing your inquiry...
+            </span>
+          }
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Why Choose Us Brief -->
+    <div class="employer-benefits" reveal="fade-up">
+      <h3 class="employer-benefits-title">Why Employers Choose Promex</h3>
+      <div class="employer-benefits-grid">
+        <div class="benefit-item">
+          <i class="fa-solid fa-certificate"></i>
+          <p>Licensed & Compliant</p>
+        </div>
+        <div class="benefit-item">
+          <i class="fa-solid fa-network-wired"></i>
+          <p>Nationwide Network</p>
+        </div>
+        <div class="benefit-item">
+          <i class="fa-solid fa-rocket"></i>
+          <p>Fast Deployment</p>
+        </div>
+        <div class="benefit-item">
+          <i class="fa-solid fa-user-check"></i>
+          <p>Pre-screened Candidates</p>
+        </div>
+        <div class="benefit-item">
+          <i class="fa-solid fa-briefcase"></i>
+          <p>Industry Expertise</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>

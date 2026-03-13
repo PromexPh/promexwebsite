@@ -1,0 +1,733 @@
+<!-- =============================================
+     CANDIDATE APPLICATION FORM
+     ============================================= -->
+
+<!-- Hero Section -->
+<section class="apply-hero">
+  <div class="apply-hero-overlay"></div>
+
+  <div class="container apply-hero-content">
+    <div class="apply-hero-badge" reveal="fade-down" [revealDelay]="0">
+      <span class="badge-dot"></span>
+      START YOUR JOURNEY
+    </div>
+
+    <h1 class="apply-hero-heading" reveal="fade-up" [revealDelay]="120">
+      Apply for <span class="accent">Overseas Employment</span>
+    </h1>
+
+    <p class="apply-hero-sub" reveal="fade-up" [revealDelay]="240">
+      Take the first step towards your international career. Fill out the form below and our recruitment team will match you with the best opportunities.
+    </p>
+  </div>
+
+  <!-- Wave divider -->
+  <div class="apply-hero-wave">
+    <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="var(--color-bg)" />
+    </svg>
+  </div>
+</section>
+
+<!-- Application Form Section -->
+<section class="apply-form-section">
+  <div class="container">
+
+    <!-- Success Message -->
+    @if (submitSuccess) {
+      <div class="alert alert-success" reveal="fade-up">
+        <i class="fa-solid fa-circle-check"></i>
+        <div>
+          <h3>Application Submitted Successfully!</h3>
+          <p>Thank you for your interest. Our team will review your application and contact you within 2-3 business days.</p>
+        </div>
+      </div>
+    }
+
+    <!-- Error Message -->
+    @if (submitError) {
+      <div class="alert alert-error" reveal="fade-up">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <div>
+          <h3>Something went wrong</h3>
+          <p>Please try again or contact us directly at recruitment@promex.ph</p>
+        </div>
+      </div>
+    }
+
+    <!-- Application Method Chooser -->
+    @if (applicationMethod === 'choose') {
+      <div class="method-chooser" reveal="fade-up">
+        <h2 class="method-chooser-title">Choose Your Application Method</h2>
+        <p class="method-chooser-subtitle">Select the most convenient way to apply for overseas employment</p>
+
+        <div class="method-cards">
+
+          <!-- LinkedIn Application -->
+          <div class="method-card" (click)="selectApplicationMethod('linkedin')">
+            <div class="method-card-icon linkedin-icon">
+              <i class="fa-brands fa-linkedin"></i>
+            </div>
+            <h3 class="method-card-title">Apply via LinkedIn</h3>
+            <p class="method-card-description">Quick application using your LinkedIn profile. Perfect if you have an active LinkedIn account.</p>
+            <div class="method-card-action">
+              <span>Continue with LinkedIn</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+
+          <!-- CV Upload -->
+          <div class="method-card" (click)="selectApplicationMethod('cv')">
+            <div class="method-card-icon cv-icon">
+              <i class="fa-solid fa-file-arrow-up"></i>
+            </div>
+            <h3 class="method-card-title">Upload Your CV</h3>
+            <p class="method-card-description">Upload your resume and provide basic contact information. Fast and convenient.</p>
+            <div class="method-card-action">
+              <span>Upload CV</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+
+          <!-- Manual Form -->
+          <div class="method-card" (click)="selectApplicationMethod('manual')">
+            <div class="method-card-icon manual-icon">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </div>
+            <h3 class="method-card-title">Fill Manual Form</h3>
+            <p class="method-card-description">Complete our detailed application form. Best if you don't have a CV ready.</p>
+            <div class="method-card-action">
+              <span>Fill Form</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    }
+
+    <!-- LinkedIn Application -->
+    @if (applicationMethod === 'linkedin') {
+      <div class="form-wrapper linkedin-wrapper" reveal="fade-up">
+        <button class="back-button" (click)="backToChoose()" type="button">
+          <i class="fa-solid fa-arrow-left"></i>
+          Back to options
+        </button>
+
+        <div class="linkedin-content">
+          <div class="linkedin-icon-large">
+            <i class="fa-brands fa-linkedin"></i>
+          </div>
+          <h2 class="linkedin-title">Apply via LinkedIn</h2>
+          <p class="linkedin-description">
+            You will be redirected to our LinkedIn page where you can apply directly through the platform.
+            Make sure your LinkedIn profile is up to date before applying.
+          </p>
+
+          <div class="linkedin-benefits">
+            <div class="linkedin-benefit">
+              <i class="fa-solid fa-check-circle"></i>
+              <span>Quick & Easy Application</span>
+            </div>
+            <div class="linkedin-benefit">
+              <i class="fa-solid fa-check-circle"></i>
+              <span>Use Your Existing Profile</span>
+            </div>
+            <div class="linkedin-benefit">
+              <i class="fa-solid fa-check-circle"></i>
+              <span>Track Application Status</span>
+            </div>
+          </div>
+
+          <app-button
+            label="Continue to LinkedIn"
+            variant="primary"
+            size="lg"
+            (clicked)="applyViaLinkedIn()"
+            icon="fa-brands fa-linkedin"
+            [fullWidth]="true" />
+        </div>
+      </div>
+    }
+
+    <!-- CV Upload Application -->
+    @if (applicationMethod === 'cv') {
+      <div class="form-wrapper" reveal="fade-up">
+        <button class="back-button" (click)="backToChoose()" type="button">
+          <i class="fa-solid fa-arrow-left"></i>
+          Back to options
+        </button>
+
+        <form (ngSubmit)="onSubmit()" #cvForm="ngForm">
+
+          <!-- CV Upload Section -->
+          <div class="form-section">
+            <h2 class="form-section-title">
+              <i class="fa-solid fa-file-arrow-up"></i>
+              Upload Your CV/Resume
+            </h2>
+
+            <div class="cv-upload-area">
+              @if (!uploadedCV) {
+                <label for="cvFile" class="cv-upload-label">
+                  <div class="cv-upload-icon">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                  </div>
+                  <h3>Click to upload or drag and drop</h3>
+                  <p>PDF, DOC, or DOCX (Max 5MB)</p>
+                  <input
+                    type="file"
+                    id="cvFile"
+                    name="cvFile"
+                    (change)="onCVFileSelected($event)"
+                    accept=".pdf,.doc,.docx"
+                    class="cv-file-input"
+                    required>
+                </label>
+              } @else {
+                <div class="cv-uploaded">
+                  <div class="cv-file-info">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <div class="cv-file-details">
+                      <strong>{{ cvFileName }}</strong>
+                      <small>Ready to upload</small>
+                    </div>
+                  </div>
+                  <button type="button" class="cv-remove-btn" (click)="removeCV()">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Basic Contact Information -->
+          <div class="form-section">
+            <h2 class="form-section-title">
+              <i class="fa-solid fa-user"></i>
+              Contact Information
+            </h2>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cvFirstName">First Name <span class="required">*</span></label>
+                <input
+                  type="text"
+                  id="cvFirstName"
+                  name="cvFirstName"
+                  [(ngModel)]="formData.firstName"
+                  required
+                  class="form-input"
+                  placeholder="Juan">
+              </div>
+
+              <div class="form-group">
+                <label for="cvLastName">Last Name <span class="required">*</span></label>
+                <input
+                  type="text"
+                  id="cvLastName"
+                  name="cvLastName"
+                  [(ngModel)]="formData.lastName"
+                  required
+                  class="form-input"
+                  placeholder="Dela Cruz">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cvEmail">Email Address <span class="required">*</span></label>
+                <input
+                  type="email"
+                  id="cvEmail"
+                  name="cvEmail"
+                  [(ngModel)]="formData.email"
+                  required
+                  class="form-input"
+                  placeholder="juan.delacruz@email.com">
+              </div>
+
+              <div class="form-group">
+                <label for="cvPhone">Phone Number <span class="required">*</span></label>
+                <input
+                  type="tel"
+                  id="cvPhone"
+                  name="cvPhone"
+                  [(ngModel)]="formData.phone"
+                  required
+                  class="form-input"
+                  placeholder="+63 912 345 6789">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cvIndustry">Preferred Industry <span class="required">*</span></label>
+                <select
+                  id="cvIndustry"
+                  name="cvIndustry"
+                  [(ngModel)]="formData.preferredIndustry"
+                  required
+                  class="form-input">
+                  <option value="">Select Industry</option>
+                  @for (industry of industries; track industry) {
+                    <option [value]="industry">{{ industry }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="cvCountry">Preferred Country <span class="required">*</span></label>
+                <select
+                  id="cvCountry"
+                  name="cvCountry"
+                  [(ngModel)]="formData.preferredCountry"
+                  required
+                  class="form-input">
+                  <option value="">Select Country</option>
+                  @for (country of countries; track country) {
+                    <option [value]="country">{{ country }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="cvMessage">Additional Message (Optional)</label>
+              <textarea
+                id="cvMessage"
+                name="cvMessage"
+                [(ngModel)]="formData.message"
+                class="form-input form-textarea"
+                rows="4"
+                placeholder="Tell us more about your career goals and preferences..."></textarea>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="form-actions">
+            <app-button
+              label="Submit Application"
+              variant="primary"
+              size="lg"
+              type="submit"
+              [disabled]="isSubmitting || !cvForm.valid || !uploadedCV"
+              icon="fa-solid fa-paper-plane"
+              iconPosition="right" />
+
+            @if (isSubmitting) {
+              <span class="form-loading">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                Processing your application...
+              </span>
+            }
+          </div>
+
+        </form>
+      </div>
+    }
+
+    <!-- Manual Form Application -->
+    @if (applicationMethod === 'manual') {
+      <div class="form-wrapper" reveal="fade-up">
+        <button class="back-button" (click)="backToChoose()" type="button">
+          <i class="fa-solid fa-arrow-left"></i>
+          Back to options
+        </button>
+
+        <form (ngSubmit)="onSubmit()" #applicationForm="ngForm">
+
+        <!-- Personal Information -->
+        <div class="form-section">
+          <h2 class="form-section-title">
+            <i class="fa-solid fa-user"></i>
+            Personal Information
+          </h2>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name <span class="required">*</span></label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                [(ngModel)]="formData.firstName"
+                required
+                class="form-input"
+                placeholder="Juan">
+            </div>
+
+            <div class="form-group">
+              <label for="middleName">Middle Name</label>
+              <input
+                type="text"
+                id="middleName"
+                name="middleName"
+                [(ngModel)]="formData.middleName"
+                class="form-input"
+                placeholder="Santos">
+            </div>
+
+            <div class="form-group">
+              <label for="lastName">Last Name <span class="required">*</span></label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                [(ngModel)]="formData.lastName"
+                required
+                class="form-input"
+                placeholder="Dela Cruz">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email Address <span class="required">*</span></label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                [(ngModel)]="formData.email"
+                required
+                class="form-input"
+                placeholder="juan.delacruz@email.com">
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone Number <span class="required">*</span></label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                [(ngModel)]="formData.phone"
+                required
+                class="form-input"
+                placeholder="+63 912 345 6789">
+            </div>
+
+            <div class="form-group">
+              <label for="dateOfBirth">Date of Birth <span class="required">*</span></label>
+              <input
+                type="date"
+                id="dateOfBirth"
+                name="dateOfBirth"
+                [(ngModel)]="formData.dateOfBirth"
+                required
+                class="form-input">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="gender">Gender <span class="required">*</span></label>
+              <select
+                id="gender"
+                name="gender"
+                [(ngModel)]="formData.gender"
+                required
+                class="form-input">
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="civilStatus">Civil Status <span class="required">*</span></label>
+              <select
+                id="civilStatus"
+                name="civilStatus"
+                [(ngModel)]="formData.civilStatus"
+                required
+                class="form-input">
+                <option value="">Select Status</option>
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Widowed">Widowed</option>
+                <option value="Separated">Separated</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Address Information -->
+        <div class="form-section">
+          <h2 class="form-section-title">
+            <i class="fa-solid fa-location-dot"></i>
+            Address Information
+          </h2>
+
+          <div class="form-group">
+            <label for="address">Street Address <span class="required">*</span></label>
+            <input
+              type="text"
+              id="address"
+              name="address"
+              [(ngModel)]="formData.address"
+              required
+              class="form-input"
+              placeholder="123 Rizal Street, Barangay San Jose">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="city">City/Municipality <span class="required">*</span></label>
+              <input
+                type="text"
+                id="city"
+                name="city"
+                [(ngModel)]="formData.city"
+                required
+                class="form-input"
+                placeholder="Manila">
+            </div>
+
+            <div class="form-group">
+              <label for="province">Province <span class="required">*</span></label>
+              <input
+                type="text"
+                id="province"
+                name="province"
+                [(ngModel)]="formData.province"
+                required
+                class="form-input"
+                placeholder="Metro Manila">
+            </div>
+
+            <div class="form-group">
+              <label for="zipCode">Zip Code</label>
+              <input
+                type="text"
+                id="zipCode"
+                name="zipCode"
+                [(ngModel)]="formData.zipCode"
+                class="form-input"
+                placeholder="1000">
+            </div>
+          </div>
+        </div>
+
+        <!-- Job Preferences -->
+        <div class="form-section">
+          <h2 class="form-section-title">
+            <i class="fa-solid fa-briefcase"></i>
+            Job Preferences
+          </h2>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="preferredIndustry">Preferred Industry <span class="required">*</span></label>
+              <select
+                id="preferredIndustry"
+                name="preferredIndustry"
+                [(ngModel)]="formData.preferredIndustry"
+                required
+                class="form-input">
+                <option value="">Select Industry</option>
+                @for (industry of industries; track industry) {
+                  <option [value]="industry">{{ industry }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="preferredPosition">Preferred Position <span class="required">*</span></label>
+              <input
+                type="text"
+                id="preferredPosition"
+                name="preferredPosition"
+                [(ngModel)]="formData.preferredPosition"
+                required
+                class="form-input"
+                placeholder="e.g., Hotel Staff, Nurse, Engineer">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="preferredCountry">Preferred Country <span class="required">*</span></label>
+              <select
+                id="preferredCountry"
+                name="preferredCountry"
+                [(ngModel)]="formData.preferredCountry"
+                required
+                class="form-input">
+                <option value="">Select Country</option>
+                @for (country of countries; track country) {
+                  <option [value]="country">{{ country }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="expectedSalary">Expected Monthly Salary (USD)</label>
+              <input
+                type="text"
+                id="expectedSalary"
+                name="expectedSalary"
+                [(ngModel)]="formData.expectedSalary"
+                class="form-input"
+                placeholder="e.g., $1,500">
+            </div>
+          </div>
+        </div>
+
+        <!-- Education & Experience -->
+        <div class="form-section">
+          <h2 class="form-section-title">
+            <i class="fa-solid fa-graduation-cap"></i>
+            Education & Experience
+          </h2>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="highestEducation">Highest Educational Attainment <span class="required">*</span></label>
+              <select
+                id="highestEducation"
+                name="highestEducation"
+                [(ngModel)]="formData.highestEducation"
+                required
+                class="form-input">
+                <option value="">Select Education Level</option>
+                @for (level of educationLevels; track level) {
+                  <option [value]="level">{{ level }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="yearsOfExperience">Years of Experience <span class="required">*</span></label>
+              <select
+                id="yearsOfExperience"
+                name="yearsOfExperience"
+                [(ngModel)]="formData.yearsOfExperience"
+                required
+                class="form-input">
+                <option value="">Select Experience</option>
+                <option value="0-1">0-1 years</option>
+                <option value="1-3">1-3 years</option>
+                <option value="3-5">3-5 years</option>
+                <option value="5-10">5-10 years</option>
+                <option value="10+">10+ years</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="currentEmployer">Current/Most Recent Employer</label>
+              <input
+                type="text"
+                id="currentEmployer"
+                name="currentEmployer"
+                [(ngModel)]="formData.currentEmployer"
+                class="form-input"
+                placeholder="Company Name">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="skills">Skills & Qualifications <span class="required">*</span></label>
+            <textarea
+              id="skills"
+              name="skills"
+              [(ngModel)]="formData.skills"
+              required
+              class="form-input form-textarea"
+              rows="4"
+              placeholder="List your relevant skills, certifications, and qualifications..."></textarea>
+          </div>
+        </div>
+
+        <!-- Passport & Availability -->
+        <div class="form-section">
+          <h2 class="form-section-title">
+            <i class="fa-solid fa-passport"></i>
+            Passport & Availability
+          </h2>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="passportNumber">Passport Number</label>
+              <input
+                type="text"
+                id="passportNumber"
+                name="passportNumber"
+                [(ngModel)]="formData.passportNumber"
+                class="form-input"
+                placeholder="P1234567">
+            </div>
+
+            <div class="form-group">
+              <label for="passportExpiry">Passport Expiry Date</label>
+              <input
+                type="date"
+                id="passportExpiry"
+                name="passportExpiry"
+                [(ngModel)]="formData.passportExpiry"
+                class="form-input">
+            </div>
+
+            <div class="form-group">
+              <label for="availability">Availability to Start <span class="required">*</span></label>
+              <select
+                id="availability"
+                name="availability"
+                [(ngModel)]="formData.availability"
+                required
+                class="form-input">
+                <option value="">Select</option>
+                <option value="Immediately">Immediately</option>
+                <option value="2 weeks">2 weeks</option>
+                <option value="1 month">1 month</option>
+                <option value="2-3 months">2-3 months</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Message -->
+        <div class="form-section">
+          <h2 class="form-section-title">
+            <i class="fa-solid fa-message"></i>
+            Additional Information
+          </h2>
+
+          <div class="form-group">
+            <label for="message">Tell us more about yourself</label>
+            <textarea
+              id="message"
+              name="message"
+              [(ngModel)]="formData.message"
+              class="form-input form-textarea"
+              rows="4"
+              placeholder="Share any additional information that would help us match you with the right opportunity..."></textarea>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-actions">
+          <app-button
+            label="Submit Application"
+            variant="primary"
+            size="lg"
+            type="submit"
+            [disabled]="isSubmitting || !applicationForm.valid"
+            icon="fa-solid fa-paper-plane"
+            iconPosition="right" />
+
+          @if (isSubmitting) {
+            <span class="form-loading">
+              <i class="fa-solid fa-spinner fa-spin"></i>
+              Processing your application...
+            </span>
+          }
+        </div>
+
+      </form>
+      </div>
+    }
+
+  </div>
+</section>

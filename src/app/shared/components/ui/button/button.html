@@ -1,0 +1,45 @@
+@switch (true) {
+
+  <!-- Router link -->
+  @case (isLink && !!routerLink()) {
+    <a
+      [routerLink]="routerLink()"
+      [fragment]="fragment() ?? undefined"
+      [class]="cssClasses"
+      [attr.aria-disabled]="disabled() || null"
+      (click)="onClick($event)">
+      @if (icon() && iconPosition() === 'left') { <i [class]="icon()"></i> }
+      {{ label() }}
+      @if (icon() && iconPosition() === 'right') { <i [class]="icon()"></i> }
+    </a>
+  }
+
+  <!-- External href -->
+  @case (isLink && !!href()) {
+    <a
+      [href]="href()"
+      [class]="cssClasses"
+      target="_blank"
+      rel="noopener noreferrer"
+      [attr.aria-disabled]="disabled() || null"
+      (click)="onClick($event)">
+      @if (icon() && iconPosition() === 'left') { <i [class]="icon()"></i> }
+      {{ label() }}
+      @if (icon() && iconPosition() === 'right') { <i [class]="icon()"></i> }
+    </a>
+  }
+
+  <!-- Regular button -->
+  @default {
+    <button
+      [class]="cssClasses"
+      [type]="type()"
+      [disabled]="disabled()"
+      (click)="onClick($event)">
+      @if (icon() && iconPosition() === 'left') { <i [class]="icon()"></i> }
+      {{ label() }}
+      @if (icon() && iconPosition() === 'right') { <i [class]="icon()"></i> }
+    </button>
+  }
+
+}

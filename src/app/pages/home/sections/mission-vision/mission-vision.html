@@ -1,0 +1,30 @@
+<section class="mv-section">
+  <div class="container">
+
+    <!-- Header -->
+    <div reveal="fade-up" [revealDelay]="0" class="mv-header">
+      <span class="section-badge">Our Purpose</span>
+      <h2 class="mv-heading">Mission &amp; Vision</h2>
+    </div>
+
+    <!-- Cards -->
+    <div class="mv-grid">
+      @for (card of cards; track card.title; let i = $index) {
+        <div
+          class="mv-card mv-card--{{ card.accent }}"
+          reveal="fade-up"
+          [revealDelay]="100 + i * 140">
+
+          <div class="mv-icon-wrap mv-icon-wrap--{{ card.accent }}">
+            <i [class]="card.icon"></i>
+          </div>
+
+          <h3 class="mv-card-title">{{ card.title }}</h3>
+          <p class="mv-card-body">{{ card.body }}</p>
+
+        </div>
+      }
+    </div>
+
+  </div>
+</section>

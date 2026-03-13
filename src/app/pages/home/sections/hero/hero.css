@@ -1,0 +1,173 @@
+/* =============================================
+   HERO SECTION
+   ============================================= */
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  /* Replace with your own image asset */
+  background-image: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1600&q=80&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center top;
+  overflow: hidden;
+}
+
+/* ---- Gradient overlay ---- */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    rgba(79, 163, 199, 0.82) 0%,
+    rgba(106, 44, 145, 0.78) 100%
+  );
+  z-index: 1;
+}
+
+/* ---- Content ---- */
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+  padding-top: 40px;
+  padding-bottom: 100px; /* space for wave */
+}
+
+/* ---- Badge ---- */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(6px);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 28px;
+}
+
+.badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  flex-shrink: 0;
+}
+
+/* ---- Heading ---- */
+.hero-heading {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  color: #ffffff;
+  line-height: 1.15;
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
+}
+
+.hero-heading .accent {
+  color: var(--color-accent);
+}
+
+/* ---- Subtext ---- */
+.hero-sub {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.7;
+  max-width: 560px;
+  margin-bottom: 40px;
+}
+
+/* ---- CTA Buttons ---- */
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 56px;
+}
+
+/* Round corners for hero buttons specifically */
+.hero-actions ::ng-deep .btn {
+  border-radius: var(--radius-md) !important;
+  padding: 14px 28px !important;
+  font-size: 0.95rem !important;
+}
+
+/* ---- Stats row ---- */
+.hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.92);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+}
+
+.stat-icon {
+  color: var(--color-accent);
+  font-size: 0.95rem;
+}
+
+.stat-value {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+.stat-label {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.80);
+}
+
+/* ---- Wave divider ---- */
+.hero-wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  line-height: 0;
+}
+
+.hero-wave svg {
+  width: 100%;
+  height: 80px;
+  display: block;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .hero-content {
+    max-width: 100%;
+    padding-bottom: 80px;
+  }
+
+  .hero-heading {
+    font-size: clamp(2rem, 8vw, 2.8rem);
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hero-stats {
+    gap: 20px;
+  }
+}

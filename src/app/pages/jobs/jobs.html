@@ -1,0 +1,244 @@
+<!-- =============================================
+     JOB SEARCH PAGE
+     ============================================= -->
+
+<!-- Hero Section -->
+<section class="jobs-hero">
+  <div class="jobs-hero-overlay"></div>
+
+  <div class="container jobs-hero-content">
+    <div class="jobs-hero-badge" reveal="fade-down" [revealDelay]="0">
+      <span class="badge-dot"></span>
+      OVERSEAS OPPORTUNITIES
+    </div>
+
+    <h1 class="jobs-hero-heading" reveal="fade-up" [revealDelay]="120">
+      Find Your Dream <span class="accent">Overseas Job</span>
+    </h1>
+
+    <p class="jobs-hero-sub" reveal="fade-up" [revealDelay]="240">
+      Browse hundreds of verified international job opportunities across multiple industries and countries.
+    </p>
+
+    <!-- Search Bar -->
+    <div class="hero-search-bar" reveal="fade-up" [revealDelay]="360">
+      <i class="fa-solid fa-magnifying-glass search-icon"></i>
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        placeholder="Search by job title, company, or keyword..."
+        class="hero-search-input">
+    </div>
+  </div>
+
+  <!-- Wave divider -->
+  <div class="jobs-hero-wave">
+    <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="var(--color-bg)" />
+    </svg>
+  </div>
+</section>
+
+<!-- Jobs Listing Section -->
+<section class="jobs-section">
+  <div class="container">
+
+    <!-- Filters -->
+    <div class="jobs-filters" reveal="fade-up">
+      <div class="filter-group">
+        <label for="country-filter">
+          <i class="fa-solid fa-globe"></i>
+          Country
+        </label>
+        <select id="country-filter" [(ngModel)]="selectedCountry" class="filter-select">
+          @for (country of countries; track country) {
+            <option [value]="country === 'All Countries' ? '' : country">{{ country }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="industry-filter">
+          <i class="fa-solid fa-briefcase"></i>
+          Industry
+        </label>
+        <select id="industry-filter" [(ngModel)]="selectedIndustry" class="filter-select">
+          @for (industry of industries; track industry) {
+            <option [value]="industry === 'All Industries' ? '' : industry">{{ industry }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="type-filter">
+          <i class="fa-solid fa-clock"></i>
+          Job Type
+        </label>
+        <select id="type-filter" [(ngModel)]="selectedType" class="filter-select">
+          @for (type of jobTypes; track type) {
+            <option [value]="type === 'All Types' ? '' : type">{{ type }}</option>
+          }
+        </select>
+      </div>
+
+      <button class="filter-clear-btn" (click)="clearFilters()" type="button">
+        <i class="fa-solid fa-rotate-left"></i>
+        Clear Filters
+      </button>
+    </div>
+
+    <!-- Jobs Count -->
+    <div class="jobs-count">
+      <strong>{{ filteredJobs.length }}</strong> {{ filteredJobs.length === 1 ? 'job' : 'jobs' }} found
+    </div>
+
+    <!-- Jobs Grid/List -->
+    <div class="jobs-layout">
+
+      <!-- Job Cards List -->
+      <div class="jobs-list">
+        @if (filteredJobs.length === 0) {
+          <div class="no-jobs-message" reveal="fade-up">
+            <i class="fa-solid fa-inbox"></i>
+            <h3>No jobs found</h3>
+            <p>Try adjusting your filters or search terms</p>
+          </div>
+        }
+
+        @for (job of filteredJobs; track job.id; let i = $index) {
+          <div
+            class="job-card"
+            [class.job-card--selected]="selectedJob?.id === job.id"
+            (click)="selectJob(job)"
+            reveal="fade-up"
+            [revealDelay]="i * 60">
+
+            <div class="job-card-header">
+              <div class="job-card-left">
+                <h3 class="job-title">{{ job.title }}</h3>
+                <div class="job-company">
+                  <i class="fa-solid fa-building"></i>
+                  {{ job.company }}
+                </div>
+              </div>
+              <div class="job-card-right">
+                <span class="job-salary">{{ job.salary }}</span>
+              </div>
+            </div>
+
+            <div class="job-card-meta">
+              <span class="job-meta-item">
+                <i class="fa-solid fa-location-dot"></i>
+                {{ job.country }}
+              </span>
+              <span class="job-meta-item">
+                <i class="fa-solid fa-briefcase"></i>
+                {{ job.industry }}
+              </span>
+              <span class="job-meta-item">
+                <i class="fa-solid fa-clock"></i>
+                {{ job.type }}
+              </span>
+              <span class="job-meta-item">
+                <i class="fa-solid fa-user-graduate"></i>
+                {{ job.experience }}
+              </span>
+            </div>
+
+            <p class="job-description">{{ job.description }}</p>
+
+            <div class="job-card-footer">
+              <span class="job-posted">{{ job.posted }}</span>
+              <span class="job-view-details">View Details →</span>
+            </div>
+
+          </div>
+        }
+      </div>
+
+      <!-- Job Details Panel -->
+      @if (selectedJob) {
+        <div class="job-details-panel" reveal="fade-up">
+          <button class="job-details-close" (click)="closeJobDetails()" type="button">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+
+          <div class="job-details-header">
+            <h2 class="job-details-title">{{ selectedJob.title }}</h2>
+            <div class="job-details-company">
+              <i class="fa-solid fa-building"></i>
+              {{ selectedJob.company }}
+            </div>
+            <div class="job-details-salary">{{ selectedJob.salary }}/month</div>
+          </div>
+
+          <div class="job-details-meta">
+            <div class="job-detail-tag">
+              <i class="fa-solid fa-location-dot"></i>
+              {{ selectedJob.country }}
+            </div>
+            <div class="job-detail-tag">
+              <i class="fa-solid fa-briefcase"></i>
+              {{ selectedJob.industry }}
+            </div>
+            <div class="job-detail-tag">
+              <i class="fa-solid fa-clock"></i>
+              {{ selectedJob.type }}
+            </div>
+            <div class="job-detail-tag">
+              <i class="fa-solid fa-user-graduate"></i>
+              {{ selectedJob.experience }}
+            </div>
+          </div>
+
+          <div class="job-details-section">
+            <h3 class="job-details-section-title">Job Description</h3>
+            <p>{{ selectedJob.description }}</p>
+          </div>
+
+          <div class="job-details-section">
+            <h3 class="job-details-section-title">Requirements</h3>
+            <ul class="job-details-list">
+              @for (req of selectedJob.requirements; track req) {
+                <li>
+                  <i class="fa-solid fa-check"></i>
+                  {{ req }}
+                </li>
+              }
+            </ul>
+          </div>
+
+          <div class="job-details-section">
+            <h3 class="job-details-section-title">Benefits</h3>
+            <ul class="job-details-list">
+              @for (benefit of selectedJob.benefits; track benefit) {
+                <li>
+                  <i class="fa-solid fa-star"></i>
+                  {{ benefit }}
+                </li>
+              }
+            </ul>
+          </div>
+
+          <div class="job-details-actions">
+            <app-button
+              label="Apply for This Job"
+              variant="primary"
+              size="lg"
+              [fullWidth]="true"
+              routerLink="/apply"
+              icon="fa-solid fa-paper-plane"
+              iconPosition="right" />
+          </div>
+
+          <div class="job-details-footer">
+            <small>Posted {{ selectedJob.posted }}</small>
+          </div>
+
+        </div>
+      }
+
+    </div>
+
+  </div>
+</section>
