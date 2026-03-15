@@ -1,59 +1,74 @@
 <section class="hero">
 
+  <video
+    class="hero-video"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="metadata"
+    aria-hidden="true">
+    <source src="/website%20video.mp4" type="video/mp4" />
+  </video>
+
   <!-- Gradient overlay -->
   <div class="hero-overlay"></div>
 
   <!-- Content -->
   <div class="hero-content container">
+    <div class="hero-layout">
+      <div class="hero-copy">
 
-    <!-- Badge -->
-    <div reveal="fade-down" [revealDelay]="0" class="hero-badge">
-      <span class="badge-dot"></span>
-      ESTABLISHED SINCE 1996 &middot; DMW ACCREDITED
-    </div>
-
-    <!-- Heading -->
-    <h1 reveal="fade-up" [revealDelay]="120" class="hero-heading">
-      Your Trusted Overseas<br>
-      <span class="accent">Recruitment Partner</span><br>
-      Since 1996
-    </h1>
-
-    <!-- Subtext -->
-    <p reveal="fade-up" [revealDelay]="240" class="hero-sub">
-      Connecting world-class Filipino talent with global opportunities across the Middle East,
-      Europe, and Asia.
-    </p>
-
-    <!-- CTA Buttons -->
-    <div reveal="fade-up" [revealDelay]="360" class="hero-actions">
-      <app-button
-        variant="primary"
-        size="lg"
-        routerLink="/employer-inquiry"
-        label="Request Talent"
-        icon="fa-solid fa-arrow-right"
-        iconPosition="right" />
-      <app-button
-        variant="accent"
-        size="lg"
-        routerLink="/jobs"
-        label="View Overseas Jobs"
-        icon="fa-solid fa-arrow-right"
-        iconPosition="right" />
-    </div>
-
-    <!-- Stats row -->
-    <div reveal="fade-up" [revealDelay]="480" class="hero-stats">
-      @for (stat of stats; track stat.label) {
-        <div class="stat-item">
-          <i class="fa-solid fa-circle-check stat-icon"></i>
-          <span class="stat-value">{{ stat.value }}</span>
-          <span class="stat-label">{{ stat.label }}</span>
+        <!-- Badge -->
+        <div reveal="fade-down" [revealDelay]="0" class="hero-badge">
+          <span class="badge-dot"></span>
+          ESTABLISHED SINCE 1996 &middot; DMW ACCREDITED
         </div>
-      }
-    </div>
 
+        <!-- Heading -->
+        <h1 reveal="fade-up" [revealDelay]="120" class="hero-heading">
+          Your Trusted Overseas<br>
+          <span class="accent">Recruitment Partner</span><br>
+          Since 1996
+        </h1>
+
+        <!-- Subtext -->
+        <p reveal="fade-up" [revealDelay]="240" class="hero-sub">
+          Connecting world-class Filipino talent with global opportunities across the Middle East,
+          Europe, and Asia.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div reveal="fade-up" [revealDelay]="360" class="hero-actions">
+          <app-button
+            variant="primary"
+            size="lg"
+            routerLink="/employer-inquiry"
+            label="Request Talent"
+            icon="fa-solid fa-arrow-right"
+            iconPosition="right" />
+          <app-button
+            variant="accent"
+            size="lg"
+            routerLink="/jobs"
+            label="View Overseas Jobs"
+            icon="fa-solid fa-arrow-right"
+            iconPosition="right" />
+        </div>
+
+        <!-- Stats row -->
+        <div reveal="fade-up" [revealDelay]="480" class="hero-stats">
+          @for (stat of stats; track stat.label) {
+            <div class="stat-item">
+              <i class="fa-solid fa-circle-check stat-icon"></i>
+              <span class="stat-value">{{ stat.value }}</span>
+              <span class="stat-label">{{ stat.label }}</span>
+            </div>
+          }
+        </div>
+
+      </div>
+    </div>
   </div>
 
   <!-- Wave divider -->

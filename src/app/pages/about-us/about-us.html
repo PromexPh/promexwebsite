@@ -157,7 +157,11 @@
       @for (value of values; track value.title) {
         <div class="value-card" reveal="fade-up" [revealDelay]="80">
           <div class="value-icon">
-            <i [class]="value.icon"></i>
+            @if (value.iconImage) {
+              <img [src]="value.iconImage" [alt]="value.title + ' icon'" class="value-icon-image" loading="lazy" />
+            } @else {
+              <i [class]="value.icon"></i>
+            }
           </div>
           <h3 class="value-title">{{ value.title }}</h3>
           <p class="value-description">{{ value.description }}</p>
@@ -182,7 +186,11 @@
       @for (cert of certifications; track cert.name) {
         <div class="cert-card" reveal="fade-up" [revealDelay]="80">
           <div class="cert-icon-wrapper">
-            <i [class]="cert.icon + ' cert-icon'"></i>
+            @if (cert.iconImage) {
+              <img [src]="cert.iconImage" [alt]="cert.name + ' icon'" class="cert-icon-image" loading="lazy" />
+            } @else {
+              <i [class]="cert.icon + ' cert-icon'"></i>
+            }
           </div>
           <div class="cert-content">
             <h3 class="cert-name">{{ cert.name }}</h3>

@@ -27,8 +27,7 @@ export class IndustriesPage {
       tagline: 'Caring professionals for the world',
       description:
         'We provide highly qualified healthcare professionals trained to international clinical standards. Our nurses, caregivers, and allied health workers are placed in top hospitals and care facilities across the Middle East, Europe, and Asia.',
-      image:
-        'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=800&q=80&auto=format&fit=crop',
+      image: 'images/industries_images/healthcare.jpg',
       badge: 'High Demand',
       roles: [
         'Registered Nurses (RN)',
@@ -45,8 +44,7 @@ export class IndustriesPage {
       tagline: 'Building the worlds infrastructure',
       description:
         'Promex supplies seasoned engineering and construction professionals for large-scale infrastructure, oil & gas, and industrial projects. Our workers are trade-tested, safety-certified, and ready for demanding site conditions.',
-      image:
-        'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=80&auto=format&fit=crop',
+      image: 'images/industries_images/engineering.jpg',
       badge: 'High Demand',
       roles: [
         'Civil & Structural Engineers',
@@ -63,8 +61,7 @@ export class IndustriesPage {
       tagline: 'Delivering world-class guest experiences',
       description:
         'From five-star hotels to cruise lines, Promex connects hospitality employers with skilled Filipino service professionals known globally for warmth, diligence, and high service standards.',
-      image:
-        'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80&auto=format&fit=crop',
+      image: 'images/industries_images/hospitality.jpg',
       roles: [
         'Hotel Front Desk & Concierge',
         'F&B Servers & Bartenders',
@@ -80,8 +77,7 @@ export class IndustriesPage {
       tagline: 'Powering global production lines',
       description:
         'We supply production-ready workers for factories, assembly lines, and processing plants. Our candidates are vetted for technical aptitude, quality awareness, and adherence to international safety standards.',
-      image:
-        'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80&auto=format&fit=crop',
+      image: 'images/industries_images/manufacturing.jpg',
       roles: [
         'Production Line Operators',
         'Quality Control Inspectors',
@@ -97,8 +93,7 @@ export class IndustriesPage {
       tagline: 'Connecting the digital economy',
       description:
         'Promex bridges the gap between global tech employers and highly skilled Filipino IT professionals. From software development to network infrastructure, our candidates are technically sharp and globally competitive.',
-      image:
-        'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80&auto=format&fit=crop',
+      image: 'images/industries_images/it.jpg',
       badge: 'Growing Sector',
       roles: [
         'Software Developers & Engineers',
@@ -116,7 +111,7 @@ export class IndustriesPage {
       description:
         'Filipino household workers are among the most trusted in the world. Promex places trained, background-checked domestic helpers, nannies, and household managers for families across the Middle East and beyond.',
       image:
-        'https://images.unsplash.com/photo-1527515637462-cff94aca8028?w=800&q=80&auto=format&fit=crop',
+        'images/industries_images/domestic.jpg',
       badge: 'High Demand',
       roles: [
         'Household Service Workers (HSW)',

@@ -30,8 +30,10 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  text-align: left;
+  margin-left: 0;
+  margin-right: auto;
   gap: 20px;
   padding-top: 96px;
   padding-bottom: 100px;
@@ -510,6 +512,13 @@
   color: #ffffff;
 }
 
+.value-icon-image {
+  width: 40px;
+  height: 40px;
+  display: block;
+  object-fit: contain;
+}
+
 .value-title {
   font-family: var(--font-heading);
   font-size: 1.3rem;
@@ -571,6 +580,13 @@
 .cert-icon {
   font-size: 1.5rem;
   color: #ffffff;
+}
+
+.cert-icon-image {
+  width: 40px;
+  height: 40px;
+  display: block;
+  object-fit: contain;
 }
 
 .cert-content {

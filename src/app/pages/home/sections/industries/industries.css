@@ -75,13 +75,20 @@
 
 /* ---- Icon ---- */
 .industry-icon-wrap {
-  width: 48px;
-  height: 48px;
+  width: 65px;
+  height: 65px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.25rem;
+}
+
+.industry-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 4px;
 }
 
 .industry-icon-wrap--primary {

@@ -98,7 +98,11 @@
           <!-- Visual panel -->
           <div class="feature-visual-panel">
             <div class="feature-visual-inner">
-              <i [class]="feat.icon + ' feature-big-icon'"></i>
+              @if (feat.image) {
+                <img [src]="feat.image" [alt]="feat.title" class="feature-image" />
+              } @else {
+                <i [class]="feat.icon + ' feature-big-icon'"></i>
+              }
             </div>
           </div>
 

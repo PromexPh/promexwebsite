@@ -17,7 +17,11 @@
           [revealDelay]="60 * (i % 4)">
 
           <div class="industry-icon-wrap industry-icon-wrap--{{ industry.color }}">
-            <i [class]="industry.icon"></i>
+            @if (industry.image) {
+              <img [src]="industry.image" [alt]="industry.title + ' icon'" class="industry-image" />
+            } @else {
+              <i [class]="industry.icon"></i>
+            }
           </div>
 
           <h3 class="industry-title">{{ industry.title }}</h3>

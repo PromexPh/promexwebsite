@@ -8,6 +8,7 @@ interface Feature {
   title: string;
   body: string;
   bullets: string[];
+  image?: string;
   link?: {
     text: string;
     url: string;
@@ -61,21 +62,24 @@ export class WhyPromex {
       subbadge: '28+ Years of Excellence',
       title: 'Extensive Industry Experience',
       body: 'Since 1996, Promex Company has refined its recruitment processes across countless industries. Our deep institutional knowledge and long-standing relationships with global employers ensure faster placements, better matches, and lasting partnerships.',
-      bullets: ['Proven track record since 1996', 'Deep cross-industry expertise', 'Established global partnerships']
+      bullets: ['Proven track record since 1996', 'Deep cross-industry expertise', 'Established global partnerships'],
+      image: 'images/Why promex/extensive industry.jpg'
     },
     {
       icon: 'fa-solid fa-shield-halved',
       subbadge: 'Zero-Fee Policy',
       title: 'Ethical Recruitment Practices',
       body: 'We uphold the highest standards of fair and transparent recruitment. Promex never charges workers illegal placement fees, ensures full contract transparency, and treats every candidate with dignity and respect throughout the entire process.',
-      bullets: ['No illegal worker fees — ever', 'Full contract transparency', 'Candidate dignity guaranteed']
+      bullets: ['No illegal worker fees — ever', 'Full contract transparency', 'Candidate dignity guaranteed'],
+      image: 'images/Why promex/Ethical recruiment.jpg'
     },
     {
       icon: 'fa-solid fa-globe',
       subbadge: '50+ Countries Reached',
       title: 'Wide Network of Employers',
       body: 'Our extensive global employer network spans healthcare, engineering, hospitality, construction, and more across the Middle East, Asia, and Europe — meaning better opportunities, faster deployment timelines, and more choices for workers.',
-      bullets: ['Active partnerships in 50+ countries', 'Top-tier brands & organizations', 'Continuously growing employer base']
+      bullets: ['Active partnerships in 50+ countries', 'Top-tier brands & organizations', 'Continuously growing employer base'],
+      image: 'images/Why promex/Wide Network .jpg'
     },
     {
       icon: 'fa-solid fa-clipboard-check',
@@ -83,6 +87,7 @@ export class WhyPromex {
       title: 'Comprehensive Screening & Training',
       body: 'Every candidate undergoes a rigorous multi-step process — skills assessment, background checks, trade tests, and pre-deployment orientation — ensuring workers arrive fully prepared and ready to contribute from day one. Our in-house trade testing and housekeeping training programs are conducted at our certified facility.',
       bullets: ['Skills & background verification', 'Certified trade testing', 'Pre-deployment orientation'],
+      image: 'images/Why promex/comprehensive screening .jpg',
       link: {
         text: 'Circle Test Training and Assessment Center',
         url: 'https://circletesttvi.gnomio.com/my/'
@@ -93,7 +98,8 @@ export class WhyPromex {
       subbadge: 'DMW Licensed',
       title: 'Government Accreditation',
       body: 'Promex is fully licensed by the Department of Migrant Workers (DMW) and complies with all Philippine government regulations — your assurance of a legitimate, legal, and worker-protective recruitment process.',
-      bullets: ['Official DMW license holder', 'ISO-aligned quality standards', 'Full government compliance']
+      bullets: ['Official DMW license holder', 'ISO-aligned quality standards', 'Full government compliance'],
+      image: 'images/Why promex/Government .jpg'
     }
   ];
 }

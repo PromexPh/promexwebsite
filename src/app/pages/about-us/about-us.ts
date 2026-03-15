@@ -17,6 +17,7 @@ interface Certification {
   year: string;
   description: string;
   icon: string;
+  iconImage?: string;
 }
 
 interface Milestone {
@@ -117,35 +118,40 @@ export class AboutUs {
       issuer: 'Department of Migrant Workers',
       year: '1996 - Present',
       description: 'Official government license to operate as a private recruitment and placement agency in the Philippines.',
-      icon: 'fa-solid fa-certificate'
+      icon: 'fa-solid fa-certificate',
+      iconImage: 'images/icons/01.svg'
     },
     {
       name: 'ISO 9001:2015 Certified',
       issuer: 'International Organization for Standardization',
       year: '2018',
       description: 'International quality management standard certification for consistent and reliable recruitment services.',
-      icon: 'fa-solid fa-award'
+      icon: 'fa-solid fa-award',
+      iconImage: 'images/icons/02.svg'
     },
     {
       name: 'POEA Accreditation',
       issuer: 'Philippine Overseas Employment Administration',
       year: '1996 - Present',
       description: 'Accredited to recruit and deploy Filipino workers for overseas employment opportunities.',
-      icon: 'fa-solid fa-shield-halved'
+      icon: 'fa-solid fa-shield-halved',
+      iconImage: 'images/icons/03.svg'
     },
     {
       name: 'Circle Test Assessment Center',
       issuer: 'TESDA Registered',
       year: '2012',
       description: 'Government-registered training and assessment center for trade testing and skills certification.',
-      icon: 'fa-solid fa-graduation-cap'
+      icon: 'fa-solid fa-graduation-cap',
+      iconImage: 'images/icons/04.svg'
     },
     {
       name: 'OWWA Partner Agency',
       issuer: 'Overseas Workers Welfare Administration',
       year: '1996 - Present',
       description: 'Official partner ensuring overseas Filipino workers receive proper welfare support and protection.',
-      icon: 'fa-solid fa-handshake'
+      icon: 'fa-solid fa-handshake',
+      iconImage: 'images/icons/05.svg'
     }
   ];
 
@@ -153,21 +159,25 @@ export class AboutUs {
   values = [
     {
       icon: 'fa-solid fa-heart',
+      iconImage: 'images/2nd icons/Integrity.svg',
       title: 'Integrity',
       description: 'We maintain the highest ethical standards in all our recruitment processes and business dealings.'
     },
     {
       icon: 'fa-solid fa-users',
+      iconImage: 'images/2nd icons/People-centered.svg',
       title: 'People-Centered',
       description: 'Every decision we make prioritizes the welfare and dignity of Filipino workers and their families.'
     },
     {
       icon: 'fa-solid fa-lightbulb',
+      iconImage: 'images/2nd icons/Excellence.svg',
       title: 'Excellence',
       description: 'We continuously improve our services to deliver world-class recruitment solutions.'
     },
     {
       icon: 'fa-solid fa-scale-balanced',
+      iconImage: 'images/2nd icons/Transparency.svg',
       title: 'Transparency',
       description: 'We believe in clear communication and honest dealings with candidates and employers alike.'
     }
