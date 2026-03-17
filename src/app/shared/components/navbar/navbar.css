@@ -37,6 +37,13 @@
   flex-shrink: 0;
 }
 
+.nav-logo-img {
+  height: 44px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
 .logo-icon {
   width: 42px;
   height: 42px;
@@ -216,5 +223,11 @@
 
   .mobile-menu {
     display: flex;
+  }
+}
+
+@media (max-width: 420px) {
+  .nav-logo-img {
+    height: 40px;
   }
 }
