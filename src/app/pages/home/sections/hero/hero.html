@@ -37,36 +37,35 @@
           Connecting world-class Filipino talent with global opportunities across the Middle East,
           Europe, and Asia.
         </p>
+      </div>
 
-        <!-- CTA Buttons -->
-        <div reveal="fade-up" [revealDelay]="360" class="hero-actions">
-          <app-button
-            variant="primary"
-            size="lg"
-            routerLink="/employer-inquiry"
-            label="Request Talent"
-            icon="fa-solid fa-arrow-right"
-            iconPosition="right" />
-          <app-button
-            variant="accent"
-            size="lg"
-            routerLink="/jobs"
-            label="View Overseas Jobs"
-            icon="fa-solid fa-arrow-right"
-            iconPosition="right" />
-        </div>
+      <!-- CTA Buttons (sides) -->
+      <div reveal="fade-up" [revealDelay]="360" class="hero-actions">
+        <app-button
+          variant="primary"
+          size="lg"
+          routerLink="/employer-inquiry"
+          label="Request Talent"
+          icon="fa-solid fa-arrow-right"
+          iconPosition="right" />
+        <app-button
+          variant="accent"
+          size="lg"
+          routerLink="/jobs"
+          label="View Overseas Jobs"
+          icon="fa-solid fa-arrow-right"
+          iconPosition="right" />
+      </div>
 
-        <!-- Stats row -->
-        <div reveal="fade-up" [revealDelay]="480" class="hero-stats">
-          @for (stat of stats; track stat.label) {
-            <div class="stat-item">
-              <i class="fa-solid fa-circle-check stat-icon"></i>
-              <span class="stat-value">{{ stat.value }}</span>
-              <span class="stat-label">{{ stat.label }}</span>
-            </div>
-          }
-        </div>
-
+      <!-- Stats row -->
+      <div reveal="fade-up" [revealDelay]="480" class="hero-stats">
+        @for (stat of stats; track stat.label) {
+          <div class="stat-item">
+            <i class="fa-solid fa-circle-check stat-icon"></i>
+            <span class="stat-value">{{ stat.value }}</span>
+            <span class="stat-label">{{ stat.label }}</span>
+          </div>
+        }
       </div>
     </div>
   </div>
