@@ -1,0 +1,286 @@
+/* =============================================
+   INDUSTRIES PAGE
+   ============================================= */
+
+/* ---- Industry List ---- */
+.indList {
+  padding: 80px 0 96px;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.indList > div {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* ---- Industry Card ---- */
+.indCard {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.indCard:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+
+.indCardReverse {
+  grid-template-columns: 1.2fr 1fr;
+}
+
+.indCardReverse .indImagePanel {
+  order: 2;
+}
+
+.indCardReverse .indContentPanel {
+  order: 1;
+}
+
+/* ---- Image panel ---- */
+.indImagePanel {
+  position: relative;
+  min-height: 320px;
+  overflow: hidden;
+}
+
+.indImage {
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.indCard:hover .indImage {
+  transform: scale(1.04);
+}
+
+/* ---- Content panel ---- */
+.indContentPanel {
+  padding: 40px 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+}
+
+.indContentTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.indName {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+  color: var(--color-dark-text);
+  margin: 0 0 4px;
+}
+
+.indTagline {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.indBadge {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-purple) 100%);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.indDesc {
+  font-family: var(--font-body);
+  font-size: 0.93rem;
+  line-height: 1.75;
+  color: var(--color-secondary-text);
+  margin: 0;
+}
+
+/* ---- Roles ---- */
+.indRoles {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rolesLabel {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.rolesGrid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 16px;
+}
+
+.rolesGrid li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--color-secondary-text);
+}
+
+.rolesGrid li i {
+  font-size: 0.6rem;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* ---- Apply Link ---- */
+.indApplyLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--color-primary);
+  text-decoration: none;
+  margin-top: 4px;
+  transition: color 0.2s ease, gap 0.2s ease;
+}
+
+.indApplyLink:hover {
+  color: var(--color-purple);
+  gap: 12px;
+}
+
+/* ---- Bottom CTA ---- */
+.indCta {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(125deg, var(--color-primary) 0%, #3a8ab5 30%, #7a5cbf 65%, var(--color-purple) 100%);
+  padding: 96px 0;
+}
+
+.ctaBlobL {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.18;
+  width: 300px;
+  height: 300px;
+  bottom: -80px;
+  left: -60px;
+  background: rgba(255, 255, 255, 0.25);
+  pointer-events: none;
+}
+
+.ctaBlobR {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.18;
+  width: 260px;
+  height: 260px;
+  top: -60px;
+  right: 80px;
+  background: rgba(106, 44, 145, 0.55);
+  pointer-events: none;
+}
+
+.ctaInner {
+  position: relative;
+  z-index: 1;
+}
+
+.ctaContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.ctaHeading {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  color: #ffffff;
+  margin: 0;
+}
+
+.ctaSub {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0;
+}
+
+.ctaActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+  .indCard,
+  .indCardReverse {
+    grid-template-columns: 1fr;
+  }
+
+  .indCardReverse .indImagePanel {
+    order: unset;
+  }
+
+  .indCardReverse .indContentPanel {
+    order: unset;
+  }
+
+  .indImagePanel {
+    min-height: 220px;
+  }
+
+  .indContentPanel {
+    padding: 28px 28px;
+  }
+
+  .rolesGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .indList {
+    padding: 56px 0 64px;
+  }
+
+  .indCta {
+    padding: 64px 0;
+  }
+}

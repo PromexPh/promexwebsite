@@ -1,0 +1,192 @@
+/* =============================================
+   HERO SECTION
+   ============================================= */
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  min-height: 900px;
+}
+
+.heroVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* Gradient overlay */
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    rgba(79, 163, 199, 0.82) 0%,
+    rgba(106, 44, 145, 0.78) 100%
+  );
+  z-index: 1;
+}
+
+/* Content */
+.heroContent {
+  position: relative;
+  z-index: 2;
+  padding-top: 72px;
+  padding-bottom: 140px;
+}
+
+.heroLayout {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 30px;
+}
+
+.heroCopy {
+  width: 100%;
+  max-width: 760px;
+}
+
+/* Badge */
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(6px);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 28px;
+}
+
+.badgeDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  flex-shrink: 0;
+}
+
+/* Heading */
+.heroHeading {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  color: #ffffff;
+  line-height: 1.15;
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
+}
+
+.accent {
+  color: var(--color-accent);
+}
+
+/* Sub text */
+.heroSub {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.7;
+  max-width: 560px;
+  margin-bottom: 40px;
+}
+
+/* CTA Buttons */
+.heroActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* Override btn styles for hero context */
+.heroBtn {
+  border-radius: var(--radius-md) !important;
+  padding: 14px 28px !important;
+  font-size: 0.95rem !important;
+}
+
+/* Stats row */
+.heroStats {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  flex-wrap: wrap;
+}
+
+.statItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.92);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+}
+
+.statIcon {
+  color: var(--color-accent);
+  font-size: 0.95rem;
+}
+
+.statValue {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+.statLabel {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.80);
+}
+
+/* Wave divider */
+.heroWave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  line-height: 0;
+}
+
+.heroWave svg {
+  width: 100%;
+  height: 80px;
+  display: block;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero {
+    min-height: 560px;
+  }
+
+  .heroContent {
+    padding-top: 56px;
+    padding-bottom: 80px;
+  }
+
+  .heroHeading {
+    font-size: clamp(2rem, 8vw, 2.8rem);
+  }
+
+  .heroActions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .heroStats {
+    gap: 20px;
+  }
+}

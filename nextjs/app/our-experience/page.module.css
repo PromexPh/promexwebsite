@@ -1,0 +1,408 @@
+/* =============================================
+   OUR EXPERIENCE PAGE
+   ============================================= */
+
+/* ---- Shared ---- */
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.sectionBadge {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  background: rgba(79, 163, 199, 0.1);
+  border: 1px solid rgba(79, 163, 199, 0.25);
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+}
+
+.sectionBadgeGreen {
+  color: var(--color-accent-dark);
+  background: rgba(140, 198, 63, 0.1);
+  border-color: rgba(140, 198, 63, 0.3);
+}
+
+.sectionHeading {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  color: var(--color-dark-text);
+  margin: 0;
+}
+
+.sectionSub {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-secondary-text);
+  margin: 0;
+  max-width: 580px;
+}
+
+/* ---- Countries ---- */
+.countriesSection {
+  padding: 96px 0 80px;
+  background: var(--color-bg);
+}
+
+.regionTabs {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+
+.regionTab {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 9px 24px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-secondary-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.regionTab:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.regionTabActive {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.countriesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.countryCard {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.countryCard:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.countryCardTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.countryFlag {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.countryName {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-dark-text);
+  margin: 0;
+}
+
+.countryDeployed {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.countrySectors {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--color-secondary-text);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.countrySectors i {
+  color: var(--color-accent);
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* ---- Clients ---- */
+.clientsSection {
+  padding: 80px 0;
+  background: linear-gradient(180deg, #eef4f8 0%, var(--color-bg) 100%);
+}
+
+.clientFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.clientFilter {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 7px 18px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-secondary-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clientFilter:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent-dark);
+}
+
+.clientFilterActive {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #ffffff;
+}
+
+.clientsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.clientChip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  padding: 8px 18px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-dark-text);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.clientChip:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.clientChip i {
+  color: var(--color-primary);
+  font-size: 0.9rem;
+}
+
+/* ---- Testimonials ---- */
+.reviewsSection {
+  padding: 80px 0 96px;
+  background: var(--color-bg);
+}
+
+.reviewsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 28px;
+}
+
+.reviewCard {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reviewCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.reviewCategory {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  background: rgba(79, 163, 199, 0.1);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  align-self: flex-start;
+}
+
+.reviewStars {
+  display: flex;
+  gap: 3px;
+  color: #f59e0b;
+  font-size: 0.9rem;
+}
+
+.reviewQuote {
+  font-family: var(--font-body);
+  font-size: 0.93rem;
+  line-height: 1.75;
+  color: var(--color-secondary-text);
+  font-style: italic;
+  margin: 0;
+  flex: 1;
+}
+
+.reviewAuthor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border);
+}
+
+.reviewAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.reviewAuthorInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.reviewName {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--color-dark-text);
+}
+
+.reviewTitle {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--color-secondary-text);
+}
+
+.reviewCompany {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ---- CTA ---- */
+.expCta {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(125deg, var(--color-primary) 0%, #3a8ab5 30%, #7a5cbf 65%, var(--color-purple) 100%);
+  padding: 96px 0;
+}
+
+.ctaBlobL {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.18;
+  width: 300px;
+  height: 300px;
+  bottom: -80px;
+  left: -60px;
+  background: rgba(255, 255, 255, 0.25);
+  pointer-events: none;
+}
+
+.ctaBlobR {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.18;
+  width: 260px;
+  height: 260px;
+  top: -60px;
+  right: 80px;
+  background: rgba(106, 44, 145, 0.55);
+  pointer-events: none;
+}
+
+.ctaInner {
+  position: relative;
+  z-index: 1;
+}
+
+.ctaContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.ctaHeading {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  color: #ffffff;
+  margin: 0;
+}
+
+.ctaSub {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0;
+}
+
+.ctaActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .countriesSection,
+  .clientsSection,
+  .reviewsSection {
+    padding: 64px 0;
+  }
+
+  .expCta {
+    padding: 64px 0;
+  }
+}

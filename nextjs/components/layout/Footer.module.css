@@ -1,0 +1,238 @@
+/* =============================================
+   FOOTER COMPONENT
+   ============================================= */
+
+.footer {
+  background: #16202A;
+  color: #B0BEC5;
+  font-family: var(--font-body);
+}
+
+/* ── Main grid ── */
+.footerMain {
+  padding: 64px 0 48px;
+}
+
+.footerContainer {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1.4fr 1.6fr;
+  gap: 48px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── Brand column ── */
+.footerBrand {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footerLogo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.footerLogoImg {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.footerTagline {
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: #8FA8B8;
+  max-width: 280px;
+}
+
+/* Social icons */
+.socialLinks {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.socialBtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #B0BEC5;
+  font-size: 0.875rem;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  text-decoration: none;
+}
+
+.socialBtn:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+/* ── Generic column ── */
+.footerCol {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footerHeading {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+/* ── Quick links ── */
+.footerLinks {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footerLink {
+  font-size: 0.88rem;
+  color: #8FA8B8;
+  transition: color 0.2s ease, padding-left 0.2s ease;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.footerLink:hover {
+  color: var(--color-primary);
+  padding-left: 4px;
+}
+
+/* ── Contact list ── */
+.contactList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.contactItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.contactIcon {
+  width: 20px;
+  flex-shrink: 0;
+  color: var(--color-primary);
+  font-size: 0.9rem;
+  margin-top: 2px;
+}
+
+.contactText {
+  font-size: 0.875rem;
+  color: #8FA8B8;
+  line-height: 1.55;
+}
+
+/* ── Newsletter ── */
+.footerSubText {
+  font-size: 0.875rem;
+  color: #8FA8B8;
+  line-height: 1.6;
+  margin-bottom: 4px;
+}
+
+.subscribeForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.subscribeInput {
+  width: 100%;
+  padding: 11px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm);
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.subscribeInput::placeholder {
+  color: #5A7A8A;
+}
+
+.subscribeInput:focus {
+  border-color: var(--color-primary);
+  background: rgba(79, 163, 199, 0.07);
+}
+
+.subscribedMsg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-accent);
+  font-size: 0.9rem;
+  font-family: var(--font-heading);
+  font-weight: 600;
+}
+
+/* ── Bottom bar ── */
+.footerBottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 18px 0;
+  background: #111A22;
+}
+
+.footerBottomInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  /* Override grid from .footerContainer */
+  grid-template-columns: unset;
+}
+
+.copyright {
+  font-size: 0.82rem;
+  color: #5A7A8A;
+}
+
+.footerBadges {
+  font-size: 0.82rem;
+  color: #5A7A8A;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .footerContainer {
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+  }
+}
+
+@media (max-width: 600px) {
+  .footerContainer {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .footerMain {
+    padding: 48px 0 32px;
+  }
+
+  .footerBottomInner {
+    flex-direction: column;
+    text-align: center;
+  }
+}
