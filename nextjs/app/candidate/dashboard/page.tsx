@@ -165,13 +165,16 @@ function CandidateDashboardInner() {
   async function doSavePersonal() {
     if (!candidate) return;
     setSavingPersonal(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setSavingPersonal(false); saveMsg('Session expired. Please sign in again.', setPersonalMsg); return; }
     const { error } = await supabase.from('candidates').update({
       full_name: personal.full_name,
       phone: personal.phone || null,
       date_of_birth: personal.date_of_birth || null,
       nationality: personal.nationality || null,
       current_location: personal.current_location || null,
-    }).eq('user_id', candidate.user_id);
+    }).eq('user_id', user.id);
+    if (error) console.error('doSavePersonal error:', error.message, error.details, error.hint);
     setSavingPersonal(false);
     saveMsg(error ? 'Failed to save.' : 'Saved!', setPersonalMsg);
     if (!error) setCandidate((c) => c ? { ...c, ...personal } : c);
@@ -180,12 +183,15 @@ function CandidateDashboardInner() {
   async function doSaveProfessional() {
     if (!candidate) return;
     setSavingProfessional(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setSavingProfessional(false); saveMsg('Session expired. Please sign in again.', setProfessionalMsg); return; }
     const { error } = await supabase.from('candidates').update({
       desired_position: professional.desired_position || null,
       years_experience: professional.years_experience ? parseInt(professional.years_experience, 10) : null,
       education_level: professional.education_level || null,
       skills,
-    }).eq('user_id', candidate.user_id);
+    }).eq('user_id', user.id);
+    if (error) console.error('doSaveProfessional error:', error.message, error.details, error.hint);
     setSavingProfessional(false);
     saveMsg(error ? 'Failed to save.' : 'Saved!', setProfessionalMsg);
     if (!error) setCandidate((c) => c ? {
@@ -200,7 +206,10 @@ function CandidateDashboardInner() {
   async function doSaveWork() {
     if (!candidate) return;
     setSavingWork(true);
-    const { error } = await supabase.from('candidates').update({ work_experience: workExp }).eq('user_id', candidate.user_id);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setSavingWork(false); saveMsg('Session expired. Please sign in again.', setWorkMsg); return; }
+    const { error } = await supabase.from('candidates').update({ work_experience: workExp }).eq('user_id', user.id);
+    if (error) console.error('doSaveWork error:', error.message, error.details, error.hint);
     setSavingWork(false);
     saveMsg(error ? 'Failed to save.' : 'Saved!', setWorkMsg);
     if (!error) setCandidate((c) => c ? { ...c, work_experience: workExp } : c);
@@ -209,7 +218,10 @@ function CandidateDashboardInner() {
   async function doSaveLinkedin() {
     if (!candidate) return;
     setSavingLinkedin(true);
-    const { error } = await supabase.from('candidates').update({ linkedin_url: linkedinUrl || null }).eq('user_id', candidate.user_id);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setSavingLinkedin(false); saveMsg('Session expired. Please sign in again.', setLinkedinMsg); return; }
+    const { error } = await supabase.from('candidates').update({ linkedin_url: linkedinUrl || null }).eq('user_id', user.id);
+    if (error) console.error('doSaveLinkedin error:', error.message, error.details, error.hint);
     setSavingLinkedin(false);
     saveMsg(error ? 'Failed to save.' : 'Saved!', setLinkedinMsg);
     if (!error) setCandidate((c) => c ? { ...c, linkedin_url: linkedinUrl } : c);
@@ -220,9 +232,16 @@ function CandidateDashboardInner() {
     if (!file || !candidate) return;
     setUploading(true);
     setUploadMsg('');
-    const path = `${candidate.user_id}/${Date.now()}_${file.name}`;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setUploading(false);
+      setUploadMsg('Session expired. Please sign in again.');
+      return;
+    }
+    const path = `${user.id}/${Date.now()}_${file.name}`;
     const { error: uploadError } = await supabase.storage.from('resumes').upload(path, file, { upsert: true });
     if (uploadError) {
+      console.error('Storage upload error:', uploadError.message);
       setUploading(false);
       setUploadMsg('Upload failed: ' + uploadError.message);
       return;
@@ -232,9 +251,13 @@ function CandidateDashboardInner() {
       resume_url: publicUrl,
       resume_filename: file.name,
       resume_uploaded_at: new Date().toISOString(),
-    }).eq('user_id', candidate.user_id);
+    }).eq('user_id', user.id);
     setUploading(false);
-    if (updateError) { setUploadMsg('CV uploaded but profile update failed.'); return; }
+    if (updateError) {
+      console.error('Profile update error:', updateError.message, updateError.details, updateError.hint);
+      setUploadMsg('CV uploaded but profile update failed: ' + updateError.message);
+      return;
+    }
     setCandidate((c) => c ? { ...c, resume_url: publicUrl, resume_filename: file.name, resume_uploaded_at: new Date().toISOString() } : c);
     saveMsg('CV uploaded successfully!', setUploadMsg);
     if (fileInputRef.current) fileInputRef.current.value = '';
