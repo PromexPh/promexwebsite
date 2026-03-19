@@ -83,9 +83,9 @@
 }
 
 .toggleBtnActive {
-  background: var(--portal-navy);
-  color: var(--portal-gold);
-  box-shadow: 0 2px 8px rgba(10, 22, 40, 0.2);
+  background: #4FA3C7;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(79, 163, 199, 0.25);
 }
 
 /* Error */
@@ -148,17 +148,17 @@
 
 .formGroup input:focus,
 .formGroup select:focus {
-  border-color: var(--portal-gold);
-  box-shadow: 0 0 0 3px rgba(200, 168, 75, 0.15);
+  border-color: #4FA3C7;
+  box-shadow: 0 0 0 3px rgba(79, 163, 199, 0.15);
 }
 
 .authSubmitBtn {
   width: 100%;
   padding: 13px;
-  background: var(--portal-navy);
+  background: #4FA3C7;
   border: none;
   border-radius: var(--radius-md);
-  color: var(--portal-gold);
+  color: #ffffff;
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: 1rem;
@@ -172,9 +172,9 @@
 }
 
 .authSubmitBtn:hover:not(:disabled) {
-  background: var(--portal-navy-2);
+  background: #3C8DB1;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(10, 22, 40, 0.25);
+  box-shadow: 0 6px 20px rgba(79, 163, 199, 0.35);
 }
 
 .authSubmitBtn:disabled {

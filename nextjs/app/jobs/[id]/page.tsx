@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState, useEffect, useRef, Suspense } from 'react';
@@ -30,6 +31,20 @@ function formatSalary(job: Job): string {
   return 'Competitive salary';
 }
 
+// ── Profile completion scoring ────────────────────────────────────────────────
+function calcProfileCompletion(p: CandidateProfile): number {
+  let score = 0;
+  if (p.full_name) score += 15;
+  if (p.phone) score += 10;
+  if (p.nationality && p.current_location) score += 10;
+  if (p.desired_position) score += 10;
+  if (p.education_level) score += 10;
+  if ((p.skills?.length ?? 0) > 0) score += 10;
+  if ((p.work_experience?.length ?? 0) > 0) score += 15;
+  if (p.resume_url) score += 20;
+  return Math.min(100, score);
+}
+
 // ── Apply Panel ───────────────────────────────────────────────────────────────
 type ApplyMethod = 'cv' | 'linkedin' | 'form';
 type AddonKey   = 'portfolio' | 'video' | 'certs' | 'cover';
@@ -50,10 +65,11 @@ interface ApplyPanelProps {
   token: string;
   onClose: () => void;
   onSuccess: () => void;
+  initialMethod?: ApplyMethod;
 }
 
-function ApplyPanel({ job, candidate, token, onClose, onSuccess }: ApplyPanelProps) {
-  const [method,     setMethod]     = useState<ApplyMethod>('cv');
+function ApplyPanel({ job, candidate, token, onClose, onSuccess, initialMethod }: ApplyPanelProps) {
+  const [method,     setMethod]     = useState<ApplyMethod>(initialMethod ?? 'cv');
   const [addons,     setAddons]     = useState<Set<AddonKey>>(new Set());
   const [addonVals,  setAddonVals]  = useState<Record<AddonKey, string>>({ portfolio: '', video: '', certs: '', cover: '' });
   const [cvFile,     setCvFile]     = useState<File | null>(null);
@@ -67,10 +83,6 @@ function ApplyPanel({ job, candidate, token, onClose, onSuccess }: ApplyPanelPro
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Strength calculation
-  const addonPoints = (Object.keys(addons) as AddonKey[]).reduce((s, k) => s + (addons.has(k) ? ADDON_CONFIG[k].points : 0), 0);
-  const strength = Math.min(100, METHOD_BASE[method] + addonPoints);
-
-  // Recalculate correctly using the Set's entries
   const methodBase = METHOD_BASE[method];
   let totalPoints = methodBase;
   let totalMinutes = METHOD_TIME[method];
@@ -79,9 +91,6 @@ function ApplyPanel({ job, candidate, token, onClose, onSuccess }: ApplyPanelPro
   });
   const strengthScore = Math.min(100, totalPoints);
   const strengthColor = strengthScore >= 80 ? '#4FA3C7' : strengthScore >= 60 ? '#8CC63F' : '#E67E22';
-
-  // suppress unused warning for strength
-  void strength;
 
   function toggleAddon(key: AddonKey) {
     setAddons((prev) => {
@@ -120,7 +129,7 @@ function ApplyPanel({ job, candidate, token, onClose, onSuccess }: ApplyPanelPro
         const parts = [];
         if (formSummary)  parts.push(`Background: ${formSummary}`);
         if (formPosition) parts.push(`Current/last role: ${formPosition}`);
-        if (formWhy)      parts.push(`Why I\'m applying: ${formWhy}`);
+        if (formWhy)      parts.push(`Why I'm applying: ${formWhy}`);
         coverLetter = parts.join('\n\n') || null;
       } else if (addons.has('cover') && addonVals.cover) {
         coverLetter = addonVals.cover;
@@ -150,6 +159,8 @@ function ApplyPanel({ job, candidate, token, onClose, onSuccess }: ApplyPanelPro
     }
   }
 
+  const firstName = candidate.full_name?.split(' ')[0] ?? 'there';
+
   // Success state
   if (submitted) {
     return (
@@ -157,16 +168,33 @@ function ApplyPanel({ job, candidate, token, onClose, onSuccess }: ApplyPanelPro
         <div className={styles.panelBackdrop} onClick={onClose} />
         <div className={styles.applyPanel}>
           <div className={styles.panelSuccess}>
-            <div className={styles.panelSuccessIcon}><i className="fa-solid fa-circle-check" aria-hidden="true" /></div>
-            <h2 className={styles.panelSuccessTitle}>Application Submitted!</h2>
-            <p className={styles.panelSuccessMsg}>Your application for <strong>{job.title}</strong> at <strong>{job.company}</strong> has been received.</p>
-            <div className={styles.panelSuccessSteps}>
-              <p className={styles.panelSuccessStepsTitle}>What happens next?</p>
-              <div className={styles.panelSuccessStep}><i className="fa-solid fa-magnifying-glass" /> Promex reviews your application</div>
-              <div className={styles.panelSuccessStep}><i className="fa-solid fa-envelope" /> Employer notified within 48 hrs</div>
-              <div className={styles.panelSuccessStep}><i className="fa-solid fa-phone" /> Recruiter may call for screening</div>
+            <div className={styles.panelSuccessCheckmark}>
+              <i className="fa-solid fa-circle-check" aria-hidden="true" />
             </div>
-            <button className={styles.panelDoneBtn} onClick={onClose} type="button">Done</button>
+            <h2 className={styles.panelSuccessTitle}>Application Submitted!</h2>
+            <p className={styles.panelSuccessMsg}>
+              Thank you {firstName}. We&apos;ve received your application for <strong>{job.title}</strong> at <strong>{job.company}</strong>.
+            </p>
+            <div className={styles.panelSuccessSteps}>
+              <p className={styles.panelSuccessStepsTitle}>What happens next:</p>
+              <ol className={styles.panelSuccessStepsList}>
+                <li>Our recruitment team reviews your application (1–3 business days)</li>
+                <li>Shortlisted candidates are contacted for a screening call</li>
+                <li>Selected candidates proceed to employer interview</li>
+                <li>Job offer and deployment processing</li>
+              </ol>
+            </div>
+            <p className={styles.panelSuccessEmail}>
+              <i className="fa-solid fa-envelope" aria-hidden="true" /> Check your email at <strong>{candidate.email}</strong> for a confirmation.
+            </p>
+            <div className={styles.panelSuccessBtns}>
+              <Link href="/candidate/dashboard?tab=applications" className={styles.panelSuccessLinkBtn}>
+                View My Applications →
+              </Link>
+              <button type="button" className={styles.panelSuccessSecondBtn} onClick={onClose}>
+                Browse More Jobs
+              </button>
+            </div>
           </div>
         </div>
       </>
@@ -401,8 +429,55 @@ function ApplyPanel({ job, candidate, token, onClose, onSuccess }: ApplyPanelPro
   );
 }
 
-// ── Profile required modal ──────────────────────────────────────────────────
-function CompleteProfileModal({ onClose }: { onClose: () => void }) {
+// ── Login Prompt Modal ──────────────────────────────────────────────────────
+function LoginPromptModal({ jobId, onClose }: { jobId: string; onClose: () => void }) {
+  return (
+    <div className={styles.modalBackdrop} onClick={onClose}>
+      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+        <button className={styles.modalClose} onClick={onClose} type="button" aria-label="Close">
+          <i className="fa-solid fa-xmark" aria-hidden="true" />
+        </button>
+        <div className={styles.modalSuccess}>
+          <div className={styles.modalSuccessIcon} style={{ background: 'rgba(79,163,199,0.12)', border: '2px solid rgba(79,163,199,0.4)', color: '#4FA3C7' }}>
+            <i className="fa-solid fa-user-lock" aria-hidden="true" />
+          </div>
+          <h2>Sign in to apply</h2>
+          <div className={styles.loginModalBtns}>
+            <a
+              href={`/candidate/register?redirect=/jobs/${jobId}`}
+              className={styles.loginModalPrimary}
+            >
+              <i className="fa-solid fa-user-plus" aria-hidden="true" /> Create Account
+            </a>
+            <a
+              href={`/candidate/register?mode=login&redirect=/jobs/${jobId}`}
+              className={styles.loginModalSecondary}
+            >
+              <i className="fa-solid fa-right-to-bracket" aria-hidden="true" /> Sign In
+            </a>
+          </div>
+          <p className={styles.loginModalFooter}>
+            Creating an account is free. Promex never charges placement fees.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Complete Profile Modal ──────────────────────────────────────────────────
+function CompleteProfileModal({
+  onClose,
+  candidate,
+  onSkip,
+}: {
+  onClose: () => void;
+  candidate: CandidateProfile;
+  onSkip: () => void;
+}) {
+  const completion = calcProfileCompletion(candidate);
+  const completionColor = completion < 60 ? '#E67E22' : completion < 80 ? '#8CC63F' : '#4FA3C7';
+
   return (
     <div className={styles.modalBackdrop} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -413,9 +488,36 @@ function CompleteProfileModal({ onClose }: { onClose: () => void }) {
           <div className={styles.modalSuccessIcon} style={{ background: 'rgba(245,158,11,0.15)', border: '2px solid rgba(245,158,11,0.4)', color: '#f59e0b' }}>
             <i className="fa-solid fa-user-pen" aria-hidden="true" />
           </div>
-          <h2>Complete Your Profile First</h2>
-          <p>Please upload your CV in your candidate dashboard before applying. It only takes a minute!</p>
-          <a href="/candidate/dashboard" className={styles.modalDoneBtn}>Go to Dashboard →</a>
+          <h2>Complete your profile first</h2>
+          <p>Upload your CV to your profile before applying. It takes less than 2 minutes.</p>
+
+          <div className={styles.profileProgressWrap}>
+            <div className={styles.profileProgressHeader}>
+              <span className={styles.profileProgressLabel}>Profile completion</span>
+              <span className={styles.profileProgressPct} style={{ color: completionColor }}>{completion}%</span>
+            </div>
+            <div className={styles.profileProgressTrack}>
+              <div
+                className={styles.profileProgressFill}
+                style={{ width: `${completion}%`, background: completionColor }}
+              />
+            </div>
+          </div>
+
+          <a
+            href="/candidate/dashboard?tab=profile&section=cv"
+            className={styles.modalDoneBtn}
+            style={{ background: '#4FA3C7', color: '#fff' }}
+          >
+            Complete My Profile →
+          </a>
+          <button
+            type="button"
+            className={styles.skipLink}
+            onClick={() => { onSkip(); onClose(); }}
+          >
+            Skip — fill a form instead
+          </button>
         </div>
       </div>
     </div>
@@ -433,6 +535,8 @@ function JobDetailInner() {
   const [loading,          setLoading]          = useState(true);
   const [showPanel,        setShowPanel]        = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showLoginModal,   setShowLoginModal]   = useState(false);
+  const [forceFormMethod,  setForceFormMethod]  = useState(false);
   const [alreadyApplied,   setAlreadyApplied]   = useState(false);
   const [candidate,        setCandidate]        = useState<CandidateProfile | null>(null);
   const [token,            setToken]            = useState('');
@@ -475,7 +579,17 @@ function JobDetailInner() {
   }
 
   function handleApplyClick() {
-    if (!candidate) { router.push(`/candidate/register?redirect=/jobs/${id}`); return; }
+    // Step 1 — Not logged in
+    if (!candidate) {
+      setShowLoginModal(true);
+      return;
+    }
+    // Step 2 — Logged in but no resume_url
+    if (!candidate.resume_url) {
+      setShowProfileModal(true);
+      return;
+    }
+    // Step 3 — Logged in AND has resume_url
     setShowPanel(true);
   }
 
@@ -621,11 +735,24 @@ function JobDetailInner() {
           job={job}
           candidate={candidate}
           token={token}
-          onClose={() => setShowPanel(false)}
-          onSuccess={() => { setAlreadyApplied(true); setShowPanel(false); addToast('Application submitted! 🎉', 'success'); }}
+          onClose={() => { setShowPanel(false); setForceFormMethod(false); }}
+          onSuccess={() => { setAlreadyApplied(true); addToast('Application submitted!', 'success'); }}
+          initialMethod={forceFormMethod ? 'form' : 'cv'}
         />
       )}
-      {showProfileModal && <CompleteProfileModal onClose={() => setShowProfileModal(false)} />}
+      {showProfileModal && candidate && (
+        <CompleteProfileModal
+          onClose={() => setShowProfileModal(false)}
+          candidate={candidate}
+          onSkip={() => {
+            setForceFormMethod(true);
+            setShowPanel(true);
+          }}
+        />
+      )}
+      {showLoginModal && (
+        <LoginPromptModal jobId={id} onClose={() => setShowLoginModal(false)} />
+      )}
     </>
   );
 }

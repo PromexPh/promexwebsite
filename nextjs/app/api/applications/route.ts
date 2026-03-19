@@ -84,6 +84,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  // TODO: Send confirmation email via Resend or Supabase Edge Functions
+  // Email to candidate: "Application Received - [Job Title] at [Company]"
+  // Email to Promex admin: new application notification
+  console.log(`APPLICATION SUBMITTED: candidate applied for job`);
+
   return NextResponse.json({ application: data as Application }, { status: 201 });
 }
 

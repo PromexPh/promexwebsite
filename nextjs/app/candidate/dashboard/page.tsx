@@ -14,24 +14,32 @@ const STATUS_CONFIG: Record<ApplicationStatus, { label: string; icon: string; co
   hired:       { label: 'Hired',       icon: 'fa-check',            color: '#10b981' },
 };
 
-const EDUCATION_OPTIONS = ['', 'High School', 'Associate Degree', "Bachelor's Degree", "Master's Degree", 'Doctorate (PhD)', 'Vocational/Technical', 'Other'];
+const EDUCATION_OPTIONS = ['', 'High School', 'Diploma', "Bachelor's", "Master's", 'PhD', 'Vocational/Technical'];
 
 function calcCompletion(p: CandidateProfile): number {
-  const checks = [
-    !!p.full_name,
-    !!p.phone,
-    !!p.nationality,
-    !!p.current_location,
-    !!p.date_of_birth,
-    !!p.desired_position,
-    p.years_experience != null,
-    !!p.education_level,
-    (p.skills?.length ?? 0) > 0,
-    (p.work_experience?.length ?? 0) > 0,
-    !!p.resume_url,
-    !!p.linkedin_url,
-  ];
-  return Math.round((checks.filter(Boolean).length / checks.length) * 100);
+  let score = 0;
+  if (p.full_name) score += 15;
+  if (p.phone) score += 10;
+  if (p.nationality && p.current_location) score += 10;
+  if (p.desired_position) score += 10;
+  if (p.education_level) score += 10;
+  if ((p.skills?.length ?? 0) > 0) score += 10;
+  if ((p.work_experience?.length ?? 0) > 0) score += 15;
+  if (p.resume_url) score += 20;
+  return Math.min(100, score);
+}
+
+function completionColor(pct: number): string {
+  if (pct < 60) return '#E67E22';
+  if (pct < 80) return '#8CC63F';
+  return '#4FA3C7';
+}
+
+function completionMessage(pct: number): string {
+  if (pct <= 30) return 'Complete your profile to start applying';
+  if (pct <= 60) return 'Good start! Add more details';
+  if (pct <= 80) return 'Almost there! Upload your CV';
+  return "Great profile! You're ready to apply";
 }
 
 function ApplicationCard({ app }: { app: Application }) {
@@ -305,19 +313,15 @@ function CandidateDashboardInner() {
             <span className={styles.completionLabel}>
               <i className="fa-solid fa-circle-check" aria-hidden="true" /> Profile Completion
             </span>
-            <span className={styles.completionPct}>{completion}%</span>
+            <span className={styles.completionPct} style={{ color: completionColor(completion) }}>{completion}%</span>
           </div>
           <div className={styles.completionTrack}>
             <div
               className={styles.completionFill}
-              style={{ width: `${completion}%`, background: completion >= 80 ? '#10b981' : completion >= 50 ? 'var(--portal-gold)' : '#ef4444' }}
+              style={{ width: `${completion}%`, background: completionColor(completion) }}
             />
           </div>
-          {completion < 100 && (
-            <p className={styles.completionHint}>
-              {completion < 50 ? 'Complete your profile to start applying.' : 'Almost there! Fill in the remaining sections.'}
-            </p>
-          )}
+          <p className={styles.completionHint}>{completionMessage(completion)}</p>
         </div>
 
         {/* Stats */}

@@ -119,16 +119,16 @@
 }
 
 .signInBtn:hover {
-  border-color: #c8a84b;
-  color: #c8a84b;
+  border-color: #4FA3C7;
+  color: #4FA3C7;
 }
 
 .registerBtn {
   display: inline-flex;
   align-items: center;
   padding: 6px 16px;
-  background: #c8a84b;
-  border: 1.5px solid #c8a84b;
+  background: #4FA3C7;
+  border: 1.5px solid #4FA3C7;
   border-radius: 8px;
   font-family: var(--font-heading);
   font-weight: 700;
@@ -140,8 +140,8 @@
 }
 
 .registerBtn:hover {
-  background: #b8953d;
-  border-color: #b8953d;
+  background: #3C8DB1;
+  border-color: #3C8DB1;
 }
 
 /* ---- Avatar + Dropdown (logged in) ---- */
@@ -153,7 +153,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #c8a84b;
+  background: #4FA3C7;
   border: none;
   color: #ffffff;
   font-family: var(--font-heading);
@@ -169,7 +169,7 @@
 }
 
 .avatarBtn:hover {
-  box-shadow: 0 0 0 3px rgba(200, 168, 75, 0.25);
+  box-shadow: 0 0 0 3px rgba(79, 163, 199, 0.25);
   transform: scale(1.06);
 }
 
@@ -289,8 +289,8 @@
 }
 
 .employersBtn:hover {
-  border-color: #c8a84b;
-  color: #c8a84b;
+  border-color: #4FA3C7;
+  color: #4FA3C7;
 }
 
 .employersCaret {
@@ -424,7 +424,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #c8a84b;
+  background: #4FA3C7;
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -517,8 +517,8 @@
 }
 
 .mobileSignInBtn:hover {
-  border-color: #c8a84b;
-  color: #c8a84b;
+  border-color: #4FA3C7;
+  color: #4FA3C7;
 }
 
 .mobileRegisterBtn {
@@ -526,8 +526,8 @@
   align-items: center;
   justify-content: center;
   padding: 10px;
-  background: #c8a84b;
-  border: 1.5px solid #c8a84b;
+  background: #4FA3C7;
+  border: 1.5px solid #4FA3C7;
   border-radius: 8px;
   font-family: var(--font-heading);
   font-weight: 700;
@@ -539,7 +539,7 @@
 }
 
 .mobileRegisterBtn:hover {
-  background: #b8953d;
+  background: #3C8DB1;
 }
 
 /* ---- Responsive ---- */

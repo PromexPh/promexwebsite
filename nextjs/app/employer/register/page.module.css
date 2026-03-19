@@ -81,9 +81,9 @@
 }
 
 .toggleBtnActive {
-  background: var(--portal-gold);
-  color: var(--portal-navy);
-  box-shadow: 0 2px 8px rgba(200, 168, 75, 0.25);
+  background: #4FA3C7;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(79, 163, 199, 0.25);
 }
 
 .authError {
@@ -143,10 +143,10 @@
 .authSubmitBtn {
   width: 100%;
   padding: 13px;
-  background: var(--portal-gold);
+  background: #4FA3C7;
   border: none;
   border-radius: var(--radius-md);
-  color: var(--portal-navy);
+  color: #ffffff;
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: 1rem;
@@ -160,9 +160,9 @@
 }
 
 .authSubmitBtn:hover:not(:disabled) {
-  background: #e8c96a;
+  background: #3C8DB1;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(200, 168, 75, 0.35);
+  box-shadow: 0 6px 20px rgba(79, 163, 199, 0.35);
 }
 
 .authSubmitBtn:disabled { opacity: 0.6; cursor: not-allowed; }

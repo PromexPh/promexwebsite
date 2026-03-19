@@ -24,7 +24,7 @@
 
 /* ─── Header ─── */
 .dashHeader {
-  background: var(--portal-navy);
+  background: #1a3a5c;
   padding: 24px 0;
   position: sticky;
   top: 0;
@@ -49,8 +49,8 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: var(--portal-gold);
-  color: var(--portal-navy);
+  background: #4FA3C7;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -86,9 +86,9 @@
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
-  border: 1.5px solid var(--portal-gold);
+  border: 1.5px solid rgba(255,255,255,0.4);
   border-radius: var(--radius-pill);
-  color: var(--portal-gold);
+  color: rgba(255,255,255,0.85);
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: 0.85rem;
@@ -97,8 +97,9 @@
 }
 
 .dashFindJobs:hover {
-  background: var(--portal-gold);
-  color: var(--portal-navy);
+  background: rgba(255,255,255,0.15);
+  color: #ffffff;
+  border-color: rgba(255,255,255,0.6);
 }
 
 .dashSignOut {
@@ -149,7 +150,7 @@
   gap: 8px;
 }
 
-.completionLabel i { color: var(--portal-gold); }
+.completionLabel i { color: #4FA3C7; }
 
 .completionPct {
   font-family: var(--font-heading);
@@ -250,8 +251,8 @@
 }
 
 .tabActive {
-  color: var(--color-dark-text);
-  border-bottom-color: var(--portal-gold);
+  color: #4FA3C7;
+  border-bottom-color: #4FA3C7;
 }
 
 /* ─── Applications ─── */
@@ -368,7 +369,7 @@
 
 .pipelineStepActive { opacity: 1; }
 
-.pipelineStepActive .pipelineDot { background: var(--portal-gold); }
+.pipelineStepActive .pipelineDot { background: #4FA3C7; }
 
 .pipelineDot {
   width: 12px;
@@ -458,8 +459,8 @@
 .formGroup input:focus,
 .formGroup select:focus,
 .formGroup textarea:focus {
-  border-color: var(--portal-gold);
-  box-shadow: 0 0 0 3px rgba(200, 168, 75, 0.15);
+  border-color: #4FA3C7;
+  box-shadow: 0 0 0 3px rgba(79, 163, 199, 0.15);
 }
 
 .formGroup textarea { resize: vertical; }
@@ -485,15 +486,19 @@
   align-items: center;
   gap: 8px;
   padding: 10px 24px;
-  background: var(--portal-navy);
+  background: #4FA3C7;
   border: none;
   border-radius: var(--radius-md);
-  color: var(--portal-gold);
+  color: #ffffff;
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s ease;
+}
+
+.saveBtn:not(:disabled):hover {
+  background: #3C8DB1;
 }
 
 .saveBtn:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -526,8 +531,8 @@
 }
 
 .skillsInput input:focus {
-  border-color: var(--portal-gold);
-  box-shadow: 0 0 0 3px rgba(200, 168, 75, 0.15);
+  border-color: #4FA3C7;
+  box-shadow: 0 0 0 3px rgba(79, 163, 199, 0.15);
 }
 
 .skillAddBtn {
@@ -535,8 +540,8 @@
   height: 42px;
   border: none;
   border-radius: var(--radius-md);
-  background: var(--portal-navy);
-  color: var(--portal-gold);
+  background: #4FA3C7;
+  color: #ffffff;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -546,7 +551,7 @@
   transition: background 0.2s;
 }
 
-.skillAddBtn:hover { background: var(--portal-navy-2); }
+.skillAddBtn:hover { background: #3C8DB1; }
 
 .skillTags {
   display: flex;
@@ -560,8 +565,8 @@
   align-items: center;
   gap: 6px;
   padding: 4px 12px;
-  background: rgba(200, 168, 75, 0.1);
-  border: 1px solid rgba(200, 168, 75, 0.3);
+  background: rgba(79, 163, 199, 0.1);
+  border: 1px solid rgba(79, 163, 199, 0.3);
   border-radius: 20px;
   font-family: var(--font-body);
   font-size: 0.82rem;
@@ -589,9 +594,9 @@
   gap: 6px;
   padding: 8px 16px;
   background: transparent;
-  border: 1.5px solid var(--portal-gold);
+  border: 1.5px solid #4FA3C7;
   border-radius: var(--radius-md);
-  color: var(--portal-gold);
+  color: #4FA3C7;
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: 0.85rem;
@@ -600,7 +605,7 @@
 }
 
 .addExpBtn:hover {
-  background: rgba(200, 168, 75, 0.1);
+  background: rgba(79, 163, 199, 0.1);
 }
 
 .noExpMsg {
@@ -685,8 +690,8 @@
   justify-content: space-between;
   gap: 16px;
   padding: 16px 20px;
-  background: rgba(200, 168, 75, 0.06);
-  border: 1px solid rgba(200, 168, 75, 0.2);
+  background: rgba(79, 163, 199, 0.06);
+  border: 1px solid rgba(79, 163, 199, 0.2);
   border-radius: var(--radius-lg);
 }
 
@@ -695,7 +700,7 @@
   align-items: center;
   gap: 14px;
   font-size: 1.8rem;
-  color: var(--portal-gold);
+  color: #4FA3C7;
 }
 
 .cvFilename {
@@ -717,9 +722,9 @@
   align-items: center;
   gap: 6px;
   padding: 7px 16px;
-  border: 1.5px solid var(--portal-gold);
+  border: 1.5px solid #4FA3C7;
   border-radius: var(--radius-md);
-  color: var(--portal-gold);
+  color: #4FA3C7;
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: 0.82rem;
@@ -729,7 +734,7 @@
 }
 
 .cvViewBtn:hover {
-  background: rgba(200, 168, 75, 0.1);
+  background: rgba(79, 163, 199, 0.1);
 }
 
 .noCvMsg {
@@ -763,12 +768,12 @@
 }
 
 .uploadZone:hover {
-  border-color: var(--portal-gold);
-  background: rgba(200, 168, 75, 0.04);
+  border-color: #4FA3C7;
+  background: rgba(79, 163, 199, 0.04);
   color: var(--color-dark-text);
 }
 
-.uploadZone i { font-size: 1.3rem; color: var(--portal-gold); }
+.uploadZone i { font-size: 1.3rem; color: #4FA3C7; }
 
 .fileInputHidden { display: none; }
 
@@ -803,8 +808,8 @@
   display: inline-flex;
   align-items: center;
   padding: 10px 24px;
-  background: var(--portal-navy);
-  color: var(--portal-gold);
+  background: #4FA3C7;
+  color: #ffffff;
   border-radius: var(--radius-md);
   font-family: var(--font-heading);
   font-weight: 700;
@@ -814,7 +819,7 @@
   margin-top: 8px;
 }
 
-.emptyStateBtn:hover { background: var(--portal-navy-2); }
+.emptyStateBtn:hover { background: #3C8DB1; }
 
 /* ─── Responsive ─── */
 @media (max-width: 900px) {

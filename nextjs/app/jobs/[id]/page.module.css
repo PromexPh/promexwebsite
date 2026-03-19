@@ -22,7 +22,7 @@
 /* ---- Hero ---- */
 .jobHero {
   position: relative;
-  background: linear-gradient(135deg, var(--portal-navy) 0%, var(--portal-navy-2) 60%, #0d2040 100%);
+  background: linear-gradient(135deg, #1a3a5c 0%, #2d6a9f 100%);
   padding: 100px 0 80px;
   overflow: hidden;
 }
@@ -189,8 +189,20 @@
   line-height: 1.6;
 }
 
+.jobList li i.fa-check {
+  color: #4FA3C7;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.jobList li i.fa-star {
+  color: #8CC63F;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
 .jobList li i {
-  color: var(--portal-gold);
+  color: #4FA3C7;
   flex-shrink: 0;
   margin-top: 3px;
 }
@@ -205,24 +217,25 @@
 }
 
 .sidebarCard {
-  background: var(--portal-navy);
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
   border-radius: var(--radius-xl);
   padding: 32px 28px;
-  box-shadow: 0 8px 32px rgba(10, 22, 40, 0.3);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 
 .sidebarSalary {
   font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 1.6rem;
-  color: var(--portal-gold);
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #2E2E2E;
   margin-bottom: 20px;
 }
 
 .sidebarSalary span {
   font-size: 1rem;
   font-weight: 500;
-  color: rgba(255,255,255,0.5);
+  color: #6C757D;
 }
 
 .sidebarMeta {
@@ -231,7 +244,7 @@
   gap: 10px;
   margin-bottom: 28px;
   padding-bottom: 24px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid #E5E7EB;
 }
 
 .sidebarMetaItem {
@@ -240,23 +253,23 @@
   gap: 10px;
   font-family: var(--font-body);
   font-size: 0.88rem;
-  color: rgba(255,255,255,0.65);
+  color: #6C757D;
 }
 
 .sidebarMetaItem i {
   width: 16px;
   text-align: center;
-  color: var(--portal-gold);
+  color: #4FA3C7;
   flex-shrink: 0;
 }
 
 .applyBtn {
   width: 100%;
   padding: 14px;
-  background: var(--portal-gold);
+  background: #4FA3C7;
   border: none;
   border-radius: var(--radius-md);
-  color: var(--portal-navy);
+  color: #ffffff;
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: 1rem;
@@ -270,18 +283,18 @@
 }
 
 .applyBtn:hover {
-  background: var(--portal-gold-light);
+  background: #3C8DB1;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(200, 168, 75, 0.35);
+  box-shadow: 0 6px 20px rgba(79,163,199,0.35);
 }
 
 .appliedBadge {
   width: 100%;
   padding: 13px;
-  background: rgba(140, 198, 63, 0.15);
-  border: 1.5px solid rgba(140, 198, 63, 0.4);
+  background: rgba(79,163,199,0.1);
+  border: 1px solid rgba(79,163,199,0.3);
   border-radius: var(--radius-md);
-  color: #8cc63f;
+  color: #4FA3C7;
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: 0.92rem;
@@ -296,7 +309,7 @@
 .sidebarNote {
   font-family: var(--font-body);
   font-size: 0.78rem;
-  color: rgba(255,255,255,0.4);
+  color: #6C757D;
   text-align: center;
   margin: 0;
   display: flex;
@@ -308,7 +321,7 @@
 .sidebarNote i {
   flex-shrink: 0;
   margin-top: 2px;
-  color: var(--portal-gold);
+  color: #4FA3C7;
 }
 
 .sidebarShare {
@@ -777,9 +790,9 @@
   width: 100%;
   padding: 11px;
   background: transparent;
-  border: 1.5px solid rgba(255,255,255,0.15);
+  border: 1px solid #E5E7EB;
   border-radius: var(--radius-md);
-  color: rgba(255,255,255,0.55);
+  color: #6C757D;
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: 0.88rem;
@@ -793,8 +806,8 @@
 }
 
 .shareBtn:hover {
-  border-color: rgba(255,255,255,0.35);
-  color: #fff;
+  border-color: #4FA3C7;
+  color: #4FA3C7;
 }
 
 /* ── Similar Jobs ───────────────────────────── */
@@ -1475,27 +1488,7 @@
 
 .panelDoneBtn:hover { background: var(--color-primary-dark); }
 
-/* Share button in sidebar */
-.shareBtn {
-  width: 100%;
-  padding: 10px;
-  border: 1.5px solid rgba(255,255,255,0.15);
-  border-radius: var(--radius-md);
-  background: transparent;
-  color: rgba(255,255,255,0.6);
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.85rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 16px;
-  transition: all 0.2s;
-}
-
-.shareBtn:hover { border-color: rgba(255,255,255,0.35); color: #fff; }
+/* Share button in sidebar (duplicate removed — handled by primary rule above) */
 
 /* Slots hint in hero */
 .slotsHint {
@@ -1636,3 +1629,208 @@
   .submitBtn { flex: none; }
   .saveLaterBtn { flex: none; }
 }
+
+/* ── New success screen ────────────────────────── */
+@keyframes checkmarkPop {
+  0%   { transform: scale(0); opacity: 0; }
+  60%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.panelSuccessCheckmark {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(79,163,199,0.12);
+  border: 2px solid rgba(79,163,199,0.4);
+  color: #4FA3C7;
+  font-size: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: checkmarkPop 0.4s ease forwards;
+}
+
+.panelSuccessStepsList {
+  list-style: decimal;
+  padding-left: 20px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--color-secondary-text);
+  line-height: 1.5;
+  text-align: left;
+}
+
+.panelSuccessEmail {
+  font-family: var(--font-body);
+  font-size: 0.83rem;
+  color: var(--color-secondary-text);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.panelSuccessEmail i { color: #4FA3C7; }
+
+.panelSuccessBtns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.panelSuccessLinkBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  background: #4FA3C7;
+  border: none;
+  border-radius: var(--radius-md);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.92rem;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.panelSuccessLinkBtn:hover { background: #3C8DB1; }
+
+.panelSuccessSecondBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 24px;
+  background: transparent;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-secondary-text);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.panelSuccessSecondBtn:hover {
+  border-color: #4FA3C7;
+  color: #4FA3C7;
+}
+
+/* ── Login Prompt Modal ────────────────────────── */
+.loginModalBtns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.loginModalPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #4FA3C7;
+  border-radius: var(--radius-md);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.loginModalPrimary:hover { background: #3C8DB1; }
+
+.loginModalSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 24px;
+  background: transparent;
+  border: 1.5px solid #E5E7EB;
+  border-radius: var(--radius-md);
+  color: var(--color-dark-text);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.loginModalSecondary:hover {
+  border-color: #4FA3C7;
+  color: #4FA3C7;
+}
+
+.loginModalFooter {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--color-secondary-text);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Complete Profile Modal extras ──────────────── */
+.profileProgressWrap {
+  width: 100%;
+  margin: 8px 0;
+}
+
+.profileProgressHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.profileProgressLabel {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--color-secondary-text);
+}
+
+.profileProgressPct {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.profileProgressTrack {
+  height: 8px;
+  background: var(--color-border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.profileProgressFill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.5s ease;
+}
+
+.skipLink {
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--color-secondary-text);
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  margin-top: 4px;
+  transition: color 0.2s;
+}
+
+.skipLink:hover { color: var(--color-dark-text); }
