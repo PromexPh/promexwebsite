@@ -10,7 +10,7 @@ const ADMIN_KEY = 'promex_admin_session';
 function adminHeaders() {
   return {
     'Content-Type': 'application/json',
-    Authorization: `Admin ${process.env.NEXT_PUBLIC_ADMIN_PASSWORD}`,
+    Authorization: `Admin ${localStorage.getItem(ADMIN_KEY) ?? ''}`,
   };
 }
 
@@ -22,14 +22,28 @@ type Tab = 'jobs' | 'employers' | 'candidates' | 'applications' | 'inquiries';
 function LoginScreen({ onAuth }: { onAuth: () => void }) {
   const [pw, setPw]         = useState('');
   const [error, setError]   = useState('');
+  const [loading, setLoading] = useState(false);
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (pw === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
-      localStorage.setItem(ADMIN_KEY, pw);
-      onAuth();
-    } else {
-      setError('Incorrect password');
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pw }),
+      });
+      if (res.ok) {
+        localStorage.setItem(ADMIN_KEY, pw);
+        onAuth();
+      } else {
+        setError('Incorrect password');
+      }
+    } catch {
+      setError('Connection error. Please try again.');
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -38,9 +52,6 @@ function LoginScreen({ onAuth }: { onAuth: () => void }) {
       <div className={styles.loginCard}>
         <div className={styles.loginIcon}><i className="fa-solid fa-shield-halved" aria-hidden="true" /></div>
         <h1 className={styles.loginTitle}>Promex Admin</h1>
-        {!process.env.NEXT_PUBLIC_ADMIN_PASSWORD && (
-          <p className={styles.loginWarning}>⚠️ Admin password not configured. Add NEXT_PUBLIC_ADMIN_PASSWORD to Vercel environment variables.</p>
-        )}
         <p className={styles.loginSub}>Enter the admin password to continue</p>
         <form onSubmit={submit} className={styles.loginForm}>
           <input
@@ -52,8 +63,11 @@ function LoginScreen({ onAuth }: { onAuth: () => void }) {
             autoFocus
           />
           {error && <p className={styles.loginError}>{error}</p>}
-          <button type="submit" className={styles.loginBtn}>
-            <i className="fa-solid fa-right-to-bracket" aria-hidden="true" /> Sign In
+          <button type="submit" className={styles.loginBtn} disabled={loading}>
+            {loading
+              ? <><i className="fa-solid fa-spinner fa-spin" aria-hidden="true" /> Checking…</>
+              : <><i className="fa-solid fa-right-to-bracket" aria-hidden="true" /> Sign In</>
+            }
           </button>
         </form>
       </div>
