@@ -75,6 +75,7 @@ export function useCountUp({
     return () => {
       observer.disconnect();
       cancelAnimationFrame(rafId.current);
+      started.current = false; // allow re-trigger if effect re-runs (React StrictMode)
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [target, duration, suffix, prefix, separator]);

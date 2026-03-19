@@ -8,7 +8,7 @@ const statsData = [
   { icon: 'fa-solid fa-trophy',    value: 28,   suffix: '+', label: 'Years of Experience', sub: 'Est. 1996'          },
   { icon: 'fa-solid fa-globe',     value: 500,  suffix: '+', label: 'Clients Worldwide',   sub: 'Global Network'     },
   { icon: 'fa-solid fa-users',     value: 5000, suffix: '+', label: 'Candidates Deployed', sub: 'Successfully Placed' },
-  { icon: 'fa-solid fa-briefcase', value: 1000, suffix: '+', label: 'Job Orders Fulfilled', sub: 'Across Industries'  },
+  { icon: 'fa-solid fa-briefcase', value: 10000, suffix: '+', label: 'Job Orders Fulfilled', sub: 'Across Industries'  },
 ];
 
 function StatCard({ stat, index }: { stat: typeof statsData[0]; index: number }) {

@@ -230,6 +230,31 @@
   color: var(--color-primary);
 }
 
+.dropdownItemWithSub {
+  align-items: flex-start;
+  white-space: normal;
+}
+
+.dropdownItemLabel {
+  display: block;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: inherit;
+}
+
+.dropdownItemSub {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--color-secondary-text);
+  margin-top: 1px;
+}
+
+.dropdownItemWithSub:hover .dropdownItemSub {
+  color: var(--color-primary);
+  opacity: 0.8;
+}
+
 .dropdownDivider {
   height: 1px;
   background: #f3f4f6;

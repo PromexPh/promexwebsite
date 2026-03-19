@@ -25,8 +25,8 @@ const INDUSTRY_COLORS: Record<string, string> = {
 function industryColor(ind: string): string { return INDUSTRY_COLORS[ind] ?? '#6C757D'; }
 
 function formatSalary(job: Job): string {
-  if (job.salary_min && job.salary_max) return `${job.salary_min.toLocaleString()} – ${job.salary_max.toLocaleString()}/mo`;
-  if (job.salary_min) return `From ${job.salary_min.toLocaleString()}/mo`;
+  if (job.salary_min && job.salary_max) return `$${job.salary_min.toLocaleString()} – $${job.salary_max.toLocaleString()}/mo`;
+  if (job.salary_min) return `From $${job.salary_min.toLocaleString()}/mo`;
   return 'Competitive salary';
 }
 

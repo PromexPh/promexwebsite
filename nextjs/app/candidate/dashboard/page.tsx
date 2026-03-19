@@ -102,8 +102,8 @@ function ApplicationCard({ app, onWithdraw }: { app: Application; onWithdraw: (i
   function formatSalary(): string | null {
     if (!job) return null;
     if (job.salary_min && job.salary_max) {
-      const cur = job.salary_currency ? `${job.salary_currency} ` : '';
-      return `${cur}${job.salary_min.toLocaleString()} – ${job.salary_max.toLocaleString()}/mo`;
+      const cur = job.salary_currency || '$';
+      return `${cur}${job.salary_min.toLocaleString()} – ${cur}${job.salary_max.toLocaleString()}/mo`;
     }
     return job.salary ? `${job.salary}/mo` : null;
   }

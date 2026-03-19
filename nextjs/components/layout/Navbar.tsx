@@ -233,11 +233,19 @@ export default function Navbar() {
                 For Employers <i className={`fa-solid fa-chevron-down ${styles.employersCaret} ${employersMenuOpen ? styles.employersCaretOpen : ''}`} aria-hidden="true" />
               </button>
               <div className={`${styles.employersMenu} ${employersMenuOpen ? styles.employersMenuOpen : ''}`}>
-                <Link href="/employer/register" className={styles.dropdownItem} onClick={() => setEmployersMenuOpen(false)}>
-                  <i className="fa-solid fa-building" aria-hidden="true" /> Post Jobs as a Company
+                <Link href="/employer/register" className={`${styles.dropdownItem} ${styles.dropdownItemWithSub}`} onClick={() => setEmployersMenuOpen(false)}>
+                  <i className="fa-solid fa-building" aria-hidden="true" />
+                  <span>
+                    <span className={styles.dropdownItemLabel}>Post Jobs as a Partner</span>
+                    <span className={styles.dropdownItemSub}>Register your company</span>
+                  </span>
                 </Link>
-                <Link href="/employer-inquiry" className={styles.dropdownItem} onClick={() => setEmployersMenuOpen(false)}>
-                  <i className="fa-solid fa-handshake" aria-hidden="true" /> Submit Hiring Inquiry
+                <Link href="/employer-inquiry" className={`${styles.dropdownItem} ${styles.dropdownItemWithSub}`} onClick={() => setEmployersMenuOpen(false)}>
+                  <i className="fa-solid fa-handshake" aria-hidden="true" />
+                  <span>
+                    <span className={styles.dropdownItemLabel}>Submit Hiring Inquiry</span>
+                    <span className={styles.dropdownItemSub}>New client enquiry</span>
+                  </span>
                 </Link>
                 <div className={styles.dropdownDivider} />
                 <Link href="/employer/register?mode=login" className={styles.dropdownItem} onClick={() => setEmployersMenuOpen(false)}>
@@ -329,7 +337,7 @@ export default function Navbar() {
               <div className={styles.mobileEmployersSection}>
                 <p className={styles.mobileEmployersLabel}>For Employers</p>
                 <Link href="/employer/register" className={styles.mobileDashLink} onClick={() => setMobileMenuOpen(false)}>
-                  <i className="fa-solid fa-building" aria-hidden="true" /> Post Jobs as a Company
+                  <i className="fa-solid fa-building" aria-hidden="true" /> Post Jobs as a Partner
                 </Link>
                 <Link href="/employer-inquiry" className={styles.mobileDashLink} onClick={() => setMobileMenuOpen(false)}>
                   <i className="fa-solid fa-handshake" aria-hidden="true" /> Submit Hiring Inquiry

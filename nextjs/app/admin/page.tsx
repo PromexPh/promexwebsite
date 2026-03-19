@@ -38,6 +38,9 @@ function LoginScreen({ onAuth }: { onAuth: () => void }) {
       <div className={styles.loginCard}>
         <div className={styles.loginIcon}><i className="fa-solid fa-shield-halved" aria-hidden="true" /></div>
         <h1 className={styles.loginTitle}>Promex Admin</h1>
+        {!process.env.NEXT_PUBLIC_ADMIN_PASSWORD && (
+          <p className={styles.loginWarning}>⚠️ Admin password not configured. Add NEXT_PUBLIC_ADMIN_PASSWORD to Vercel environment variables.</p>
+        )}
         <p className={styles.loginSub}>Enter the admin password to continue</p>
         <form onSubmit={submit} className={styles.loginForm}>
           <input

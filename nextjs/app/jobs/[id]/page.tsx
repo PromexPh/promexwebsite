@@ -26,8 +26,8 @@ function industryColor(industry: string): string {
 }
 
 function formatSalary(job: Job): string {
-  if (job.salary_min && job.salary_max) return `${job.salary_min.toLocaleString()} – ${job.salary_max.toLocaleString()}/mo`;
-  if (job.salary_min) return `From ${job.salary_min.toLocaleString()}/mo`;
+  if (job.salary_min && job.salary_max) return `$${job.salary_min.toLocaleString()} – $${job.salary_max.toLocaleString()}/mo`;
+  if (job.salary_min) return `From $${job.salary_min.toLocaleString()}/mo`;
   return 'Competitive salary';
 }
 
@@ -383,11 +383,8 @@ function JobDetailInner() {
                   {similarJobs.map((sj) => (
                     <a key={sj.id} href={`/jobs/${sj.id}`} className={styles.similarCard}>
                       <div className={styles.similarTitle}>{sj.title}</div>
-                      <div className={styles.similarCompany}>{sj.company}</div>
-                      <div className={styles.similarMeta}>
-                        <span>{sj.country}</span>
-                        <span className={styles.similarSalary}>{formatSalary(sj)}</span>
-                      </div>
+                      <div className={styles.similarCompany}>{sj.company} · {sj.country}</div>
+                      <div className={styles.similarSalary}>{formatSalary(sj)}</div>
                     </a>
                   ))}
                 </div>
