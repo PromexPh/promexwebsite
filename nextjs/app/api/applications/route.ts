@@ -56,6 +56,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Only candidates can apply' }, { status: 403 });
   }
 
+  console.log('Submitting application for user:', user.id, user.email);
+
+  const { data: candidate, error: lookupError } = await supabaseAdmin
+    .from('candidates')
+    .select('id')
+    .eq('user_id', user.id)
+    .single();
+
+  console.log('Candidate lookup:', candidate?.id, lookupError?.message);
+
+  if (!candidate) {
+    return NextResponse.json({
+      error: 'No candidate profile found for this account. Please complete your profile first.',
+    }, { status: 404 });
+  }
+
   let body: { job_id: string; cover_letter?: string; resume_url?: string };
   try {
     body = await req.json();
@@ -69,7 +85,7 @@ export async function POST(req: NextRequest) {
     .from('applications')
     .insert({
       job_id: body.job_id,
-      candidate_id: user.id,
+      candidate_id: candidate.id,
       cover_letter: body.cover_letter ?? null,
       resume_url: body.resume_url ?? null,
       status: 'submitted',
