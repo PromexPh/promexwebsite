@@ -13,6 +13,7 @@ const industries = [
     description: 'We provide highly qualified healthcare professionals trained to international clinical standards. Our nurses, caregivers, and allied health workers are placed in top hospitals and care facilities across the Middle East, Europe, and Asia.',
     image: '/images/industries_images/healthcare.jpg',
     badge: 'High Demand',
+    applyUrl: '/jobs?industry=Healthcare',
     roles: ['Registered Nurses (RN)', 'Caregivers & Home Health Aides', 'Radiographers & Radiologic Technologists', 'Medical Technologists', 'Physical & Occupational Therapists', 'Dental Technicians & Assistants'],
   },
   {
@@ -22,6 +23,7 @@ const industries = [
     description: 'Promex supplies seasoned engineering and construction professionals for large-scale infrastructure, oil & gas, and industrial projects. Our workers are trade-tested, safety-certified, and ready for demanding site conditions.',
     image: '/images/industries_images/engineering.jpg',
     badge: 'High Demand',
+    applyUrl: '/jobs?industry=Engineering',
     roles: ['Civil & Structural Engineers', 'Welders & Pipefitters', 'Electrical Engineers & Technicians', 'Heavy Equipment Operators', 'Safety Officers (HSE)', 'Project Managers & Supervisors'],
   },
   {
@@ -31,6 +33,7 @@ const industries = [
     description: 'From five-star hotels to cruise lines, Promex connects hospitality employers with skilled Filipino service professionals known globally for warmth, diligence, and high service standards.',
     image: '/images/industries_images/hospitality.jpg',
     badge: undefined,
+    applyUrl: '/jobs?industry=Hospitality',
     roles: ['Hotel Front Desk & Concierge', 'F&B Servers & Bartenders', 'Executive & Sous Chefs', 'Housekeeping Supervisors', 'Cruise Ship Crew', 'Resort & Spa Attendants'],
   },
   {
@@ -40,6 +43,7 @@ const industries = [
     description: 'We supply production-ready workers for factories, assembly lines, and processing plants. Our candidates are vetted for technical aptitude, quality awareness, and adherence to international safety standards.',
     image: '/images/industries_images/manufacturing.jpg',
     badge: undefined,
+    applyUrl: '/jobs?industry=Manufacturing',
     roles: ['Production Line Operators', 'Quality Control Inspectors', 'CNC Machine Operators', 'Warehouse & Logistics Staff', 'Forklift & Material Handling', 'Factory Supervisors'],
   },
   {
@@ -49,6 +53,7 @@ const industries = [
     description: 'Promex bridges the gap between global tech employers and highly skilled Filipino IT professionals. From software development to network infrastructure, our candidates are technically sharp and globally competitive.',
     image: '/images/industries_images/it.jpg',
     badge: 'Growing Sector',
+    applyUrl: '/jobs?industry=IT+%26+Technology',
     roles: ['Software Developers & Engineers', 'Network & Systems Administrators', 'IT Support & Help Desk', 'Cybersecurity Analysts', 'Data Analysts & BI Specialists', 'Telecom Field Technicians'],
   },
   {
@@ -58,6 +63,7 @@ const industries = [
     description: 'Filipino household workers are among the most trusted in the world. Promex places trained, background-checked domestic helpers, nannies, and household managers for families across the Middle East and beyond.',
     image: '/images/industries_images/domestic.jpg',
     badge: 'High Demand',
+    applyUrl: '/jobs',
     roles: ['Household Service Workers (HSW)', 'Nannies & Childcare Workers', 'Elderly & Companion Caregivers', 'Private Cooks & Kitchen Help', 'Personal Drivers', 'Household Managers'],
   },
 ];
@@ -113,7 +119,7 @@ export default function IndustriesPage() {
                     </ul>
                   </div>
 
-                  <Link href="/apply" className={styles.indApplyLink}>
+                  <Link href={ind.applyUrl} className={styles.indApplyLink}>
                     Apply for {ind.name} positions
                     <i className="fa-solid fa-arrow-right" aria-hidden="true" />
                   </Link>
