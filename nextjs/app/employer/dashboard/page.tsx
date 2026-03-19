@@ -7,19 +7,25 @@ import type { Job, Application, EmployerProfile, ApplicationStatus } from '@/lib
 import styles from './page.module.css';
 
 const STATUS_LABELS: Record<ApplicationStatus, string> = {
-  pending: 'Pending',
-  reviewing: 'Reviewing',
-  shortlisted: 'Shortlisted',
-  rejected: 'Rejected',
-  hired: 'Hired',
+  submitted:           'Submitted',
+  under_review:        'Under Review',
+  shortlisted:         'Shortlisted',
+  interview_scheduled: 'Interview',
+  offer_extended:      'Offer Extended',
+  deployed:            'Deployed',
+  rejected:            'Rejected',
+  withdrawn:           'Withdrawn',
 };
 
 const STATUS_COLORS: Record<ApplicationStatus, string> = {
-  pending: '#f59e0b',
-  reviewing: '#3b82f6',
-  shortlisted: '#8b5cf6',
-  rejected: '#ef4444',
-  hired: '#10b981',
+  submitted:           '#f59e0b',
+  under_review:        '#3b82f6',
+  shortlisted:         '#8b5cf6',
+  interview_scheduled: '#6366f1',
+  offer_extended:      '#8CC63F',
+  deployed:            '#10b981',
+  rejected:            '#ef4444',
+  withdrawn:           '#9ca3af',
 };
 
 const INDUSTRIES = ['Hospitality', 'Healthcare', 'Engineering', 'IT & Technology', 'Construction', 'Retail', 'Finance', 'Manufacturing', 'Transportation', 'Other'];
@@ -27,7 +33,7 @@ const COUNTRIES  = ['Saudi Arabia', 'UAE', 'Qatar', 'Kuwait', 'Bahrain', 'Oman',
 
 function PipelineBar({ apps }: { apps: Application[] }) {
   if (apps.length === 0) return <div className={styles.noApps}>No applicants yet</div>;
-  const statuses: ApplicationStatus[] = ['pending', 'reviewing', 'shortlisted', 'hired', 'rejected'];
+  const statuses: ApplicationStatus[] = ['submitted', 'under_review', 'shortlisted', 'interview_scheduled', 'offer_extended', 'deployed', 'rejected'];
   return (
     <div className={styles.pipelineBar}>
       {statuses.map((s) => {
@@ -199,7 +205,7 @@ function EmployerDashboardInner() {
   const activeJobs    = jobs.filter((j) => j.status === 'active').length;
   const draftJobs     = jobs.filter((j) => j.status === 'draft').length;
   const totalApplicants = allApplications.length;
-  const hiredCount    = allApplications.filter((a) => a.status === 'hired').length;
+  const hiredCount    = allApplications.filter((a) => a.status === 'deployed' || a.status === 'offer_extended').length;
 
   return (
     <div className={styles.dashboardPage}>

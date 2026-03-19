@@ -2,7 +2,7 @@
 
 export type Role = 'candidate' | 'employer';
 export type JobStatus = 'active' | 'paused' | 'closed' | 'draft';
-export type ApplicationStatus = 'pending' | 'reviewing' | 'shortlisted' | 'rejected' | 'hired';
+export type ApplicationStatus = 'submitted' | 'under_review' | 'shortlisted' | 'interview_scheduled' | 'offer_extended' | 'deployed' | 'rejected' | 'withdrawn';
 
 // ─── Domain Types ─────────────────────────────────────────────────────────────
 

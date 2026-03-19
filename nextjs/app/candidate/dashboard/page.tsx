@@ -7,11 +7,14 @@ import type { Application, ApplicationStatus, CandidateProfile, WorkExperience }
 import styles from './page.module.css';
 
 const STATUS_CONFIG: Record<ApplicationStatus, { label: string; icon: string; color: string }> = {
-  pending:     { label: 'Pending',     icon: 'fa-clock',            color: '#f59e0b' },
-  reviewing:   { label: 'Reviewing',   icon: 'fa-magnifying-glass', color: '#3b82f6' },
-  shortlisted: { label: 'Shortlisted', icon: 'fa-star',             color: '#8b5cf6' },
-  rejected:    { label: 'Rejected',    icon: 'fa-xmark',            color: '#ef4444' },
-  hired:       { label: 'Hired',       icon: 'fa-check',            color: '#10b981' },
+  submitted:            { label: 'Submitted',       icon: 'fa-paper-plane',     color: '#f59e0b' },
+  under_review:         { label: 'Under Review',    icon: 'fa-magnifying-glass', color: '#3b82f6' },
+  shortlisted:          { label: 'Shortlisted',     icon: 'fa-star',             color: '#8b5cf6' },
+  interview_scheduled:  { label: 'Interview',       icon: 'fa-calendar-check',   color: '#6366f1' },
+  offer_extended:       { label: 'Offer Extended',  icon: 'fa-handshake',        color: '#8CC63F' },
+  deployed:             { label: 'Deployed',        icon: 'fa-plane',            color: '#10b981' },
+  rejected:             { label: 'Rejected',        icon: 'fa-xmark',            color: '#ef4444' },
+  withdrawn:            { label: 'Withdrawn',       icon: 'fa-rotate-left',      color: '#9ca3af' },
 };
 
 const EDUCATION_OPTIONS = ['', 'High School', 'Diploma', "Bachelor's", "Master's", 'PhD', 'Vocational/Technical'];
@@ -70,7 +73,7 @@ function ApplicationCard({ app }: { app: Application }) {
       )}
       <div className={styles.pipeline}>
         {(Object.keys(STATUS_CONFIG) as ApplicationStatus[]).slice(0, 4).map((s) => (
-          <div key={s} className={`${styles.pipelineStep} ${app.status === s || (s === 'shortlisted' && app.status === 'hired') ? styles.pipelineStepActive : ''}`}>
+          <div key={s} className={`${styles.pipelineStep} ${app.status === s || (s === 'shortlisted' && app.status === 'deployed') ? styles.pipelineStepActive : ''}`}>
             <div className={styles.pipelineDot} />
             <span>{STATUS_CONFIG[s].label}</span>
           </div>
@@ -297,9 +300,9 @@ function CandidateDashboardInner() {
   const completion = candidate ? calcCompletion(candidate) : 0;
   const stats = {
     total: applications.length,
-    pending: applications.filter((a) => a.status === 'pending').length,
-    shortlisted: applications.filter((a) => a.status === 'shortlisted').length,
-    hired: applications.filter((a) => a.status === 'hired').length,
+    pending: applications.filter((a) => a.status === 'submitted' || a.status === 'under_review').length,
+    shortlisted: applications.filter((a) => a.status === 'shortlisted' || a.status === 'interview_scheduled').length,
+    hired: applications.filter((a) => a.status === 'deployed' || a.status === 'offer_extended').length,
   };
 
   // Profile chips

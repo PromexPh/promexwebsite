@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
       candidate_id: user.id,
       cover_letter: body.cover_letter ?? null,
       resume_url: body.resume_url ?? null,
-      status: 'pending',
+      status: 'submitted',
     })
     .select('*, job:jobs(*)')
     .single();
@@ -107,7 +107,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: 'application_id and status are required' }, { status: 400 });
   }
 
-  const validStatuses: ApplicationStatus[] = ['pending', 'reviewing', 'shortlisted', 'rejected', 'hired'];
+  const validStatuses: ApplicationStatus[] = ['submitted', 'under_review', 'shortlisted', 'interview_scheduled', 'offer_extended', 'deployed', 'rejected', 'withdrawn'];
   if (!validStatuses.includes(body.status)) {
     return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
   }
