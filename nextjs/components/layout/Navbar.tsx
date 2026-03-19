@@ -21,19 +21,19 @@ const navLinks = [
 type UserRole = 'candidate' | 'employer' | null;
 
 export default function Navbar() {
-  const [scrolled,          setScrolled]          = useState(false);
-  const [mobileMenuOpen,    setMobileMenuOpen]    = useState(false);
-  const [dropdownOpen,      setDropdownOpen]      = useState(false);
-  const [employersMenuOpen, setEmployersMenuOpen] = useState(false);
-  const [session,           setSession]           = useState<Session | null>(null);
-  const [userRole,          setUserRole]          = useState<UserRole>(null);
-  const [displayName,       setDisplayName]       = useState('');
-  const [authLoaded,        setAuthLoaded]        = useState(false);
+  const [scrolled,        setScrolled]        = useState(false);
+  const [mobileMenuOpen,  setMobileMenuOpen]  = useState(false);
+  const [candidatesOpen,  setCandidatesOpen]  = useState(false);
+  const [employersOpen,   setEmployersOpen]   = useState(false);
+  const [session,         setSession]         = useState<Session | null>(null);
+  const [userRole,        setUserRole]        = useState<UserRole>(null);
+  const [displayName,     setDisplayName]     = useState('');
+  const [authLoaded,      setAuthLoaded]      = useState(false);
 
-  const pathname        = usePathname();
-  const router          = useRouter();
-  const dropdownRef     = useRef<HTMLDivElement>(null);
-  const employersMenuRef = useRef<HTMLDivElement>(null);
+  const pathname      = usePathname();
+  const router        = useRouter();
+  const candidatesRef = useRef<HTMLDivElement>(null);
+  const employersRef  = useRef<HTMLDivElement>(null);
 
   // ── Scroll ──────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -45,18 +45,18 @@ export default function Navbar() {
   // ── Close on navigation ──────────────────────────────────────────────────────
   useEffect(() => {
     setMobileMenuOpen(false);
-    setDropdownOpen(false);
-    setEmployersMenuOpen(false);
+    setCandidatesOpen(false);
+    setEmployersOpen(false);
   }, [pathname]);
 
   // ── Click-outside closes dropdowns ───────────────────────────────────────────
   useEffect(() => {
     function handler(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setDropdownOpen(false);
+      if (candidatesRef.current && !candidatesRef.current.contains(e.target as Node)) {
+        setCandidatesOpen(false);
       }
-      if (employersMenuRef.current && !employersMenuRef.current.contains(e.target as Node)) {
-        setEmployersMenuOpen(false);
+      if (employersRef.current && !employersRef.current.contains(e.target as Node)) {
+        setEmployersOpen(false);
       }
     }
     document.addEventListener('mousedown', handler);
@@ -107,14 +107,14 @@ export default function Navbar() {
 
   async function signOut() {
     await supabase.auth.signOut();
-    setDropdownOpen(false);
+    setCandidatesOpen(false);
+    setEmployersOpen(false);
     setMobileMenuOpen(false);
     router.push('/');
   }
 
-  const isLoggedIn         = !!session;
-  const showEmployersMenu  = !isLoggedIn;
-  const showViewJobs       = !isLoggedIn || userRole === 'candidate';
+  const isLoggedIn = !!session;
+  const firstName  = displayName.split(' ')[0] || displayName;
 
   const initials = displayName
     .split(' ')
@@ -156,109 +156,153 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* ── Desktop auth + CTA ── */}
+        {/* ── Desktop right actions: 3 items ── */}
         <div className={styles.navActions}>
-          {/* Auth area — only render once loaded to avoid flash */}
-          {authLoaded && !isLoggedIn && (
-            <div className={styles.authBtns}>
-              <Link href="/candidate/register?mode=login" className={styles.signInBtn}>
-                Sign In
-              </Link>
-              <Link href="/candidate/register" className={styles.registerBtn}>
-                Register
-              </Link>
-            </div>
-          )}
 
-          {authLoaded && isLoggedIn && (
-            <div className={styles.avatarWrap} ref={dropdownRef}>
-              <button
-                type="button"
-                className={styles.avatarBtn}
-                onClick={() => setDropdownOpen((v) => !v)}
-                aria-label="User menu"
-                aria-expanded={dropdownOpen}
-              >
-                {initials}
-              </button>
+          {/* 1. Candidates dropdown (hidden when employer is logged in) */}
+          {authLoaded && userRole !== 'employer' && (
+            <div className={styles.dropWrap} ref={candidatesRef}>
+              {isLoggedIn && userRole === 'candidate' ? (
+                /* Logged-in candidate: avatar + first name */
+                <button
+                  type="button"
+                  className={styles.avatarDropBtn}
+                  onClick={() => setCandidatesOpen(v => !v)}
+                  aria-expanded={candidatesOpen}
+                >
+                  <span className={styles.avatarCircle}>{initials}</span>
+                  <span className={styles.avatarName}>Hi, {firstName}</span>
+                  <i className={`fa-solid fa-chevron-down ${styles.dropCaret} ${candidatesOpen ? styles.dropCaretOpen : ''}`} aria-hidden="true" />
+                </button>
+              ) : (
+                /* Logged out: "Candidates" button */
+                <button
+                  type="button"
+                  className={styles.candidatesBtn}
+                  onClick={() => setCandidatesOpen(v => !v)}
+                  aria-expanded={candidatesOpen}
+                >
+                  Candidates
+                  <i className={`fa-solid fa-chevron-down ${styles.dropCaret} ${candidatesOpen ? styles.dropCaretOpen : ''}`} aria-hidden="true" />
+                </button>
+              )}
 
-              <div className={`${styles.dropdown} ${dropdownOpen ? styles.dropdownOpen : ''}`}>
-                {/* Candidate menu */}
-                {userRole === 'candidate' && (
+              <div className={`${styles.dropdownPanel} ${candidatesOpen ? styles.dropdownPanelOpen : ''}`}>
+                {isLoggedIn && userRole === 'candidate' ? (
+                  /* Candidate logged-in menu */
                   <>
-                    <Link href="/candidate/dashboard" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                    <Link href="/candidate/dashboard" className={styles.dropdownItem} onClick={() => setCandidatesOpen(false)}>
                       <i className="fa-solid fa-gauge" aria-hidden="true" /> My Dashboard
                     </Link>
-                    <Link href="/candidate/dashboard?tab=applications" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                    <Link href="/candidate/dashboard?tab=applications" className={styles.dropdownItem} onClick={() => setCandidatesOpen(false)}>
                       <i className="fa-solid fa-file-lines" aria-hidden="true" /> My Applications
                     </Link>
-                    <Link href="/candidate/dashboard?tab=profile" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                    <Link href="/candidate/dashboard?tab=profile" className={styles.dropdownItem} onClick={() => setCandidatesOpen(false)}>
                       <i className="fa-solid fa-user-pen" aria-hidden="true" /> My Profile
                     </Link>
+                    <div className={styles.dropdownDivider} />
+                    <button type="button" className={styles.dropdownSignOut} onClick={signOut}>
+                      <i className="fa-solid fa-right-from-bracket" aria-hidden="true" /> Sign Out
+                    </button>
                   </>
-                )}
-
-                {/* Employer menu */}
-                {userRole === 'employer' && (
+                ) : (
+                  /* Logged-out candidates menu */
                   <>
-                    <Link href="/employer/dashboard" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
-                      <i className="fa-solid fa-gauge" aria-hidden="true" /> Dashboard
+                    <Link href="/candidate/register?mode=login" className={`${styles.dropdownItem} ${styles.dropdownItemWithSub}`} onClick={() => setCandidatesOpen(false)}>
+                      <i className="fa-solid fa-right-to-bracket" aria-hidden="true" />
+                      <span>
+                        <span className={styles.dropdownItemLabel}>Sign In</span>
+                        <span className={styles.dropdownItemSub}>Access your dashboard</span>
+                      </span>
                     </Link>
-                    <Link href="/employer/post-job" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
-                      <i className="fa-solid fa-plus-circle" aria-hidden="true" /> Post a Job
+                    <div className={styles.dropdownDivider} />
+                    <Link href="/candidate/register" className={`${styles.dropdownItem} ${styles.dropdownItemWithSub}`} onClick={() => setCandidatesOpen(false)}>
+                      <i className="fa-solid fa-user-plus" aria-hidden="true" />
+                      <span>
+                        <span className={styles.dropdownItemLabel}>Create Account</span>
+                        <span className={styles.dropdownItemSub}>New to Promex? Join free</span>
+                      </span>
                     </Link>
-                    <Link href="/employer/dashboard?tab=applicants" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
-                      <i className="fa-solid fa-users" aria-hidden="true" /> My Applicants
-                    </Link>
+                    <div className={styles.dropdownDivider} />
+                    <div className={styles.dropdownTrustNote}>
+                      🛡️ Zero placement fees · DMW accredited
+                    </div>
                   </>
                 )}
-
-                <div className={styles.dropdownDivider} />
-                <button type="button" className={styles.dropdownSignOut} onClick={signOut}>
-                  <i className="fa-solid fa-right-from-bracket" aria-hidden="true" /> Sign Out
-                </button>
               </div>
             </div>
           )}
 
-          {/* For Employers dropdown */}
-          {showEmployersMenu && (
-            <div className={styles.employersWrap} ref={employersMenuRef}>
+          {/* 2. For Employers dropdown (always visible) */}
+          <div className={styles.dropWrap} ref={employersRef}>
+            {isLoggedIn && userRole === 'employer' ? (
+              /* Employer logged-in: avatar + company name */
+              <button
+                type="button"
+                className={styles.avatarDropBtn}
+                onClick={() => setEmployersOpen(v => !v)}
+                aria-expanded={employersOpen}
+              >
+                <span className={styles.avatarCircle}>{initials}</span>
+                <span className={styles.avatarName}>Hi, {firstName}</span>
+                <i className={`fa-solid fa-chevron-down ${styles.dropCaret} ${employersOpen ? styles.dropCaretOpen : ''}`} aria-hidden="true" />
+              </button>
+            ) : (
               <button
                 type="button"
                 className={styles.employersBtn}
-                onClick={() => setEmployersMenuOpen((v) => !v)}
-                aria-expanded={employersMenuOpen}
+                onClick={() => setEmployersOpen(v => !v)}
+                aria-expanded={employersOpen}
               >
-                For Employers <i className={`fa-solid fa-chevron-down ${styles.employersCaret} ${employersMenuOpen ? styles.employersCaretOpen : ''}`} aria-hidden="true" />
+                For Employers
+                <i className={`fa-solid fa-chevron-down ${styles.dropCaret} ${employersOpen ? styles.dropCaretOpen : ''}`} aria-hidden="true" />
               </button>
-              <div className={`${styles.employersMenu} ${employersMenuOpen ? styles.employersMenuOpen : ''}`}>
-                <Link href="/employer/register" className={`${styles.dropdownItem} ${styles.dropdownItemWithSub}`} onClick={() => setEmployersMenuOpen(false)}>
-                  <i className="fa-solid fa-building" aria-hidden="true" />
-                  <span>
-                    <span className={styles.dropdownItemLabel}>Post Jobs as a Partner</span>
-                    <span className={styles.dropdownItemSub}>Register your company</span>
-                  </span>
-                </Link>
-                <Link href="/employer-inquiry" className={`${styles.dropdownItem} ${styles.dropdownItemWithSub}`} onClick={() => setEmployersMenuOpen(false)}>
-                  <i className="fa-solid fa-handshake" aria-hidden="true" />
-                  <span>
-                    <span className={styles.dropdownItemLabel}>Submit Hiring Inquiry</span>
-                    <span className={styles.dropdownItemSub}>New client enquiry</span>
-                  </span>
-                </Link>
-                <div className={styles.dropdownDivider} />
-                <Link href="/employer/register?mode=login" className={styles.dropdownItem} onClick={() => setEmployersMenuOpen(false)}>
-                  <i className="fa-solid fa-right-to-bracket" aria-hidden="true" /> Partner Login
-                </Link>
-              </div>
-            </div>
-          )}
+            )}
 
-          {/* View Overseas Jobs CTA */}
-          {showViewJobs && (
-            <Button label="View Overseas Jobs" href="/jobs" variant="accent" size="md" />
-          )}
+            <div className={`${styles.dropdownPanel} ${employersOpen ? styles.dropdownPanelOpen : ''}`}>
+              {isLoggedIn && userRole === 'employer' ? (
+                /* Employer logged-in menu */
+                <>
+                  <Link href="/employer/dashboard" className={styles.dropdownItem} onClick={() => setEmployersOpen(false)}>
+                    <i className="fa-solid fa-gauge" aria-hidden="true" /> Dashboard
+                  </Link>
+                  <Link href="/employer/post-job" className={styles.dropdownItem} onClick={() => setEmployersOpen(false)}>
+                    <i className="fa-solid fa-plus-circle" aria-hidden="true" /> Post a Job
+                  </Link>
+                  <div className={styles.dropdownDivider} />
+                  <button type="button" className={styles.dropdownSignOut} onClick={signOut}>
+                    <i className="fa-solid fa-right-from-bracket" aria-hidden="true" /> Sign Out
+                  </button>
+                </>
+              ) : (
+                /* Public employers menu */
+                <>
+                  <Link href="/employer/register" className={`${styles.dropdownItem} ${styles.dropdownItemWithSub}`} onClick={() => setEmployersOpen(false)}>
+                    <i className="fa-solid fa-building" aria-hidden="true" />
+                    <span>
+                      <span className={styles.dropdownItemLabel}>Post Jobs as a Partner</span>
+                      <span className={styles.dropdownItemSub}>Register your company</span>
+                    </span>
+                  </Link>
+                  <Link href="/employer-inquiry" className={`${styles.dropdownItem} ${styles.dropdownItemWithSub}`} onClick={() => setEmployersOpen(false)}>
+                    <i className="fa-solid fa-handshake" aria-hidden="true" />
+                    <span>
+                      <span className={styles.dropdownItemLabel}>Submit Hiring Inquiry</span>
+                      <span className={styles.dropdownItemSub}>New client enquiry</span>
+                    </span>
+                  </Link>
+                  <div className={styles.dropdownDivider} />
+                  <Link href="/employer/register?mode=login" className={styles.dropdownItem} onClick={() => setEmployersOpen(false)}>
+                    <i className="fa-solid fa-right-to-bracket" aria-hidden="true" /> Partner Login
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* 3. View Overseas Jobs — always visible */}
+          <Button label="View Overseas Jobs" href="/jobs" variant="accent" size="md" />
+
         </div>
 
         {/* ── Hamburger ── */}
@@ -299,7 +343,7 @@ export default function Navbar() {
                 <span className={styles.mobileUserName}>{displayName}</span>
               </div>
 
-              {/* Role-specific links */}
+              {/* Candidate links */}
               {userRole === 'candidate' && (
                 <>
                   <Link href="/candidate/dashboard" className={styles.mobileDashLink} onClick={() => setMobileMenuOpen(false)}>
@@ -313,6 +357,8 @@ export default function Navbar() {
                   </Link>
                 </>
               )}
+
+              {/* Employer links */}
               {userRole === 'employer' && (
                 <>
                   <Link href="/employer/dashboard" className={styles.mobileDashLink} onClick={() => setMobileMenuOpen(false)}>
@@ -333,9 +379,20 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Button label="View Overseas Jobs" href="/jobs" variant="accent" fullWidth onClick={() => setMobileMenuOpen(false)} />
-              <div className={styles.mobileEmployersSection}>
-                <p className={styles.mobileEmployersLabel}>For Employers</p>
+              {/* Candidates section */}
+              <div className={styles.mobileSectionBox}>
+                <p className={styles.mobileSectionLabel}>Candidates</p>
+                <Link href="/candidate/register?mode=login" className={styles.mobileOutlineBtn} onClick={() => setMobileMenuOpen(false)}>
+                  Sign In
+                </Link>
+                <Link href="/candidate/register" className={styles.mobileSolidBtn} onClick={() => setMobileMenuOpen(false)}>
+                  Create Free Account
+                </Link>
+              </div>
+
+              {/* For Employers section */}
+              <div className={styles.mobileSectionBox}>
+                <p className={styles.mobileSectionLabel}>For Employers</p>
                 <Link href="/employer/register" className={styles.mobileDashLink} onClick={() => setMobileMenuOpen(false)}>
                   <i className="fa-solid fa-building" aria-hidden="true" /> Post Jobs as a Partner
                 </Link>
@@ -346,14 +403,9 @@ export default function Navbar() {
                   <i className="fa-solid fa-right-to-bracket" aria-hidden="true" /> Partner Login
                 </Link>
               </div>
-              <div className={styles.mobileAuthRow}>
-                <Link href="/candidate/register?mode=login" className={styles.mobileSignInBtn} onClick={() => setMobileMenuOpen(false)}>
-                  Sign In
-                </Link>
-                <Link href="/candidate/register" className={styles.mobileRegisterBtn} onClick={() => setMobileMenuOpen(false)}>
-                  Register
-                </Link>
-              </div>
+
+              {/* View Jobs CTA */}
+              <Button label="View Overseas Jobs" href="/jobs" variant="accent" fullWidth onClick={() => setMobileMenuOpen(false)} />
             </>
           )}
         </div>

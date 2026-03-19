@@ -88,95 +88,123 @@
   border-radius: 2px;
 }
 
-/* ---- CTA / Auth row ---- */
+/* ---- Right actions row ---- */
 .navActions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-shrink: 0;
 }
 
-/* ---- Auth buttons (logged out) ---- */
-.authBtns {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+/* ── Shared dropdown wrapper ── */
+.dropWrap {
+  position: relative;
 }
 
-.signInBtn {
+/* ── Candidates button (logged out) ── */
+.candidatesBtn {
   display: inline-flex;
   align-items: center;
-  padding: 6px 16px;
+  gap: 6px;
+  padding: 7px 14px;
   border: 1.5px solid #d1d5db;
-  border-radius: 8px;
+  border-radius: 10px;
+  background: transparent;
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: 0.85rem;
   color: #374151;
-  text-decoration: none;
+  cursor: pointer;
   white-space: nowrap;
   transition: border-color 0.2s ease, color 0.2s ease;
 }
 
-.signInBtn:hover {
+.candidatesBtn:hover {
   border-color: #4FA3C7;
   color: #4FA3C7;
 }
 
-.registerBtn {
+/* ── Employers button ── */
+.employersBtn {
   display: inline-flex;
   align-items: center;
-  padding: 6px 16px;
-  background: #4FA3C7;
-  border: 1.5px solid #4FA3C7;
-  border-radius: 8px;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  background: transparent;
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 0.85rem;
-  color: #ffffff;
-  text-decoration: none;
+  color: #374151;
+  cursor: pointer;
   white-space: nowrap;
-  transition: background 0.2s ease;
+  transition: border-color 0.2s ease, color 0.2s ease;
 }
 
-.registerBtn:hover {
-  background: #3C8DB1;
-  border-color: #3C8DB1;
+.employersBtn:hover {
+  border-color: #4FA3C7;
+  color: #4FA3C7;
 }
 
-/* ---- Avatar + Dropdown (logged in) ---- */
-.avatarWrap {
-  position: relative;
+/* ── Avatar + name button (logged-in) ── */
+.avatarDropBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 4px 4px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 99px;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.avatarBtn {
-  width: 36px;
-  height: 36px;
+.avatarDropBtn:hover {
+  border-color: #4FA3C7;
+  box-shadow: 0 0 0 3px rgba(79, 163, 199, 0.12);
+}
+
+.avatarCircle {
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: #4FA3C7;
-  border: none;
   color: #ffffff;
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 0.85rem;
-  cursor: pointer;
+  font-size: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: box-shadow 0.2s ease, transform 0.15s ease;
   letter-spacing: 0.02em;
 }
 
-.avatarBtn:hover {
-  box-shadow: 0 0 0 3px rgba(79, 163, 199, 0.25);
-  transform: scale(1.06);
+.avatarName {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.84rem;
+  color: #374151;
+  white-space: nowrap;
 }
 
-/* ---- Dropdown menu ---- */
-.dropdown {
+/* ── Shared chevron for both dropdowns ── */
+.dropCaret {
+  font-size: 0.65rem;
+  color: #9ca3af;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.dropCaretOpen {
+  transform: rotate(180deg);
+}
+
+/* ── Unified dropdown panel ── */
+.dropdownPanel {
   position: absolute;
-  top: calc(100% + 10px);
+  top: calc(100% + 8px);
   right: 0;
   min-width: 200px;
   background: #ffffff;
@@ -185,19 +213,20 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
   padding: 6px;
   z-index: 200;
-  /* Hidden state */
+  /* Hidden */
   opacity: 0;
-  transform: translateY(-6px);
+  transform: translateY(-4px);
   pointer-events: none;
-  transition: opacity 0.18s ease, transform 0.18s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
-.dropdownOpen {
+.dropdownPanelOpen {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
 }
 
+/* ── Dropdown items ── */
 .dropdownItem {
   display: flex;
   align-items: center;
@@ -206,7 +235,7 @@
   border-radius: 8px;
   font-family: var(--font-heading);
   font-weight: 500;
-  font-size: 0.88rem;
+  font-size: 0.87rem;
   color: #374151;
   text-decoration: none;
   transition: background 0.15s ease, color 0.15s ease;
@@ -221,7 +250,7 @@
 .dropdownItem i {
   width: 16px;
   text-align: center;
-  color: var(--color-secondary-text);
+  color: #9ca3af;
   font-size: 0.85rem;
   flex-shrink: 0;
 }
@@ -230,6 +259,7 @@
   color: var(--color-primary);
 }
 
+/* Items with subtitle */
 .dropdownItemWithSub {
   align-items: flex-start;
   white-space: normal;
@@ -238,29 +268,30 @@
 .dropdownItemLabel {
   display: block;
   font-weight: 600;
-  font-size: 0.88rem;
+  font-size: 0.87rem;
   color: inherit;
 }
 
 .dropdownItemSub {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   font-weight: 400;
-  color: var(--color-secondary-text);
+  color: #9ca3af;
   margin-top: 1px;
 }
 
 .dropdownItemWithSub:hover .dropdownItemSub {
-  color: var(--color-primary);
-  opacity: 0.8;
+  color: rgba(79, 163, 199, 0.8);
 }
 
+/* Divider */
 .dropdownDivider {
   height: 1px;
   background: #f3f4f6;
   margin: 4px 6px;
 }
 
+/* Sign out button */
 .dropdownSignOut {
   display: flex;
   align-items: center;
@@ -272,7 +303,7 @@
   background: transparent;
   font-family: var(--font-heading);
   font-weight: 500;
-  font-size: 0.88rem;
+  font-size: 0.87rem;
   color: #ef4444;
   cursor: pointer;
   transition: background 0.15s ease;
@@ -291,84 +322,14 @@
   flex-shrink: 0;
 }
 
-/* ---- For Employers dropdown ---- */
-.employersWrap {
-  position: relative;
-}
-
-.employersBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 14px;
-  border: 1.5px solid #d1d5db;
-  border-radius: 8px;
-  background: transparent;
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: #374151;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: border-color 0.2s ease, color 0.2s ease;
-}
-
-.employersBtn:hover {
-  border-color: #4FA3C7;
-  color: #4FA3C7;
-}
-
-.employersCaret {
-  font-size: 0.7rem;
-  transition: transform 0.2s ease;
-}
-
-.employersCaretOpen {
-  transform: rotate(180deg);
-}
-
-.employersMenu {
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  min-width: 220px;
-  background: #ffffff;
-  border: 1px solid #f3f4f6;
-  border-radius: 14px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
-  padding: 6px;
-  z-index: 200;
-  opacity: 0;
-  transform: translateY(-6px);
-  pointer-events: none;
-  transition: opacity 0.18s ease, transform 0.18s ease;
-}
-
-.employersMenuOpen {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-/* ─── Mobile employers section ─── */
-.mobileEmployersSection {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  border: 1px solid #f3f4f6;
-  border-radius: 10px;
-  padding: 10px;
-  background: #fafafa;
-}
-
-.mobileEmployersLabel {
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 0.75rem;
-  color: var(--color-secondary-text);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin: 0 0 6px 2px;
+/* Trust note at bottom of candidates dropdown */
+.dropdownTrustNote {
+  padding: 8px 12px 4px;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: #9ca3af;
+  text-align: center;
+  line-height: 1.4;
 }
 
 /* ---- Hamburger ---- */
@@ -410,7 +371,7 @@
 
 .mobileOpen {
   border-top: 1px solid var(--color-border);
-  max-height: 640px;
+  max-height: 700px;
   padding: 16px 24px 28px;
 }
 
@@ -432,6 +393,71 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+/* ── Mobile: section box (candidates / employers) ── */
+.mobileSectionBox {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 1px solid #f3f4f6;
+  border-radius: 10px;
+  padding: 12px;
+  background: #fafafa;
+}
+
+.mobileSectionLabel {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.72rem;
+  color: var(--color-secondary-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 6px 2px;
+}
+
+/* Full-width outline button (Sign In) */
+.mobileOutlineBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: #374151;
+  text-decoration: none;
+  text-align: center;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.mobileOutlineBtn:hover {
+  border-color: #4FA3C7;
+  color: #4FA3C7;
+}
+
+/* Full-width solid button (Create Account) */
+.mobileSolidBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background: #4FA3C7;
+  border: 1.5px solid #4FA3C7;
+  border-radius: 8px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #ffffff;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.2s ease;
+}
+
+.mobileSolidBtn:hover {
+  background: #3C8DB1;
 }
 
 /* ── Mobile: logged in ── */
@@ -516,55 +542,6 @@
 
 .mobileSignOutBtn:hover {
   background: rgba(239, 68, 68, 0.06);
-}
-
-/* ── Mobile: logged out ── */
-.mobileAuthRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.mobileSignInBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  border: 1.5px solid #d1d5db;
-  border-radius: 8px;
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.88rem;
-  color: #374151;
-  text-decoration: none;
-  text-align: center;
-  transition: border-color 0.2s ease, color 0.2s ease;
-}
-
-.mobileSignInBtn:hover {
-  border-color: #4FA3C7;
-  color: #4FA3C7;
-}
-
-.mobileRegisterBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  background: #4FA3C7;
-  border: 1.5px solid #4FA3C7;
-  border-radius: 8px;
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 0.88rem;
-  color: #ffffff;
-  text-decoration: none;
-  text-align: center;
-  transition: background 0.2s ease;
-}
-
-.mobileRegisterBtn:hover {
-  background: #3C8DB1;
 }
 
 /* ---- Responsive ---- */
