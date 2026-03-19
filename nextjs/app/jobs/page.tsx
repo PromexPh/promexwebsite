@@ -12,6 +12,18 @@ const JOB_TYPES = ['All Types', 'Full-time', 'Contract', 'Part-time'];
 const LIMIT = 12;
 const SAVED_KEY = 'promex_saved_jobs';
 
+const INDUSTRY_COLORS: Record<string, string> = {
+  'Healthcare':       '#E74C3C',
+  'Engineering':      '#3498DB',
+  'Hospitality':      '#E67E22',
+  'IT & Technology':  '#9B59B6',
+  'Manufacturing':    '#1ABC9C',
+  'Retail':           '#F39C12',
+  'Agriculture':      '#27AE60',
+  'Construction':     '#95A5A6',
+};
+function industryColor(ind: string): string { return INDUSTRY_COLORS[ind] ?? '#6C757D'; }
+
 function getSaved(): Set<string> {
   if (typeof window === 'undefined') return new Set();
   try {
@@ -199,16 +211,40 @@ export default function JobsPage() {
                     tabIndex={0}
                     onKeyDown={(e) => e.key === 'Enter' && setSelectedJob(job)}
                   >
-                    <div className={styles.jobCardHeader}>
-                      <div className={styles.jobCardLeft}>
-                        <div className={styles.jobTitleRow}>
-                          <h3 className={styles.jobTitle}>{job.title}</h3>
-                          {job.urgent && <span className={styles.urgentBadge}>URGENT</span>}
-                        </div>
-                        <div className={styles.jobCompany}><i className="fa-solid fa-building" aria-hidden="true" /> {job.company}</div>
+                    {/* Top row: industry tag + URGENT */}
+                    <div className={styles.jobCardTop}>
+                      <div className={styles.industryTag}>
+                        <span className={styles.industryDot} style={{ background: industryColor(job.industry) }} />
+                        {job.industry}
                       </div>
-                      <div className={styles.jobCardRight}>
-                        <span className={styles.jobSalary}>{job.salary}<span className={styles.salaryPer}>/mo</span></span>
+                      <div className={styles.jobCardTopRight}>
+                        {(job as { posted_by_admin?: boolean }).posted_by_admin && (
+                          <span className={styles.promexBadge}>By Promex</span>
+                        )}
+                        {job.urgent && <span className={styles.urgentBadge}>URGENT</span>}
+                      </div>
+                    </div>
+
+                    {/* Title + company */}
+                    <h3 className={styles.jobTitle}>{job.title}</h3>
+                    <div className={styles.jobCompany}><i className="fa-solid fa-building" aria-hidden="true" /> {job.company}</div>
+
+                    {/* Meta row */}
+                    <div className={styles.jobCardMeta}>
+                      <span className={styles.jobMetaItem}><i className="fa-solid fa-location-dot" aria-hidden="true" /> {job.country}</span>
+                      <span className={styles.jobMetaItem}><i className="fa-solid fa-clock" aria-hidden="true" /> {job.job_type}</span>
+                      <span className={styles.jobMetaItem}><i className="fa-solid fa-user-graduate" aria-hidden="true" /> {job.experience}</span>
+                    </div>
+
+                    {/* Divider + salary + slots + button */}
+                    <div className={styles.jobCardFooter}>
+                      <div className={styles.jobFooterLeft}>
+                        <span className={styles.jobSalary}><i className="fa-solid fa-money-bill-wave" aria-hidden="true" /> {job.salary}/mo</span>
+                        {(job.slots_available ?? 0) > 0 && (
+                          <span className={styles.slotsItem}><i className="fa-solid fa-users" aria-hidden="true" /> {job.slots_available} slots</span>
+                        )}
+                      </div>
+                      <div className={styles.jobCardActions}>
                         <button
                           type="button"
                           className={`${styles.saveBtn} ${saved.has(job.id) ? styles.saveBtnActive : ''}`}
@@ -217,26 +253,8 @@ export default function JobsPage() {
                         >
                           <i className={`fa-${saved.has(job.id) ? 'solid' : 'regular'} fa-bookmark`} aria-hidden="true" />
                         </button>
+                        <span className={styles.jobViewDetails}>View Job →</span>
                       </div>
-                    </div>
-
-                    <div className={styles.jobCardMeta}>
-                      <span className={styles.jobMetaItem}><i className="fa-solid fa-location-dot" aria-hidden="true" /> {job.country}</span>
-                      <span className={styles.jobMetaItem}><i className="fa-solid fa-briefcase" aria-hidden="true" /> {job.industry}</span>
-                      <span className={styles.jobMetaItem}><i className="fa-solid fa-clock" aria-hidden="true" /> {job.job_type}</span>
-                      <span className={styles.jobMetaItem}><i className="fa-solid fa-user-graduate" aria-hidden="true" /> {job.experience}</span>
-                      {(job.slots_available ?? 0) > 0 && (
-                        <span className={styles.slotsItem}><i className="fa-solid fa-users" aria-hidden="true" /> {job.slots_available} slots</span>
-                      )}
-                    </div>
-
-                    <p className={styles.jobDescription}>{job.description}</p>
-
-                    <div className={styles.jobCardFooter}>
-                      <span className={styles.jobPosted}>
-                        {new Date(job.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                      </span>
-                      <span className={styles.jobViewDetails}>View Details →</span>
                     </div>
                   </div>
                 </Reveal>
