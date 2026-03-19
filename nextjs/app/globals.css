@@ -200,3 +200,11 @@ img {
     transform: none !important;
   }
 }
+
+/* ── Portal design tokens ── */
+:root {
+  --portal-navy: #0a1628;
+  --portal-navy-2: #1a2f4e;
+  --portal-gold: #c8a84b;
+  --portal-gold-light: #e8c96a;
+}

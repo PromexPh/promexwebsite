@@ -1,0 +1,705 @@
+/* =============================================
+   JOB DETAIL PAGE
+   ============================================= */
+
+.loadingPage {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-size: 1.8rem;
+  color: var(--color-primary);
+}
+
+.loadingPage p {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-secondary-text);
+}
+
+/* ---- Hero ---- */
+.jobHero {
+  position: relative;
+  background: linear-gradient(135deg, var(--portal-navy) 0%, var(--portal-navy-2) 60%, #0d2040 100%);
+  padding: 100px 0 80px;
+  overflow: hidden;
+}
+
+.jobHero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 80% 20%, rgba(200, 168, 75, 0.12) 0%, transparent 50%),
+                    radial-gradient(circle at 10% 80%, rgba(79, 163, 199, 0.1) 0%, transparent 50%);
+}
+
+.jobHeroOverlay {
+  display: none;
+}
+
+.jobHeroContent {
+  position: relative;
+  z-index: 1;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 20px;
+  padding: 6px 16px;
+  color: rgba(255,255,255,0.75);
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 28px;
+}
+
+.backLink:hover {
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+}
+
+.jobHeroBadge {
+  display: inline-block;
+  background: var(--portal-gold);
+  color: var(--portal-navy);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.jobHeroTitle {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  color: #ffffff;
+  margin: 0 0 12px;
+  line-height: 1.2;
+}
+
+.jobHeroCompany {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jobHeroMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.65);
+}
+
+.jobHeroMeta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.jobHeroSalary {
+  color: var(--portal-gold-light);
+  font-weight: 600;
+}
+
+/* ---- Content ---- */
+.jobContent {
+  padding: 64px 0 96px;
+  background: var(--color-bg);
+}
+
+.jobContentLayout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 40px;
+  align-items: start;
+}
+
+/* ---- Main ---- */
+.jobMain {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.jobSection {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 32px 36px;
+  box-shadow: var(--shadow-sm);
+}
+
+.jobSectionTitle {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--color-dark-text);
+  margin: 0 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.jobSectionTitle i {
+  color: var(--color-primary);
+}
+
+.jobDescription {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.85;
+  color: var(--color-secondary-text);
+  margin: 0;
+}
+
+.jobList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.jobList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-size: 0.93rem;
+  color: var(--color-secondary-text);
+  line-height: 1.6;
+}
+
+.jobList li i {
+  color: var(--portal-gold);
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+/* ---- Sidebar ---- */
+.jobSidebar {
+  position: sticky;
+  top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebarCard {
+  background: var(--portal-navy);
+  border-radius: var(--radius-xl);
+  padding: 32px 28px;
+  box-shadow: 0 8px 32px rgba(10, 22, 40, 0.3);
+}
+
+.sidebarSalary {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.6rem;
+  color: var(--portal-gold);
+  margin-bottom: 20px;
+}
+
+.sidebarSalary span {
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.5);
+}
+
+.sidebarMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebarMetaItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.65);
+}
+
+.sidebarMetaItem i {
+  width: 16px;
+  text-align: center;
+  color: var(--portal-gold);
+  flex-shrink: 0;
+}
+
+.applyBtn {
+  width: 100%;
+  padding: 14px;
+  background: var(--portal-gold);
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--portal-navy);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.applyBtn:hover {
+  background: var(--portal-gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(200, 168, 75, 0.35);
+}
+
+.appliedBadge {
+  width: 100%;
+  padding: 13px;
+  background: rgba(140, 198, 63, 0.15);
+  border: 1.5px solid rgba(140, 198, 63, 0.4);
+  border-radius: var(--radius-md);
+  color: #8cc63f;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.92rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.sidebarNote {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.4);
+  text-align: center;
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  line-height: 1.5;
+}
+
+.sidebarNote i {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--portal-gold);
+}
+
+.sidebarShare {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  text-align: center;
+}
+
+.sidebarShare p {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-secondary-text);
+  margin: 0 0 12px;
+}
+
+.shareButtons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.shareButtons button {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  background: transparent;
+  color: var(--color-secondary-text);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shareButtons button:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* ── Modal ──────────────────────────────────── */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 22, 40, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+}
+
+.modalClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  background: transparent;
+  color: var(--color-secondary-text);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+
+.modalClose:hover {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+/* Steps */
+.modalSteps {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+  padding: 24px 28px 0;
+  gap: 0;
+}
+
+.modalStep {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  opacity: 0.4;
+}
+
+.modalStepActive {
+  border-bottom-color: var(--portal-gold);
+  opacity: 1;
+}
+
+.modalStepNum {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--color-secondary-text);
+  transition: all 0.2s ease;
+}
+
+.modalStepActive .modalStepNum {
+  background: var(--portal-gold);
+  color: var(--portal-navy);
+}
+
+.modalStepLabel {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--color-secondary-text);
+  text-align: center;
+}
+
+.modalStepActive .modalStepLabel {
+  color: var(--color-dark-text);
+}
+
+/* Body */
+.modalBody {
+  padding: 28px 28px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.modalSectionTitle {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--color-dark-text);
+  margin: 0;
+}
+
+.modalRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.modalField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modalField label {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--color-dark-text);
+}
+
+.modalField small {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--color-secondary-text);
+}
+
+.modalField input,
+.modalField select,
+.modalField textarea {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--color-dark-text);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.modalField input:focus,
+.modalField select:focus,
+.modalField textarea:focus {
+  border-color: var(--portal-gold);
+  box-shadow: 0 0 0 3px rgba(200, 168, 75, 0.15);
+}
+
+.modalField textarea { resize: vertical; }
+
+.req { color: #dc2626; }
+
+.modalError {
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: #dc2626;
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* Actions */
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 24px 28px 28px;
+}
+
+.modalBackBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-secondary-text);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modalBackBtn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.modalNextBtn,
+.modalSubmitBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--portal-navy);
+  color: var(--portal-gold);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modalSubmitBtn {
+  background: var(--portal-gold);
+  color: var(--portal-navy);
+}
+
+.modalNextBtn:hover:not(:disabled),
+.modalSubmitBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(200, 168, 75, 0.3);
+}
+
+.modalNextBtn:disabled,
+.modalSubmitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Success */
+.modalSuccess {
+  padding: 48px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+}
+
+.modalSuccessIcon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(140, 198, 63, 0.15);
+  border: 2px solid rgba(140, 198, 63, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: #8cc63f;
+}
+
+.modalSuccess h2 {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--color-dark-text);
+  margin: 0;
+}
+
+.modalSuccess p {
+  font-family: var(--font-body);
+  font-size: 0.93rem;
+  color: var(--color-secondary-text);
+  line-height: 1.7;
+  margin: 0;
+  max-width: 360px;
+}
+
+.modalDoneBtn {
+  padding: 10px 32px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--portal-navy);
+  color: var(--portal-gold);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.2s ease;
+}
+
+.modalDoneBtn:hover {
+  background: var(--portal-navy-2);
+}
+
+/* ── Responsive ─────────────────────────────── */
+@media (max-width: 900px) {
+  .jobContentLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .jobSidebar {
+    position: static;
+    order: -1;
+  }
+
+  .sidebarCard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .sidebarSalary {
+    grid-column: 1 / -1;
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .jobHero {
+    padding: 80px 0 60px;
+  }
+
+  .jobSection {
+    padding: 24px 20px;
+  }
+
+  .modalRow {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebarCard {
+    grid-template-columns: 1fr;
+  }
+}

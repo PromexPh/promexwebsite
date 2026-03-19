@@ -1,39 +1,31 @@
 'use client';
 
-import { useState, useMemo, ChangeEvent } from 'react';
+import { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import Reveal from '@/components/ui/Reveal';
 import Button from '@/components/ui/Button';
 import styles from './page.module.css';
+import type { Job, JobsResponse } from '@/lib/types';
 
-interface Job {
-  id: number;
-  title: string;
-  company: string;
-  country: string;
-  industry: string;
-  salary: string;
-  type: string;
-  experience: string;
-  description: string;
-  requirements: string[];
-  benefits: string[];
-  posted: string;
+const COUNTRIES = ['All Countries', 'Saudi Arabia', 'UAE', 'Qatar', 'Kuwait', 'Singapore', 'Japan', 'Canada', 'Australia'];
+const INDUSTRIES = ['All Industries', 'Hospitality', 'Healthcare', 'Retail', 'Engineering', 'IT & Technology', 'Construction'];
+const JOB_TYPES = ['All Types', 'Full-time', 'Contract', 'Part-time'];
+const LIMIT = 12;
+
+function SkeletonCard() {
+  return (
+    <div className={styles.skeletonCard}>
+      <div className={styles.skeletonLine} style={{ width: '60%', height: 20 }} />
+      <div className={styles.skeletonLine} style={{ width: '40%', height: 14, marginTop: 8 }} />
+      <div className={styles.skeletonMeta}>
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className={styles.skeletonPill} />
+        ))}
+      </div>
+      <div className={styles.skeletonLine} style={{ width: '90%', height: 14 }} />
+      <div className={styles.skeletonLine} style={{ width: '75%', height: 14 }} />
+    </div>
+  );
 }
-
-const allJobs: Job[] = [
-  { id: 1, title: 'Hotel Manager', company: 'Luxury Resort International', country: 'UAE', industry: 'Hospitality', salary: '$3,500 - $4,500', type: 'Full-time', experience: '5+ years', description: 'Seeking experienced hotel manager for luxury resort in Dubai. Must have strong leadership and operational management skills.', requirements: ["Bachelor's degree in Hospitality Management", '5+ years hotel management experience', 'Strong leadership skills', 'Excellent English communication'], benefits: ['Competitive salary', 'Accommodation provided', 'Health insurance', 'Annual bonus'], posted: '2 days ago' },
-  { id: 2, title: 'Registered Nurse', company: 'National Medical Center', country: 'Saudi Arabia', industry: 'Healthcare', salary: '$2,800 - $3,500', type: 'Full-time', experience: '2+ years', description: 'Looking for dedicated registered nurses to join our growing healthcare team in Riyadh.', requirements: ['Valid nursing license', '2+ years clinical experience', 'PROMETRIC or equivalent certification', 'Good English skills'], benefits: ['Tax-free income', 'Free accommodation', 'Medical coverage', 'Paid vacation'], posted: '3 days ago' },
-  { id: 3, title: 'Civil Engineer', company: 'Global Construction Corp', country: 'Qatar', industry: 'Engineering', salary: '$4,000 - $5,500', type: 'Contract', experience: '3+ years', description: 'Major infrastructure project requires experienced civil engineers for 2-year contract in Doha.', requirements: ["Bachelor's degree in Civil Engineering", '3+ years experience', 'AutoCAD proficiency', 'Project management skills'], benefits: ['High compensation', 'Project completion bonus', 'Flight tickets', 'Premium accommodation'], posted: '1 week ago' },
-  { id: 4, title: 'Software Developer', company: 'Tech Solutions Asia', country: 'Singapore', industry: 'IT & Technology', salary: '$4,500 - $6,000', type: 'Full-time', experience: '3+ years', description: 'Join our innovative tech team developing cutting-edge solutions for global clients.', requirements: ["Bachelor's degree in Computer Science", 'Proficiency in JavaScript/React', '3+ years development experience', 'Strong problem-solving skills'], benefits: ['Competitive package', 'Career growth opportunities', 'Modern office environment', 'Training programs'], posted: '4 days ago' },
-  { id: 5, title: 'Restaurant Manager', company: 'Global Food Chain', country: 'UAE', industry: 'Hospitality', salary: '$2,500 - $3,200', type: 'Full-time', experience: '3+ years', description: 'Manage daily operations of high-volume restaurant in Abu Dhabi. Experience with international cuisine preferred.', requirements: ['3+ years restaurant management', 'Food safety certification', 'Team leadership experience', 'Customer service excellence'], benefits: ['Competitive salary', 'Performance bonuses', 'Staff meals', 'Career advancement'], posted: '5 days ago' },
-  { id: 6, title: 'Physical Therapist', company: 'Rehabilitation Center', country: 'Canada', industry: 'Healthcare', salary: '$3,800 - $4,800', type: 'Full-time', experience: '2+ years', description: 'Provide quality rehabilitation services in modern facility in Toronto.', requirements: ['Licensed Physical Therapist', '2+ years experience', 'Specialization in sports therapy preferred', 'Excellent communication skills'], benefits: ['Competitive Canadian salary', 'Immigration support', 'Health benefits', 'Professional development'], posted: '1 week ago' },
-  { id: 7, title: 'Retail Store Supervisor', company: 'Fashion Retail Group', country: 'Qatar', industry: 'Retail', salary: '$2,200 - $2,800', type: 'Full-time', experience: '2+ years', description: 'Supervise store operations and staff in premium shopping mall location.', requirements: ['2+ years retail supervisory experience', 'Sales target achievement record', 'Customer service oriented', 'Inventory management skills'], benefits: ['Good salary package', 'Sales commissions', 'Housing allowance', 'Flight tickets'], posted: '6 days ago' },
-  { id: 8, title: 'Manufacturing Technician', company: 'Industrial Manufacturing Inc', country: 'Japan', industry: 'Engineering', salary: '$3,200 - $4,000', type: 'Contract', experience: '1+ years', description: 'Operate and maintain manufacturing equipment in automotive parts facility.', requirements: ['Technical diploma or equivalent', 'Experience with manufacturing equipment', 'Quality control knowledge', 'Basic Japanese helpful'], benefits: ['Competitive compensation', 'Language training', 'Accommodation support', 'Overtime pay'], posted: '3 days ago' },
-];
-
-const countries = ['All Countries', 'Saudi Arabia', 'UAE', 'Qatar', 'Kuwait', 'Singapore', 'Japan', 'Canada', 'Australia'];
-const industries = ['All Industries', 'Hospitality', 'Healthcare', 'Retail', 'Engineering', 'IT & Technology', 'Construction'];
-const jobTypes = ['All Types', 'Full-time', 'Contract', 'Part-time'];
 
 export default function JobsPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -41,24 +33,54 @@ export default function JobsPage() {
   const [selectedIndustry, setSelectedIndustry] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
 
-  const filteredJobs = useMemo(() => {
-    return allJobs.filter((job) => {
-      const q = searchQuery.toLowerCase();
-      const matchesSearch = !q || job.title.toLowerCase().includes(q) || job.company.toLowerCase().includes(q) || job.description.toLowerCase().includes(q);
-      const matchesCountry = !selectedCountry || selectedCountry === 'All Countries' || job.country === selectedCountry;
-      const matchesIndustry = !selectedIndustry || selectedIndustry === 'All Industries' || job.industry === selectedIndustry;
-      const matchesType = !selectedType || selectedType === 'All Types' || job.type === selectedType;
-      return matchesSearch && matchesCountry && matchesIndustry && matchesType;
-    });
+  const fetchJobs = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (selectedCountry) params.set('country', selectedCountry);
+      if (selectedIndustry) params.set('industry', selectedIndustry);
+      if (selectedType) params.set('job_type', selectedType);
+      if (searchQuery) params.set('q', searchQuery);
+      params.set('page', String(page));
+      params.set('limit', String(LIMIT));
+
+      const res = await fetch(`/api/jobs?${params.toString()}`);
+      if (!res.ok) throw new Error('Failed to fetch jobs');
+      const data: JobsResponse = await res.json();
+      setJobs(data.jobs);
+      setTotal(data.total);
+    } catch {
+      setJobs([]);
+      setTotal(0);
+    } finally {
+      setLoading(false);
+    }
+  }, [searchQuery, selectedCountry, selectedIndustry, selectedType, page]);
+
+  // Debounce search
+  useEffect(() => {
+    setPage(1);
   }, [searchQuery, selectedCountry, selectedIndustry, selectedType]);
+
+  useEffect(() => {
+    const timer = setTimeout(fetchJobs, searchQuery ? 400 : 0);
+    return () => clearTimeout(timer);
+  }, [fetchJobs, searchQuery]);
 
   function clearFilters() {
     setSearchQuery('');
     setSelectedCountry('');
     setSelectedIndustry('');
     setSelectedType('');
+    setPage(1);
   }
+
+  const totalPages = Math.ceil(total / LIMIT);
 
   return (
     <>
@@ -79,7 +101,7 @@ export default function JobsPage() {
           </Reveal>
           <Reveal animation="fade-up" delay={240}>
             <p className={styles.jobsHeroSub}>
-              Browse hundreds of verified international job opportunities across multiple industries and countries.
+              Browse verified international job opportunities across multiple industries and countries.
             </p>
           </Reveal>
           <Reveal animation="fade-up" delay={360}>
@@ -119,7 +141,7 @@ export default function JobsPage() {
                   onChange={(e) => setSelectedCountry(e.target.value)}
                   className={styles.filterSelect}
                 >
-                  {countries.map((c) => (
+                  {COUNTRIES.map((c) => (
                     <option key={c} value={c === 'All Countries' ? '' : c}>{c}</option>
                   ))}
                 </select>
@@ -135,7 +157,7 @@ export default function JobsPage() {
                   onChange={(e) => setSelectedIndustry(e.target.value)}
                   className={styles.filterSelect}
                 >
-                  {industries.map((ind) => (
+                  {INDUSTRIES.map((ind) => (
                     <option key={ind} value={ind === 'All Industries' ? '' : ind}>{ind}</option>
                   ))}
                 </select>
@@ -151,7 +173,7 @@ export default function JobsPage() {
                   onChange={(e) => setSelectedType(e.target.value)}
                   className={styles.filterSelect}
                 >
-                  {jobTypes.map((t) => (
+                  {JOB_TYPES.map((t) => (
                     <option key={t} value={t === 'All Types' ? '' : t}>{t}</option>
                   ))}
                 </select>
@@ -164,21 +186,32 @@ export default function JobsPage() {
           </Reveal>
 
           <div className={styles.jobsCount}>
-            <strong>{filteredJobs.length}</strong> {filteredJobs.length === 1 ? 'job' : 'jobs'} found
+            {loading ? (
+              <span className={styles.skeletonLine} style={{ width: 120, height: 16, display: 'inline-block' }} />
+            ) : (
+              <><strong>{total}</strong> {total === 1 ? 'job' : 'jobs'} found</>
+            )}
           </div>
 
           <div className={styles.jobsLayout}>
 
             {/* Job Cards */}
             <div className={styles.jobsList}>
-              {filteredJobs.length === 0 && (
+              {loading && (
+                <>
+                  {[1, 2, 3, 4].map((i) => <SkeletonCard key={i} />)}
+                </>
+              )}
+
+              {!loading && jobs.length === 0 && (
                 <div className={styles.noJobsMessage}>
                   <i className="fa-solid fa-inbox" aria-hidden="true" />
                   <h3>No jobs found</h3>
                   <p>Try adjusting your filters or search terms</p>
                 </div>
               )}
-              {filteredJobs.map((job, i) => (
+
+              {!loading && jobs.map((job, i) => (
                 <Reveal key={job.id} animation="fade-up" delay={i * 60}>
                   <div
                     className={`${styles.jobCard} ${selectedJob?.id === job.id ? styles.jobCardSelected : ''}`}
@@ -200,19 +233,53 @@ export default function JobsPage() {
                     <div className={styles.jobCardMeta}>
                       <span className={styles.jobMetaItem}><i className="fa-solid fa-location-dot" aria-hidden="true" /> {job.country}</span>
                       <span className={styles.jobMetaItem}><i className="fa-solid fa-briefcase" aria-hidden="true" /> {job.industry}</span>
-                      <span className={styles.jobMetaItem}><i className="fa-solid fa-clock" aria-hidden="true" /> {job.type}</span>
+                      <span className={styles.jobMetaItem}><i className="fa-solid fa-clock" aria-hidden="true" /> {job.job_type}</span>
                       <span className={styles.jobMetaItem}><i className="fa-solid fa-user-graduate" aria-hidden="true" /> {job.experience}</span>
                     </div>
 
                     <p className={styles.jobDescription}>{job.description}</p>
 
                     <div className={styles.jobCardFooter}>
-                      <span className={styles.jobPosted}>{job.posted}</span>
+                      <span className={styles.jobPosted}>
+                        {new Date(job.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </span>
                       <span className={styles.jobViewDetails}>View Details →</span>
                     </div>
                   </div>
                 </Reveal>
               ))}
+
+              {/* Pagination */}
+              {!loading && totalPages > 1 && (
+                <div className={styles.pagination}>
+                  <button
+                    className={styles.pageBtn}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                    type="button"
+                  >
+                    <i className="fa-solid fa-chevron-left" aria-hidden="true" />
+                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                    <button
+                      key={p}
+                      className={`${styles.pageBtn} ${p === page ? styles.pageBtnActive : ''}`}
+                      onClick={() => setPage(p)}
+                      type="button"
+                    >
+                      {p}
+                    </button>
+                  ))}
+                  <button
+                    className={styles.pageBtn}
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={page === totalPages}
+                    type="button"
+                  >
+                    <i className="fa-solid fa-chevron-right" aria-hidden="true" />
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Job Details Panel */}
@@ -233,7 +300,7 @@ export default function JobsPage() {
                 <div className={styles.jobDetailsMeta}>
                   <div className={styles.jobDetailTag}><i className="fa-solid fa-location-dot" aria-hidden="true" /> {selectedJob.country}</div>
                   <div className={styles.jobDetailTag}><i className="fa-solid fa-briefcase" aria-hidden="true" /> {selectedJob.industry}</div>
-                  <div className={styles.jobDetailTag}><i className="fa-solid fa-clock" aria-hidden="true" /> {selectedJob.type}</div>
+                  <div className={styles.jobDetailTag}><i className="fa-solid fa-clock" aria-hidden="true" /> {selectedJob.job_type}</div>
                   <div className={styles.jobDetailTag}><i className="fa-solid fa-user-graduate" aria-hidden="true" /> {selectedJob.experience}</div>
                 </div>
 
@@ -261,11 +328,19 @@ export default function JobsPage() {
                 </div>
 
                 <div className={styles.jobDetailsActions}>
-                  <Button label="Apply for This Job" href="/apply" variant="primary" size="lg" fullWidth icon="fa-solid fa-paper-plane" iconPosition="right" />
+                  <Button
+                    label="Apply for This Job"
+                    href={`/jobs/${selectedJob.id}`}
+                    variant="primary"
+                    size="lg"
+                    fullWidth
+                    icon="fa-solid fa-paper-plane"
+                    iconPosition="right"
+                  />
                 </div>
 
                 <div className={styles.jobDetailsFooter}>
-                  <small>Posted {selectedJob.posted}</small>
+                  <small>Posted {new Date(selectedJob.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</small>
                 </div>
               </div>
             )}

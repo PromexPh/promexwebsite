@@ -1,0 +1,223 @@
+/* ── Auth Page (Candidate Register/Login) ───── */
+
+.authSection {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--portal-navy) 0%, var(--portal-navy-2) 100%);
+  display: flex;
+  align-items: center;
+  padding: 60px 0;
+}
+
+.authContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.authCard {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 48px 44px;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+}
+
+.authTop {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.authIcon {
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, var(--portal-navy) 0%, var(--portal-navy-2) 100%);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: var(--portal-gold);
+  margin: 0 auto 16px;
+}
+
+.authTitle {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--color-dark-text);
+  margin: 0 0 8px;
+}
+
+.authSubtitle {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--color-secondary-text);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Toggle */
+.authToggle {
+  display: flex;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  padding: 4px;
+  margin-bottom: 24px;
+  gap: 4px;
+}
+
+.toggleBtn {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 20px;
+  background: transparent;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--color-secondary-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toggleBtnActive {
+  background: var(--portal-navy);
+  color: var(--portal-gold);
+  box-shadow: 0 2px 8px rgba(10, 22, 40, 0.2);
+}
+
+/* Error */
+.authError {
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: #dc2626;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+/* Form */
+.authForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formGroup label {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--color-dark-text);
+}
+
+.req { color: #dc2626; }
+
+.formGroup input,
+.formGroup select {
+  font-family: var(--font-body);
+  font-size: 0.93rem;
+  color: var(--color-dark-text);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.formGroup input:focus,
+.formGroup select:focus {
+  border-color: var(--portal-gold);
+  box-shadow: 0 0 0 3px rgba(200, 168, 75, 0.15);
+}
+
+.authSubmitBtn {
+  width: 100%;
+  padding: 13px;
+  background: var(--portal-navy);
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--portal-gold);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.authSubmitBtn:hover:not(:disabled) {
+  background: var(--portal-navy-2);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(10, 22, 40, 0.25);
+}
+
+.authSubmitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.authSwitch {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--color-secondary-text);
+  text-align: center;
+  margin: 16px 0 8px;
+}
+
+.authSwitch button {
+  background: none;
+  border: none;
+  color: var(--portal-gold);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.88rem;
+  text-decoration: underline;
+}
+
+.authNote {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--color-secondary-text);
+  text-align: center;
+  margin: 0;
+}
+
+.authNote a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.authNote a:hover { text-decoration: underline; }
+
+@media (max-width: 560px) {
+  .authCard { padding: 32px 24px; }
+  .formRow { grid-template-columns: 1fr; }
+}
