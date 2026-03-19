@@ -46,13 +46,13 @@ export async function POST(req: NextRequest) {
   }
 
   // Verify employer role
-  const { data: profile } = await supabaseAdmin
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
+  const { data: employer } = await supabaseAdmin
+    .from('employers')
+    .select('user_id')
+    .eq('user_id', user.id)
     .single();
 
-  if (profile?.role !== 'employer') {
+  if (!employer) {
     return NextResponse.json({ error: 'Only employers can post jobs' }, { status: 403 });
   }
 

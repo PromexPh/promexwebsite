@@ -10,17 +10,23 @@ const COUNTRIES = ['All Countries', 'Saudi Arabia', 'UAE', 'Qatar', 'Kuwait', 'S
 const INDUSTRIES = ['All Industries', 'Hospitality', 'Healthcare', 'Retail', 'Engineering', 'IT & Technology', 'Construction'];
 const JOB_TYPES = ['All Types', 'Full-time', 'Contract', 'Part-time'];
 const LIMIT = 12;
+const SAVED_KEY = 'promex_saved_jobs';
+
+function getSaved(): Set<string> {
+  if (typeof window === 'undefined') return new Set();
+  try {
+    return new Set(JSON.parse(localStorage.getItem(SAVED_KEY) ?? '[]'));
+  } catch {
+    return new Set();
+  }
+}
 
 function SkeletonCard() {
   return (
     <div className={styles.skeletonCard}>
       <div className={styles.skeletonLine} style={{ width: '60%', height: 20 }} />
       <div className={styles.skeletonLine} style={{ width: '40%', height: 14, marginTop: 8 }} />
-      <div className={styles.skeletonMeta}>
-        {[1, 2, 3, 4].map((i) => (
-          <div key={i} className={styles.skeletonPill} />
-        ))}
-      </div>
+      <div className={styles.skeletonMeta}>{[1, 2, 3, 4].map((i) => <div key={i} className={styles.skeletonPill} />)}</div>
       <div className={styles.skeletonLine} style={{ width: '90%', height: 14 }} />
       <div className={styles.skeletonLine} style={{ width: '75%', height: 14 }} />
     </div>
@@ -32,11 +38,25 @@ export default function JobsPage() {
   const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedIndustry, setSelectedIndustry] = useState('');
   const [selectedType, setSelectedType] = useState('');
+  const [activeTab, setActiveTab] = useState<'all' | 'saved'>('all');
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [saved, setSaved] = useState<Set<string>>(new Set());
+
+  useEffect(() => { setSaved(getSaved()); }, []);
+
+  function toggleSave(e: React.MouseEvent, jobId: string) {
+    e.stopPropagation();
+    setSaved((prev) => {
+      const next = new Set(prev);
+      if (next.has(jobId)) next.delete(jobId); else next.add(jobId);
+      localStorage.setItem(SAVED_KEY, JSON.stringify(Array.from(next)));
+      return next;
+    });
+  }
 
   const fetchJobs = useCallback(async () => {
     setLoading(true);
@@ -48,7 +68,6 @@ export default function JobsPage() {
       if (searchQuery) params.set('q', searchQuery);
       params.set('page', String(page));
       params.set('limit', String(LIMIT));
-
       const res = await fetch(`/api/jobs?${params.toString()}`);
       if (!res.ok) throw new Error('Failed to fetch jobs');
       const data: JobsResponse = await res.json();
@@ -62,24 +81,17 @@ export default function JobsPage() {
     }
   }, [searchQuery, selectedCountry, selectedIndustry, selectedType, page]);
 
-  // Debounce search
-  useEffect(() => {
-    setPage(1);
-  }, [searchQuery, selectedCountry, selectedIndustry, selectedType]);
-
+  useEffect(() => { setPage(1); }, [searchQuery, selectedCountry, selectedIndustry, selectedType]);
   useEffect(() => {
     const timer = setTimeout(fetchJobs, searchQuery ? 400 : 0);
     return () => clearTimeout(timer);
   }, [fetchJobs, searchQuery]);
 
   function clearFilters() {
-    setSearchQuery('');
-    setSelectedCountry('');
-    setSelectedIndustry('');
-    setSelectedType('');
-    setPage(1);
+    setSearchQuery(''); setSelectedCountry(''); setSelectedIndustry(''); setSelectedType(''); setPage(1);
   }
 
+  const displayJobs = activeTab === 'saved' ? jobs.filter((j) => saved.has(j.id)) : jobs;
   const totalPages = Math.ceil(total / LIMIT);
 
   return (
@@ -89,20 +101,13 @@ export default function JobsPage() {
         <div className={styles.jobsHeroOverlay} />
         <div className={`container ${styles.jobsHeroContent}`}>
           <Reveal animation="fade-down">
-            <div className={styles.jobsHeroBadge}>
-              <span className={styles.badgeDot} />
-              OVERSEAS OPPORTUNITIES
-            </div>
+            <div className={styles.jobsHeroBadge}><span className={styles.badgeDot} />OVERSEAS OPPORTUNITIES</div>
           </Reveal>
           <Reveal animation="fade-up" delay={120}>
-            <h1 className={styles.jobsHeroHeading}>
-              Find Your Dream <span className={styles.accent}>Overseas Job</span>
-            </h1>
+            <h1 className={styles.jobsHeroHeading}>Find Your Dream <span className={styles.accent}>Overseas Job</span></h1>
           </Reveal>
           <Reveal animation="fade-up" delay={240}>
-            <p className={styles.jobsHeroSub}>
-              Browse verified international job opportunities across multiple industries and countries.
-            </p>
+            <p className={styles.jobsHeroSub}>Browse verified international job opportunities across multiple industries and countries.</p>
           </Reveal>
           <Reveal animation="fade-up" delay={360}>
             <div className={styles.heroSearchBar}>
@@ -124,94 +129,68 @@ export default function JobsPage() {
         </div>
       </section>
 
-      {/* Jobs Section */}
       <section className={styles.jobsSection}>
         <div className="container">
-
           {/* Filters */}
           <Reveal animation="fade-up">
             <div className={styles.jobsFilters}>
               <div className={styles.filterGroup}>
-                <label htmlFor="country-filter">
-                  <i className="fa-solid fa-globe" aria-hidden="true" /> Country
-                </label>
-                <select
-                  id="country-filter"
-                  value={selectedCountry}
-                  onChange={(e) => setSelectedCountry(e.target.value)}
-                  className={styles.filterSelect}
-                >
-                  {COUNTRIES.map((c) => (
-                    <option key={c} value={c === 'All Countries' ? '' : c}>{c}</option>
-                  ))}
+                <label htmlFor="country-filter"><i className="fa-solid fa-globe" aria-hidden="true" /> Country</label>
+                <select id="country-filter" value={selectedCountry} onChange={(e) => setSelectedCountry(e.target.value)} className={styles.filterSelect}>
+                  {COUNTRIES.map((c) => <option key={c} value={c === 'All Countries' ? '' : c}>{c}</option>)}
                 </select>
               </div>
-
               <div className={styles.filterGroup}>
-                <label htmlFor="industry-filter">
-                  <i className="fa-solid fa-briefcase" aria-hidden="true" /> Industry
-                </label>
-                <select
-                  id="industry-filter"
-                  value={selectedIndustry}
-                  onChange={(e) => setSelectedIndustry(e.target.value)}
-                  className={styles.filterSelect}
-                >
-                  {INDUSTRIES.map((ind) => (
-                    <option key={ind} value={ind === 'All Industries' ? '' : ind}>{ind}</option>
-                  ))}
+                <label htmlFor="industry-filter"><i className="fa-solid fa-briefcase" aria-hidden="true" /> Industry</label>
+                <select id="industry-filter" value={selectedIndustry} onChange={(e) => setSelectedIndustry(e.target.value)} className={styles.filterSelect}>
+                  {INDUSTRIES.map((ind) => <option key={ind} value={ind === 'All Industries' ? '' : ind}>{ind}</option>)}
                 </select>
               </div>
-
               <div className={styles.filterGroup}>
-                <label htmlFor="type-filter">
-                  <i className="fa-solid fa-clock" aria-hidden="true" /> Job Type
-                </label>
-                <select
-                  id="type-filter"
-                  value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value)}
-                  className={styles.filterSelect}
-                >
-                  {JOB_TYPES.map((t) => (
-                    <option key={t} value={t === 'All Types' ? '' : t}>{t}</option>
-                  ))}
+                <label htmlFor="type-filter"><i className="fa-solid fa-clock" aria-hidden="true" /> Job Type</label>
+                <select id="type-filter" value={selectedType} onChange={(e) => setSelectedType(e.target.value)} className={styles.filterSelect}>
+                  {JOB_TYPES.map((t) => <option key={t} value={t === 'All Types' ? '' : t}>{t}</option>)}
                 </select>
               </div>
-
               <button className={styles.filterClearBtn} onClick={clearFilters} type="button">
                 <i className="fa-solid fa-rotate-left" aria-hidden="true" /> Clear Filters
               </button>
             </div>
           </Reveal>
 
+          {/* Tab bar */}
+          <div className={styles.tabBar}>
+            <button type="button" className={`${styles.tabBtn} ${activeTab === 'all' ? styles.tabBtnActive : ''}`} onClick={() => setActiveTab('all')}>
+              <i className="fa-solid fa-briefcase" aria-hidden="true" /> All Jobs
+            </button>
+            <button type="button" className={`${styles.tabBtn} ${activeTab === 'saved' ? styles.tabBtnActive : ''}`} onClick={() => setActiveTab('saved')}>
+              <i className="fa-solid fa-bookmark" aria-hidden="true" /> Saved Jobs
+              {saved.size > 0 && <span className={styles.savedCount}>{saved.size}</span>}
+            </button>
+          </div>
+
           <div className={styles.jobsCount}>
             {loading ? (
               <span className={styles.skeletonLine} style={{ width: 120, height: 16, display: 'inline-block' }} />
             ) : (
-              <><strong>{total}</strong> {total === 1 ? 'job' : 'jobs'} found</>
+              <><strong>{activeTab === 'saved' ? displayJobs.length : total}</strong> {(activeTab === 'saved' ? displayJobs.length : total) === 1 ? 'job' : 'jobs'} {activeTab === 'saved' ? 'saved' : 'found'}</>
             )}
           </div>
 
           <div className={styles.jobsLayout}>
-
             {/* Job Cards */}
             <div className={styles.jobsList}>
-              {loading && (
-                <>
-                  {[1, 2, 3, 4].map((i) => <SkeletonCard key={i} />)}
-                </>
-              )}
+              {loading && <>{[1, 2, 3, 4].map((i) => <SkeletonCard key={i} />)}</>}
 
-              {!loading && jobs.length === 0 && (
+              {!loading && displayJobs.length === 0 && (
                 <div className={styles.noJobsMessage}>
-                  <i className="fa-solid fa-inbox" aria-hidden="true" />
-                  <h3>No jobs found</h3>
-                  <p>Try adjusting your filters or search terms</p>
+                  <i className={`fa-solid ${activeTab === 'saved' ? 'fa-bookmark' : 'fa-inbox'}`} aria-hidden="true" />
+                  <h3>{activeTab === 'saved' ? 'No saved jobs' : 'No jobs found'}</h3>
+                  <p>{activeTab === 'saved' ? 'Bookmark jobs by clicking the ♥ icon on any listing.' : 'Try adjusting your filters or search terms'}</p>
                 </div>
               )}
 
-              {!loading && jobs.map((job, i) => (
+              {!loading && displayJobs.map((job, i) => (
                 <Reveal key={job.id} animation="fade-up" delay={i * 60}>
                   <div
                     className={`${styles.jobCard} ${selectedJob?.id === job.id ? styles.jobCardSelected : ''}`}
@@ -222,12 +201,23 @@ export default function JobsPage() {
                   >
                     <div className={styles.jobCardHeader}>
                       <div className={styles.jobCardLeft}>
-                        <h3 className={styles.jobTitle}>{job.title}</h3>
-                        <div className={styles.jobCompany}>
-                          <i className="fa-solid fa-building" aria-hidden="true" /> {job.company}
+                        <div className={styles.jobTitleRow}>
+                          <h3 className={styles.jobTitle}>{job.title}</h3>
+                          {job.urgent && <span className={styles.urgentBadge}>URGENT</span>}
                         </div>
+                        <div className={styles.jobCompany}><i className="fa-solid fa-building" aria-hidden="true" /> {job.company}</div>
                       </div>
-                      <span className={styles.jobSalary}>{job.salary}</span>
+                      <div className={styles.jobCardRight}>
+                        <span className={styles.jobSalary}>{job.salary}<span className={styles.salaryPer}>/mo</span></span>
+                        <button
+                          type="button"
+                          className={`${styles.saveBtn} ${saved.has(job.id) ? styles.saveBtnActive : ''}`}
+                          onClick={(e) => toggleSave(e, job.id)}
+                          aria-label={saved.has(job.id) ? 'Unsave job' : 'Save job'}
+                        >
+                          <i className={`fa-${saved.has(job.id) ? 'solid' : 'regular'} fa-bookmark`} aria-hidden="true" />
+                        </button>
+                      </div>
                     </div>
 
                     <div className={styles.jobCardMeta}>
@@ -235,6 +225,9 @@ export default function JobsPage() {
                       <span className={styles.jobMetaItem}><i className="fa-solid fa-briefcase" aria-hidden="true" /> {job.industry}</span>
                       <span className={styles.jobMetaItem}><i className="fa-solid fa-clock" aria-hidden="true" /> {job.job_type}</span>
                       <span className={styles.jobMetaItem}><i className="fa-solid fa-user-graduate" aria-hidden="true" /> {job.experience}</span>
+                      {(job.slots_available ?? 0) > 0 && (
+                        <span className={styles.slotsItem}><i className="fa-solid fa-users" aria-hidden="true" /> {job.slots_available} slots</span>
+                      )}
                     </div>
 
                     <p className={styles.jobDescription}>{job.description}</p>
@@ -250,32 +243,15 @@ export default function JobsPage() {
               ))}
 
               {/* Pagination */}
-              {!loading && totalPages > 1 && (
+              {!loading && activeTab === 'all' && totalPages > 1 && (
                 <div className={styles.pagination}>
-                  <button
-                    className={styles.pageBtn}
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    disabled={page === 1}
-                    type="button"
-                  >
+                  <button className={styles.pageBtn} onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} type="button">
                     <i className="fa-solid fa-chevron-left" aria-hidden="true" />
                   </button>
                   {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                    <button
-                      key={p}
-                      className={`${styles.pageBtn} ${p === page ? styles.pageBtnActive : ''}`}
-                      onClick={() => setPage(p)}
-                      type="button"
-                    >
-                      {p}
-                    </button>
+                    <button key={p} className={`${styles.pageBtn} ${p === page ? styles.pageBtnActive : ''}`} onClick={() => setPage(p)} type="button">{p}</button>
                   ))}
-                  <button
-                    className={styles.pageBtn}
-                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                    disabled={page === totalPages}
-                    type="button"
-                  >
+                  <button className={styles.pageBtn} onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages} type="button">
                     <i className="fa-solid fa-chevron-right" aria-hidden="true" />
                   </button>
                 </div>
@@ -288,57 +264,39 @@ export default function JobsPage() {
                 <button className={styles.jobDetailsClose} onClick={() => setSelectedJob(null)} type="button" aria-label="Close">
                   <i className="fa-solid fa-xmark" aria-hidden="true" />
                 </button>
-
                 <div className={styles.jobDetailsHeader}>
-                  <h2 className={styles.jobDetailsTitle}>{selectedJob.title}</h2>
-                  <div className={styles.jobDetailsCompany}>
-                    <i className="fa-solid fa-building" aria-hidden="true" /> {selectedJob.company}
+                  <div className={styles.jobDetailsTitleRow}>
+                    <h2 className={styles.jobDetailsTitle}>{selectedJob.title}</h2>
+                    {selectedJob.urgent && <span className={styles.urgentBadge}>URGENT</span>}
                   </div>
+                  <div className={styles.jobDetailsCompany}><i className="fa-solid fa-building" aria-hidden="true" /> {selectedJob.company}</div>
                   <div className={styles.jobDetailsSalary}>{selectedJob.salary}/month</div>
                 </div>
-
                 <div className={styles.jobDetailsMeta}>
                   <div className={styles.jobDetailTag}><i className="fa-solid fa-location-dot" aria-hidden="true" /> {selectedJob.country}</div>
                   <div className={styles.jobDetailTag}><i className="fa-solid fa-briefcase" aria-hidden="true" /> {selectedJob.industry}</div>
                   <div className={styles.jobDetailTag}><i className="fa-solid fa-clock" aria-hidden="true" /> {selectedJob.job_type}</div>
                   <div className={styles.jobDetailTag}><i className="fa-solid fa-user-graduate" aria-hidden="true" /> {selectedJob.experience}</div>
                 </div>
-
                 <div className={styles.jobDetailsSection}>
                   <h3 className={styles.jobDetailsSectionTitle}>Job Description</h3>
                   <p>{selectedJob.description}</p>
                 </div>
-
                 <div className={styles.jobDetailsSection}>
                   <h3 className={styles.jobDetailsSectionTitle}>Requirements</h3>
                   <ul className={styles.jobDetailsList}>
-                    {selectedJob.requirements.map((req) => (
-                      <li key={req}><i className="fa-solid fa-check" aria-hidden="true" /> {req}</li>
-                    ))}
+                    {selectedJob.requirements.map((req) => <li key={req}><i className="fa-solid fa-check" aria-hidden="true" /> {req}</li>)}
                   </ul>
                 </div>
-
                 <div className={styles.jobDetailsSection}>
                   <h3 className={styles.jobDetailsSectionTitle}>Benefits</h3>
                   <ul className={styles.jobDetailsList}>
-                    {selectedJob.benefits.map((b) => (
-                      <li key={b}><i className="fa-solid fa-star" aria-hidden="true" /> {b}</li>
-                    ))}
+                    {selectedJob.benefits.map((b) => <li key={b}><i className="fa-solid fa-star" aria-hidden="true" /> {b}</li>)}
                   </ul>
                 </div>
-
                 <div className={styles.jobDetailsActions}>
-                  <Button
-                    label="Apply for This Job"
-                    href={`/jobs/${selectedJob.id}`}
-                    variant="primary"
-                    size="lg"
-                    fullWidth
-                    icon="fa-solid fa-paper-plane"
-                    iconPosition="right"
-                  />
+                  <Button label="Apply for This Job" href={`/jobs/${selectedJob.id}`} variant="primary" size="lg" fullWidth icon="fa-solid fa-paper-plane" iconPosition="right" />
                 </div>
-
                 <div className={styles.jobDetailsFooter}>
                   <small>Posted {new Date(selectedJob.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</small>
                 </div>

@@ -214,21 +214,6 @@
 
 .jobsList { display: flex; flex-direction: column; gap: 12px; }
 
-.jobRow {
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 20px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.2s ease;
-}
-
-.jobRow:hover { box-shadow: var(--shadow-md); }
-
 .jobRowLeft { flex: 1; min-width: 0; }
 
 .jobRowTitle {
@@ -491,10 +476,194 @@
 
 .emptyStateBtn:hover { background: #e8c96a; }
 
+/* ─── Quick Actions ─── */
+.quickActions {
+  margin: 32px 0 0;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.quickActionsTitle {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-dark-text);
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quickActionsTitle i { color: var(--portal-gold); }
+
+.quickActionBtns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.qaBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-dark-text);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.qaBtn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.qaBtnGold {
+  border-color: rgba(200,168,75,0.4);
+  color: var(--portal-gold);
+  background: rgba(200,168,75,0.06);
+}
+
+.qaBtnGold:hover {
+  border-color: var(--portal-gold);
+  background: rgba(200,168,75,0.12);
+  color: var(--portal-gold);
+}
+
+/* ─── Job Pipeline ─── */
+.jobRow {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.jobRow:hover { box-shadow: var(--shadow-md); }
+
+.jobRowMain {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.jobPipelineRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pipelineBar {
+  display: flex;
+  height: 8px;
+  border-radius: 99px;
+  overflow: hidden;
+  gap: 2px;
+}
+
+.pipelineSegment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 8px;
+  border-radius: 4px;
+  position: relative;
+  cursor: default;
+  transition: opacity 0.2s;
+}
+
+.pipelineSegment:hover { opacity: 0.85; }
+
+.pipelineSegLabel {
+  font-size: 0.6rem;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+  pointer-events: none;
+  display: none;
+}
+
+.pipelineSegment:not(:only-child) .pipelineSegLabel { display: block; }
+
+.noApps {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--color-secondary-text);
+  font-style: italic;
+}
+
+.pipelineLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ─── CSV Export ─── */
+.applicantsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.csvBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1.5px solid rgba(200,168,75,0.5);
+  border-radius: var(--radius-md);
+  color: var(--portal-gold);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.csvBtn:hover {
+  background: rgba(200,168,75,0.1);
+  border-color: var(--portal-gold);
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 900px) {
   .statsGrid { grid-template-columns: 1fr 1fr 1fr; }
-  .jobRow { flex-direction: column; align-items: flex-start; }
+  .jobRowMain { flex-direction: column; align-items: flex-start; }
   .jobRowRight { width: 100%; justify-content: flex-start; }
 }
 
@@ -503,4 +672,6 @@
   .applicantCard { padding: 20px; }
   .dashHeaderRight { gap: 8px; }
   .applicantActions { flex-wrap: wrap; }
+  .quickActionBtns { flex-direction: column; }
+  .statsGrid { grid-template-columns: repeat(3, 1fr); }
 }

@@ -6,6 +6,53 @@ export type ApplicationStatus = 'pending' | 'reviewing' | 'shortlisted' | 'rejec
 
 // ─── Domain Types ─────────────────────────────────────────────────────────────
 
+export interface WorkExperience {
+  id: string;
+  company: string;
+  title: string;
+  country: string;
+  start_date: string;
+  end_date: string;
+  current: boolean;
+  description: string;
+}
+
+/** Row from public.candidates */
+export interface CandidateProfile {
+  id: string;
+  user_id: string;
+  full_name: string;
+  email: string;
+  phone?: string;
+  nationality?: string;
+  current_location?: string;
+  date_of_birth?: string;
+  linkedin_url?: string;
+  desired_position?: string;
+  years_experience?: number;
+  education_level?: string;
+  skills?: string[];
+  work_experience?: WorkExperience[];
+  resume_url?: string;
+  resume_filename?: string;
+  resume_uploaded_at?: string;
+  created_at: string;
+}
+
+/** Row from public.employers */
+export interface EmployerProfile {
+  id: string;
+  user_id: string;
+  company_name: string;
+  contact_person: string;
+  email: string;
+  phone?: string;
+  country?: string;
+  industry?: string;
+  created_at: string;
+}
+
+/** Legacy — keep for existing code references */
 export interface Profile {
   id: string;
   email: string;
@@ -35,6 +82,8 @@ export interface Job {
   requirements: string[];
   benefits: string[];
   status: JobStatus;
+  urgent?: boolean;
+  slots_available?: number;
   created_at: string;
   updated_at: string;
 }
@@ -49,7 +98,7 @@ export interface Application {
   created_at: string;
   updated_at: string;
   job?: Job;
-  candidate?: Profile;
+  candidate?: CandidateProfile;
 }
 
 // ─── API Helpers ──────────────────────────────────────────────────────────────
@@ -70,12 +119,13 @@ export interface JobsResponse {
   limit: number;
 }
 
-// ─── Supabase DB type stub (used for generic client typing) ───────────────────
+// ─── Supabase DB type stub ────────────────────────────────────────────────────
 
 export type Database = {
   public: {
     Tables: {
-      profiles: { Row: Profile; Insert: Partial<Profile>; Update: Partial<Profile> };
+      candidates: { Row: CandidateProfile; Insert: Partial<CandidateProfile>; Update: Partial<CandidateProfile> };
+      employers: { Row: EmployerProfile; Insert: Partial<EmployerProfile>; Update: Partial<EmployerProfile> };
       jobs: { Row: Job; Insert: Partial<Job>; Update: Partial<Job> };
       applications: { Row: Application; Insert: Partial<Application>; Update: Partial<Application> };
     };

@@ -2,15 +2,29 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import type { Role } from '@/lib/types';
 
+// Run in Supabase Dashboard → SQL Editor:
+// ALTER TABLE public.candidates ADD COLUMN IF NOT EXISTS linkedin_url text;
+// ALTER TABLE public.candidates ADD COLUMN IF NOT EXISTS date_of_birth date;
+// ALTER TABLE public.candidates ADD COLUMN IF NOT EXISTS desired_position text;
+// ALTER TABLE public.candidates ADD COLUMN IF NOT EXISTS years_experience integer;
+// ALTER TABLE public.candidates ADD COLUMN IF NOT EXISTS education_level text;
+// ALTER TABLE public.candidates ADD COLUMN IF NOT EXISTS skills text[] DEFAULT '{}';
+// ALTER TABLE public.candidates ADD COLUMN IF NOT EXISTS work_experience jsonb DEFAULT '[]';
+// ALTER TABLE public.candidates ADD COLUMN IF NOT EXISTS resume_url text;
+// ALTER TABLE public.candidates ADD COLUMN IF NOT EXISTS resume_filename text;
+// ALTER TABLE public.candidates ADD COLUMN IF NOT EXISTS resume_uploaded_at timestamptz;
+
 interface RegisterBody {
   email: string;
   password: string;
   full_name: string;
   role: Role;
   phone?: string;
-  country?: string;
+  nationality?: string;
+  current_location?: string;
   company_name?: string;
-  company_size?: string;
+  contact_person?: string;
+  country?: string;
   industry?: string;
 }
 
@@ -44,7 +58,11 @@ export async function POST(req: NextRequest) {
   });
 
   if (authError) {
-    if (authError.message.includes('already registered') || authError.message.includes('already been registered')) {
+    if (
+      authError.message.includes('already registered') ||
+      authError.message.includes('already been registered') ||
+      authError.message.includes('already exists')
+    ) {
       return NextResponse.json({ error: 'An account with this email already exists' }, { status: 409 });
     }
     return NextResponse.json({ error: authError.message }, { status: 500 });
@@ -52,37 +70,42 @@ export async function POST(req: NextRequest) {
 
   const userId = authData.user.id;
 
-  // Create profile
-  const profileData: Record<string, unknown> = {
-    id: userId,
-    email,
-    full_name,
-    role,
-  };
+  let insertError: { message: string } | null = null;
 
-  if (body.phone) profileData.phone = body.phone;
-  if (body.country) profileData.country = body.country;
-  if (role === 'employer') {
-    if (body.company_name) profileData.company_name = body.company_name;
-    if (body.company_size) profileData.company_size = body.company_size;
-    if (body.industry) profileData.industry = body.industry;
+  if (role === 'candidate') {
+    const row: Record<string, unknown> = {
+      user_id: userId,
+      full_name,
+      email,
+    };
+    if (body.phone) row.phone = body.phone;
+    if (body.nationality) row.nationality = body.nationality;
+    if (body.current_location) row.current_location = body.current_location;
+
+    const { error } = await supabaseAdmin.from('candidates').insert(row);
+    insertError = error;
+  } else {
+    const row: Record<string, unknown> = {
+      user_id: userId,
+      company_name: body.company_name ?? full_name,
+      contact_person: body.contact_person ?? full_name,
+      email,
+    };
+    if (body.phone) row.phone = body.phone;
+    if (body.country) row.country = body.country;
+    if (body.industry) row.industry = body.industry;
+
+    const { error } = await supabaseAdmin.from('employers').insert(row);
+    insertError = error;
   }
 
-  const { error: profileError } = await supabaseAdmin.from('profiles').insert(profileData);
-
-  if (profileError) {
-    // Clean up the auth user if profile insert fails
+  if (insertError) {
     await supabaseAdmin.auth.admin.deleteUser(userId);
-    return NextResponse.json({ error: profileError.message }, { status: 500 });
+    return NextResponse.json({ error: insertError.message }, { status: 500 });
   }
 
-  // Sign in to get a session token
-  // Return user info — client should call supabase.auth.signInWithPassword for a session
   return NextResponse.json(
-    {
-      message: 'Account created successfully',
-      user: { id: userId, email, full_name, role },
-    },
+    { message: 'Account created successfully', user: { id: userId, email, full_name, role } },
     { status: 201 }
   );
 }

@@ -17,12 +17,12 @@
   color: var(--color-secondary-text);
 }
 
-/* ─── Header ─── */
 .dashboardPage {
   min-height: 100vh;
   background: var(--color-bg);
 }
 
+/* ─── Header ─── */
 .dashHeader {
   background: var(--portal-navy);
   padding: 24px 0;
@@ -122,12 +122,68 @@
   color: #fff;
 }
 
+/* ─── Profile Completion ─── */
+.completionWrap {
+  margin: 32px 0 8px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.completionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.completionLabel {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--color-dark-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.completionLabel i { color: var(--portal-gold); }
+
+.completionPct {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--color-dark-text);
+}
+
+.completionTrack {
+  height: 8px;
+  background: var(--color-border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.completionFill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.6s ease;
+}
+
+.completionHint {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--color-secondary-text);
+  margin: 8px 0 0;
+}
+
 /* ─── Stats ─── */
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
-  padding: 40px 0 0;
+  padding: 20px 0 0;
 }
 
 .statCard {
@@ -199,9 +255,7 @@
 }
 
 /* ─── Applications ─── */
-.appsSection {
-  padding-bottom: 80px;
-}
+.appsSection { padding-bottom: 80px; }
 
 .appsList {
   display: flex;
@@ -250,7 +304,7 @@
   gap: 6px;
   padding: 5px 12px;
   border-radius: 20px;
-  background: rgba(var(--status-color), 0.1);
+  background: color-mix(in srgb, var(--status-color) 12%, transparent);
   border: 1px solid color-mix(in srgb, var(--status-color) 30%, transparent);
   font-family: var(--font-heading);
   font-weight: 600;
@@ -288,7 +342,6 @@
 .pipeline {
   display: flex;
   align-items: center;
-  gap: 0;
   padding-top: 8px;
   border-top: 1px solid var(--color-border);
 }
@@ -313,13 +366,9 @@
   background: var(--color-border);
 }
 
-.pipelineStepActive {
-  opacity: 1;
-}
+.pipelineStepActive { opacity: 1; }
 
-.pipelineStepActive .pipelineDot {
-  background: var(--portal-gold);
-}
+.pipelineStepActive .pipelineDot { background: var(--portal-gold); }
 
 .pipelineDot {
   width: 12px;
@@ -338,12 +387,15 @@
   text-align: center;
 }
 
-/* ─── Profile ─── */
-.profileSection {
+/* ─── Profile Sections ─── */
+.profileSections {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
   padding-bottom: 80px;
 }
 
-.profileCard {
+.sectionCard {
   background: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -351,7 +403,7 @@
   box-shadow: var(--shadow-sm);
 }
 
-.profileTitle {
+.sectionTitle {
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: 1.05rem;
@@ -362,8 +414,18 @@
   gap: 10px;
 }
 
-.profileTitle i { color: var(--color-primary); }
+.sectionTitle i { color: var(--color-primary); }
 
+.sectionTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.sectionTitleRow .sectionTitle { margin-bottom: 0; }
+
+/* Form layout */
 .profileForm { display: flex; flex-direction: column; gap: 16px; }
 
 .formRow { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -377,7 +439,9 @@
   color: var(--color-dark-text);
 }
 
-.formGroup input {
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
   font-family: var(--font-body);
   font-size: 0.93rem;
   color: var(--color-dark-text);
@@ -391,12 +455,25 @@
   transition: border-color 0.2s ease;
 }
 
-.formGroup input:focus {
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
   border-color: var(--portal-gold);
   box-shadow: 0 0 0 3px rgba(200, 168, 75, 0.15);
 }
 
-.profileActions {
+.formGroup textarea { resize: vertical; }
+
+.req { color: #dc2626; }
+
+.optional {
+  font-family: var(--font-body);
+  font-size: 0.73rem;
+  font-weight: 400;
+  color: var(--color-secondary-text);
+}
+
+.sectionActions {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -428,6 +505,272 @@
 }
 
 .saveMsgError { color: #dc2626; }
+
+/* ─── Skills ─── */
+.skillsInput {
+  display: flex;
+  gap: 8px;
+}
+
+.skillsInput input {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: 0.93rem;
+  color: var(--color-dark-text);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.skillsInput input:focus {
+  border-color: var(--portal-gold);
+  box-shadow: 0 0 0 3px rgba(200, 168, 75, 0.15);
+}
+
+.skillAddBtn {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--portal-navy);
+  color: var(--portal-gold);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.skillAddBtn:hover { background: var(--portal-navy-2); }
+
+.skillTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.skillTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(200, 168, 75, 0.1);
+  border: 1px solid rgba(200, 168, 75, 0.3);
+  border-radius: 20px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--color-dark-text);
+}
+
+.skillTag button {
+  background: none;
+  border: none;
+  color: var(--color-secondary-text);
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.skillTag button:hover { color: #dc2626; }
+
+/* ─── Work Experience ─── */
+.addExpBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1.5px solid var(--portal-gold);
+  border-radius: var(--radius-md);
+  color: var(--portal-gold);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addExpBtn:hover {
+  background: rgba(200, 168, 75, 0.1);
+}
+
+.noExpMsg {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--color-secondary-text);
+  margin: 0;
+  text-align: center;
+  padding: 24px 0;
+}
+
+.workCard {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.workCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.workCardTitle {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-dark-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.removeExpBtn {
+  background: none;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: var(--radius-md);
+  color: #dc2626;
+  cursor: pointer;
+  padding: 5px 9px;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.removeExpBtn:hover {
+  background: rgba(220, 38, 38, 0.08);
+}
+
+.currentJobCheck {
+  justify-content: flex-end;
+  padding-top: 24px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--color-dark-text);
+  cursor: pointer;
+  font-weight: 400 !important;
+}
+
+.checkboxLabel input[type="checkbox"] {
+  width: auto;
+  cursor: pointer;
+}
+
+/* ─── CV Upload ─── */
+.cvCurrentRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  background: rgba(200, 168, 75, 0.06);
+  border: 1px solid rgba(200, 168, 75, 0.2);
+  border-radius: var(--radius-lg);
+}
+
+.cvCurrentInfo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 1.8rem;
+  color: var(--portal-gold);
+}
+
+.cvFilename {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-dark-text);
+}
+
+.cvUploadedAt {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--color-secondary-text);
+  margin-top: 2px;
+}
+
+.cvViewBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border: 1.5px solid var(--portal-gold);
+  border-radius: var(--radius-md);
+  color: var(--portal-gold);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.82rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.cvViewBtn:hover {
+  background: rgba(200, 168, 75, 0.1);
+}
+
+.noCvMsg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: #f59e0b;
+  margin: 0;
+  padding: 12px 16px;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: var(--radius-md);
+}
+
+.uploadZone {
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 36px 24px;
+  text-align: center;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--color-secondary-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.uploadZone:hover {
+  border-color: var(--portal-gold);
+  background: rgba(200, 168, 75, 0.04);
+  color: var(--color-dark-text);
+}
+
+.uploadZone i { font-size: 1.3rem; color: var(--portal-gold); }
+
+.fileInputHidden { display: none; }
 
 /* ─── Empty State ─── */
 .emptyState {
@@ -471,9 +814,7 @@
   margin-top: 8px;
 }
 
-.emptyStateBtn:hover {
-  background: var(--portal-navy-2);
-}
+.emptyStateBtn:hover { background: var(--portal-navy-2); }
 
 /* ─── Responsive ─── */
 @media (max-width: 900px) {
@@ -484,6 +825,8 @@
 @media (max-width: 600px) {
   .statsGrid { grid-template-columns: 1fr 1fr; }
   .formRow { grid-template-columns: 1fr; }
-  .profileCard, .appCard { padding: 20px; }
+  .sectionCard { padding: 20px; }
+  .appCard { padding: 20px; }
   .dashHeaderRight { gap: 8px; }
+  .currentJobCheck { padding-top: 0; justify-content: flex-start; }
 }
