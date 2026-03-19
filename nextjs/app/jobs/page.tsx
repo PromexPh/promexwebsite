@@ -440,6 +440,7 @@ export default function JobsPage() {
 
                           <h3 className={styles.jobTitle}>{job.title}</h3>
                           <div className={styles.jobCompany}><i className="fa-solid fa-building" aria-hidden="true" /> {job.company}</div>
+                          {job.job_reference && <div className={styles.jobRef}>Ref: {job.job_reference}</div>}
 
                           <div className={styles.jobCardMeta}>
                             <span className={styles.jobMetaItem}><i className="fa-solid fa-location-dot" aria-hidden="true" /> {job.country}</span>

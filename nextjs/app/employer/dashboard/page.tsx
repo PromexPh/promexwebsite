@@ -332,6 +332,7 @@ function EmployerDashboardInner() {
                       <div className={styles.jobRowMain}>
                         <div className={styles.jobRowLeft}>
                           <h3 className={styles.jobRowTitle}>{job.title}</h3>
+                          {job.job_reference && <div className={styles.jobRowRef}>{job.job_reference}</div>}
                           <div className={styles.jobRowMeta}>
                             <span><i className="fa-solid fa-location-dot" aria-hidden="true" /> {job.country}</span>
                             <span><i className="fa-solid fa-briefcase" aria-hidden="true" /> {job.industry}</span>

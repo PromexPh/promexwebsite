@@ -124,6 +124,7 @@ function ApplicationCard({ app, onWithdraw }: { app: Application; onWithdraw: (i
               </>
             )}
           </div>
+          {job?.job_reference && <div className={styles.appJobRef}>Ref: {job.job_reference}</div>}
           {salaryDisplay && (
             <div className={styles.appSalary}>
               <i className="fa-solid fa-money-bill-wave" aria-hidden="true" /> {salaryDisplay}

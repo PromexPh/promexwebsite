@@ -136,12 +136,23 @@ function JobsTab() {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>Title</th><th>Company</th><th>Country</th><th>Status</th><th>Apps</th><th>Posted</th><th>Actions</th>
+              <th>Ref</th><th>Title</th><th>Company</th><th>Country</th><th>Status</th><th>Apps</th><th>Posted</th><th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filtered.map((j) => (
               <tr key={j.id}>
+                <td>
+                  {j.job_reference ? (
+                    <button
+                      style={{ fontFamily: 'monospace', fontSize: '0.78rem', background: '#f3f4f6', border: 'none', borderRadius: 4, padding: '2px 6px', cursor: 'pointer', color: '#374151' }}
+                      title="Click to copy"
+                      onClick={() => { navigator.clipboard.writeText(j.job_reference ?? ''); }}
+                    >
+                      {j.job_reference}
+                    </button>
+                  ) : <span style={{ color: '#9ca3af', fontSize: '0.78rem' }}>—</span>}
+                </td>
                 <td><strong>{j.title}</strong></td>
                 <td>{j.company}</td>
                 <td>{j.country}</td>

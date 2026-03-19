@@ -1335,6 +1335,13 @@
 
 .appMetaDot { color: var(--color-border); }
 
+.appJobRef {
+  font-family: var(--font-body);
+  font-size: 0.73rem;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
 .appSalary {
   display: flex;
   align-items: center;

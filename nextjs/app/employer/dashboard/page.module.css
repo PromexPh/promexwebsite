@@ -273,7 +273,14 @@
   font-weight: 700;
   font-size: 1rem;
   color: var(--color-dark-text);
-  margin: 0 0 6px;
+  margin: 0 0 2px;
+}
+
+.jobRowRef {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: #9ca3af;
+  margin: 0 0 4px;
 }
 
 .jobRowMeta {

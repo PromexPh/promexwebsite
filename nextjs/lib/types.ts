@@ -112,6 +112,7 @@ export interface Job {
   status: JobStatus;
   urgent?: boolean;
   slots_available?: number;
+  job_reference?: string | null;
   created_at: string;
   updated_at: string;
 }

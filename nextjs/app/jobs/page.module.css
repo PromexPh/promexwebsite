@@ -323,6 +323,13 @@
   font-size: 0.75rem;
 }
 
+.jobRef {
+  font-family: var(--font-body);
+  font-size: 0.73rem;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
 .jobSalary {
   display: flex;
   align-items: center;

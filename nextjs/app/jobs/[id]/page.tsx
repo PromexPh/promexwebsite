@@ -190,6 +190,7 @@ function ApplyModal({ job, candidate, token, onClose, onSuccess }: { job: Job; c
           <p className={styles.confirmJobTitle}>{job.title}</p>
           <p className={styles.confirmJobMeta}>{job.company} · {job.country}</p>
           <p className={styles.confirmJobSalary}>{formatSalary(job)}</p>
+          {job.job_reference && <p className={styles.confirmJobRef}>Ref: {job.job_reference}</p>}
         </div>
 
         {/* CV section */}
@@ -329,6 +330,11 @@ function JobDetailInner() {
               <i className="fa-solid fa-users" aria-hidden="true" /> {job.slots_available} slots available
             </div>
           )}
+          {job.job_reference && (
+            <div className={styles.heroRefBadge}>
+              <i className="fa-solid fa-hashtag" aria-hidden="true" /> {job.job_reference}
+            </div>
+          )}
         </div>
       </section>
 
@@ -384,6 +390,7 @@ function JobDetailInner() {
                   ['fa-briefcase',     job.industry ],
                   ['fa-clock',         job.job_type ],
                   ['fa-user-graduate', job.experience],
+                  ...(job.job_reference ? [['fa-hashtag', `Ref: ${job.job_reference}`]] : []),
                 ].map(([icon, val]) => (
                   <div key={icon} className={styles.sidebarMetaItem}>
                     <i className={`fa-solid ${icon}`} aria-hidden="true" />
