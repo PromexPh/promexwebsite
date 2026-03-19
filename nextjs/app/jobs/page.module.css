@@ -130,80 +130,11 @@
 
 /* ---- Jobs Section ---- */
 .jobsSection {
-  padding: 72px 0 96px;
+  padding: 48px 0 96px;
   background: var(--color-bg);
 }
 
-/* ---- Filters ---- */
-.jobsFilters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  align-items: flex-end;
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 24px 28px;
-  margin-bottom: 24px;
-  box-shadow: var(--shadow-sm);
-}
-
-.filterGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
-  min-width: 160px;
-}
-
-.filterGroup label {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.78rem;
-  color: var(--color-secondary-text);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.filterSelect {
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  color: var(--color-dark-text);
-  background: var(--color-bg);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 9px 14px;
-  outline: none;
-  cursor: pointer;
-  transition: border-color 0.2s ease;
-}
-
-.filterSelect:focus {
-  border-color: var(--color-primary);
-}
-
-.filterClearBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: var(--color-secondary-text);
-  background: transparent;
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 9px 18px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  align-self: flex-end;
-}
-
-.filterClearBtn:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
+/* ---- Old filter styles removed (replaced by sidebar) ---- */
 
 /* ---- Jobs Count ---- */
 .jobsCount {
@@ -221,9 +152,13 @@
 /* ---- Layout ---- */
 .jobsLayout {
   display: grid;
-  grid-template-columns: 1fr 380px;
+  grid-template-columns: 1fr;
   gap: 24px;
   align-items: flex-start;
+}
+
+.jobsLayoutWithPanel {
+  grid-template-columns: 1fr 380px;
 }
 
 /* ---- Job List ---- */
@@ -661,15 +596,6 @@
   .heroSearchBar {
     padding: 6px 14px;
   }
-
-  .jobsFilters {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .filterGroup {
-    width: 100%;
-  }
 }
 
 /* ---- Skeleton ---- */
@@ -865,4 +791,456 @@
   align-items: flex-start;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+/* ── Two-column page wrapper ── */
+.pageWrapper {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+/* ── Filter Sidebar ── */
+.filterSidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  position: sticky;
+  top: 90px;
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+}
+
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.sidebarHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebarTitle {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--color-dark-text);
+}
+
+.activeCountBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 99px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.68rem;
+}
+
+.clearAllBtn {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: var(--color-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.clearAllBtn:hover { text-decoration: underline; }
+
+/* ── Filter Section (accordion) ── */
+.filterSection {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.filterSectionHead {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.filterSectionTitle {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.83rem;
+  color: var(--color-dark-text);
+}
+
+.filterChevron {
+  font-size: 0.65rem;
+  color: var(--color-secondary-text);
+  transition: transform 0.2s ease;
+}
+
+.filterChevronOpen { transform: rotate(180deg); }
+
+.filterSectionBody {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+
+.filterSectionBodyOpen {
+  max-height: 400px;
+}
+
+/* ── Checkbox / Radio lists ── */
+.checkboxList,
+.radioList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 18px 14px;
+}
+
+.checkboxItem,
+.radioItem {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.checkboxItem:hover,
+.radioItem:hover {
+  background: rgba(79,163,199,0.07);
+}
+
+.checkboxInput,
+.radioInput {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.checkboxLabel {
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  color: var(--color-dark-text);
+  line-height: 1.3;
+}
+
+/* ── Urgent toggle ── */
+.urgentRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.urgentRowLabel {
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  color: var(--color-dark-text);
+}
+
+.toggleSwitch {
+  width: 40px;
+  height: 22px;
+  border-radius: 99px;
+  background: #d1d5db;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.toggleSwitchOn { background: var(--color-primary); }
+
+.toggleThumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
+  display: block;
+}
+
+.toggleSwitchOn .toggleThumb { transform: translateX(18px); }
+
+/* ── Job Alert Button ── */
+.jobAlertBtn {
+  width: calc(100% - 36px);
+  margin: 14px 18px;
+  padding: 11px 16px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.jobAlertBtn:hover { background: #3b8eaf; }
+
+/* ── Jobs Main Content ── */
+.jobsMain { flex: 1; min-width: 0; }
+
+/* ── Desktop Search Bar ── */
+.mainSearchBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  padding: 8px 20px;
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+
+.mainSearchBar:focus-within { border-color: var(--color-primary); }
+
+.mainSearchBar i { color: var(--color-secondary-text); font-size: 0.9rem; flex-shrink: 0; }
+
+.mainSearchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.93rem;
+  color: var(--color-dark-text);
+  background: transparent;
+  padding: 4px 0;
+}
+
+.mainSearchInput::placeholder { color: var(--color-secondary-text); }
+
+.searchClearBtn {
+  background: none;
+  border: none;
+  color: var(--color-secondary-text);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0;
+  line-height: 1;
+}
+
+/* ── Active Filter Pills ── */
+.activePills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.filterPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(79,163,199,0.1);
+  color: var(--color-primary);
+  border: 1px solid rgba(79,163,199,0.25);
+  border-radius: 99px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.filterPill:hover {
+  background: rgba(79,163,199,0.2);
+}
+
+.filterPill i { font-size: 0.65rem; }
+
+/* ── Mobile Filter Bar ── */
+.mobileFilterBar {
+  display: none;
+  gap: 10px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.mobileFilterBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-dark-text);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.mobileFilterBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 99px;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.mobileSearch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 9px 14px;
+}
+
+.mobileSearch i { color: var(--color-secondary-text); font-size: 0.85rem; flex-shrink: 0; }
+
+.mobileSearchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--color-dark-text);
+  background: transparent;
+}
+
+/* ── Mobile Drawer ── */
+.drawerBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 900;
+}
+
+.filterDrawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-card);
+  border-radius: 20px 20px 0 0;
+  z-index: 901;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.drawerTitle {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-dark-text);
+}
+
+.drawerCloseBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: var(--color-secondary-text);
+}
+
+.drawerBody {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.drawerBody .filterSidebar {
+  width: 100%;
+  position: static;
+  max-height: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.drawerFooter {
+  padding: 16px 20px;
+  border-top: 1px solid var(--color-border);
+}
+
+.applyFiltersBtn {
+  width: 100%;
+  padding: 14px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+/* ── Responsive overrides ── */
+@media (max-width: 900px) {
+  .filterSidebar { display: none; }
+  .mobileFilterBar { display: flex; }
+  .pageWrapper { flex-direction: column; gap: 0; }
+  .mainSearchBar { display: none; }
+  .jobsLayoutWithPanel { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .jobsSection { padding: 32px 0 64px; }
+  .jobsHeroContent { padding-top: 80px; padding-bottom: 90px; }
 }

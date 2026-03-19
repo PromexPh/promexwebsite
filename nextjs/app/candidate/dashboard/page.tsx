@@ -101,8 +101,8 @@ function ApplicationCard({ app, onWithdraw }: { app: Application; onWithdraw: (i
 
   function formatSalary(): string | null {
     if (!job) return null;
-    if (job.salary_min && job.salary_max) return `$${job.salary_min.toLocaleString()} – $${job.salary_max.toLocaleString()}/mo`;
-    if (job.salary_min) return `From $${job.salary_min.toLocaleString()}/mo`;
+    if (job.salary_min && job.salary_max) return `₱${job.salary_min.toLocaleString()} – ₱${job.salary_max.toLocaleString()}/mo`;
+    if (job.salary_min) return `From ₱${job.salary_min.toLocaleString()}/mo`;
     return job.salary ? `${job.salary}/mo` : null;
   }
 

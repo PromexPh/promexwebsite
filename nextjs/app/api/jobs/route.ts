@@ -13,6 +13,11 @@ export async function GET(req: NextRequest) {
   const limit = Math.min(50, parseInt(searchParams.get('limit') || '12', 10));
   const from = (page - 1) * limit;
   const to   = from + limit - 1;
+  const countries  = searchParams.get('countries')?.split(',').filter(Boolean) ?? [];
+  const industries = searchParams.get('industries')?.split(',').filter(Boolean) ?? [];
+  const urgent     = searchParams.get('urgent') === 'true';
+  const salary_gte = parseInt(searchParams.get('salary_gte') || '0', 10) || 0;
+  const salary_lte = parseInt(searchParams.get('salary_lte') || '0', 10) || 0;
 
   // Admin: return all statuses
   if (isAdminRequest(req)) {
@@ -22,6 +27,11 @@ export async function GET(req: NextRequest) {
     if (country)  query = query.eq('country', country);
     if (industry) query = query.eq('industry', industry);
     if (job_type) query = query.eq('job_type', job_type);
+    if (countries.length > 0) query = query.in('country', countries);
+    if (industries.length > 0) query = query.in('industry', industries);
+    if (urgent) query = query.eq('urgent', true);
+    if (salary_gte > 0) query = query.gte('salary_min', salary_gte);
+    if (salary_lte > 0) query = query.lte('salary_min', salary_lte);
     if (q) query = query.or(`title.ilike.%${q}%,company.ilike.%${q}%`);
     const { data, error, count } = await query;
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -54,6 +64,11 @@ export async function GET(req: NextRequest) {
   if (country)  query = query.eq('country', country);
   if (industry) query = query.eq('industry', industry);
   if (job_type) query = query.eq('job_type', job_type);
+  if (countries.length > 0) query = query.in('country', countries);
+  if (industries.length > 0) query = query.in('industry', industries);
+  if (urgent) query = query.eq('urgent', true);
+  if (salary_gte > 0) query = query.gte('salary_min', salary_gte);
+  if (salary_lte > 0) query = query.lte('salary_min', salary_lte);
   if (q) query = query.or(`title.ilike.%${q}%,company.ilike.%${q}%,description.ilike.%${q}%`);
 
   const { data, error, count } = await query;
