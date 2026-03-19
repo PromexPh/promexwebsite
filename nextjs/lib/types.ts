@@ -101,6 +101,8 @@ export interface Job {
   country: string;
   industry: string;
   salary: string;
+  salary_min?: number;
+  salary_max?: number;
   job_type: string;
   experience: string;
   description: string;

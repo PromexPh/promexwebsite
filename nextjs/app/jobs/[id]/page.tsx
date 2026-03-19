@@ -24,6 +24,12 @@ function industryColor(industry: string): string {
   return INDUSTRY_COLORS[industry] ?? '#6C757D';
 }
 
+function formatSalary(job: Job): string {
+  if (job.salary_min && job.salary_max) return `${job.salary_min.toLocaleString()} – ${job.salary_max.toLocaleString()}/mo`;
+  if (job.salary_min) return `From ${job.salary_min.toLocaleString()}/mo`;
+  return 'Competitive salary';
+}
+
 // ── Apply Panel ───────────────────────────────────────────────────────────────
 type ApplyMethod = 'cv' | 'linkedin' | 'form';
 type AddonKey   = 'portfolio' | 'video' | 'certs' | 'cover';
@@ -184,7 +190,7 @@ function ApplyPanel({ job, candidate, token, onClose, onSuccess }: ApplyPanelPro
               <span className={styles.panelJobTitle}>{job.title}</span>
               <span className={styles.panelJobCompany}>{job.company} · {job.country}</span>
             </div>
-            <span className={styles.panelJobSalary}>{job.salary}</span>
+            <span className={styles.panelJobSalary}>{formatSalary(job)}</span>
           </div>
 
           {/* Section 2 — Method */}
@@ -470,7 +476,6 @@ function JobDetailInner() {
 
   function handleApplyClick() {
     if (!candidate) { router.push(`/candidate/register?redirect=/jobs/${id}`); return; }
-    if (!candidate.resume_url) { setShowProfileModal(true); return; }
     setShowPanel(true);
   }
 
@@ -516,7 +521,7 @@ function JobDetailInner() {
             <span><i className="fa-solid fa-location-dot" aria-hidden="true" /> {job.country}</span>
             <span><i className="fa-solid fa-clock" aria-hidden="true" /> {job.job_type}</span>
             <span><i className="fa-solid fa-user-graduate" aria-hidden="true" /> {job.experience}</span>
-            <span className={styles.jobHeroSalary}><i className="fa-solid fa-money-bill-wave" aria-hidden="true" /> {job.salary}/month</span>
+            <span className={styles.jobHeroSalary}><i className="fa-solid fa-money-bill-wave" aria-hidden="true" /> {formatSalary(job)}</span>
           </div>
           {(job.slots_available ?? 0) > 0 && (
             <div className={styles.slotsHint}>
@@ -561,7 +566,7 @@ function JobDetailInner() {
                       <div className={styles.similarCompany}>{sj.company}</div>
                       <div className={styles.similarMeta}>
                         <span>{sj.country}</span>
-                        <span className={styles.similarSalary}>{sj.salary}</span>
+                        <span className={styles.similarSalary}>{formatSalary(sj)}</span>
                       </div>
                     </a>
                   ))}
@@ -573,7 +578,7 @@ function JobDetailInner() {
           {/* Sticky Sidebar */}
           <aside className={styles.jobSidebar}>
             <div className={styles.sidebarCard}>
-              <div className={styles.sidebarSalary}>{job.salary}<span>/month</span></div>
+              <div className={styles.sidebarSalary}>{formatSalary(job)}</div>
               <div className={styles.sidebarMeta}>
                 {[
                   ['fa-building',      job.company  ],

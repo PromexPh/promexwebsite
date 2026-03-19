@@ -24,6 +24,12 @@ const INDUSTRY_COLORS: Record<string, string> = {
 };
 function industryColor(ind: string): string { return INDUSTRY_COLORS[ind] ?? '#6C757D'; }
 
+function formatSalary(job: Job): string {
+  if (job.salary_min && job.salary_max) return `${job.salary_min.toLocaleString()} – ${job.salary_max.toLocaleString()}/mo`;
+  if (job.salary_min) return `From ${job.salary_min.toLocaleString()}/mo`;
+  return 'Competitive salary';
+}
+
 function getSaved(): Set<string> {
   if (typeof window === 'undefined') return new Set();
   try {
@@ -239,7 +245,7 @@ export default function JobsPage() {
                     {/* Divider + salary + slots + button */}
                     <div className={styles.jobCardFooter}>
                       <div className={styles.jobFooterLeft}>
-                        <span className={styles.jobSalary}><i className="fa-solid fa-money-bill-wave" aria-hidden="true" /> {job.salary}/mo</span>
+                        <span className={styles.jobSalary}><i className="fa-solid fa-money-bill-wave" aria-hidden="true" /> {formatSalary(job)}</span>
                         {(job.slots_available ?? 0) > 0 && (
                           <span className={styles.slotsItem}><i className="fa-solid fa-users" aria-hidden="true" /> {job.slots_available} slots</span>
                         )}
@@ -288,7 +294,7 @@ export default function JobsPage() {
                     {selectedJob.urgent && <span className={styles.urgentBadge}>URGENT</span>}
                   </div>
                   <div className={styles.jobDetailsCompany}><i className="fa-solid fa-building" aria-hidden="true" /> {selectedJob.company}</div>
-                  <div className={styles.jobDetailsSalary}>{selectedJob.salary}/month</div>
+                  <div className={styles.jobDetailsSalary}>{formatSalary(selectedJob)}</div>
                 </div>
                 <div className={styles.jobDetailsMeta}>
                   <div className={styles.jobDetailTag}><i className="fa-solid fa-location-dot" aria-hidden="true" /> {selectedJob.country}</div>
