@@ -803,22 +803,22 @@
 /* ── Two-column page wrapper ── */
 .pageWrapper {
   display: flex;
-  gap: 28px;
+  gap: 24px;
   align-items: flex-start;
 }
 
 /* ── Filter Sidebar ── */
 .filterSidebar {
-  width: 260px;
+  width: 280px;
   flex-shrink: 0;
+  align-self: flex-start;
   background: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: 16px;
   box-shadow: var(--shadow-sm);
-  overflow: hidden;
   position: sticky;
-  top: 90px;
-  max-height: calc(100vh - 110px);
+  top: 88px;
+  max-height: calc(100vh - 100px);
   overflow-y: auto;
 }
 
