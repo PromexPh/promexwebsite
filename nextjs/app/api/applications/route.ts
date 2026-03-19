@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin, getUserFromToken } from '@/lib/supabase';
+import { supabaseAdmin, getUserFromToken } from '@/lib/supabase-admin';
 import type { Application, ApplicationStatus } from '@/lib/types';
 
 export async function GET(req: NextRequest) {

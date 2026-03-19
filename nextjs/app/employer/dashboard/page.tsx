@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import type { Job, Application, Profile, ApplicationStatus } from '@/lib/types';
@@ -14,7 +14,7 @@ const STATUS_LABELS: Record<ApplicationStatus, string> = {
   hired: 'Hired',
 };
 
-export default function EmployerDashboard() {
+function EmployerDashboardInner() {
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -271,5 +271,13 @@ export default function EmployerDashboard() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function EmployerDashboard() {
+  return (
+    <Suspense fallback={<div className={styles.loadingPage}><i className="fa-solid fa-spinner fa-spin" /></div>}>
+      <EmployerDashboardInner />
+    </Suspense>
   );
 }

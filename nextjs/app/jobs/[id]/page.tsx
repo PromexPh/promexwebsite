@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import type { Job, Application } from '@/lib/types';
@@ -201,7 +201,7 @@ function ApplyModal({ job, onClose }: { job: Job; onClose: () => void }) {
   );
 }
 
-export default function JobDetailPage() {
+function JobDetailInner() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const [job, setJob] = useState<Job | null>(null);
@@ -354,5 +354,13 @@ export default function JobDetailPage() {
 
       {showModal && job && <ApplyModal job={job} onClose={() => setShowModal(false)} />}
     </>
+  );
+}
+
+export default function JobDetailPage() {
+  return (
+    <Suspense fallback={<div className={styles.loadingPage}><i className="fa-solid fa-spinner fa-spin" /></div>}>
+      <JobDetailInner />
+    </Suspense>
   );
 }

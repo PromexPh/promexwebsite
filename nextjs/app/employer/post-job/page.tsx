@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, FormEvent, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import styles from './page.module.css';
@@ -21,7 +21,7 @@ interface JobForm {
   benefits: string;
 }
 
-export default function PostJobPage() {
+function PostJobInner() {
   const router = useRouter();
   const [step, setStep] = useState<Step>(1);
   const [loading, setLoading] = useState(false);
@@ -296,5 +296,13 @@ export default function PostJobPage() {
         </form>
       </div>
     </section>
+  );
+}
+
+export default function PostJobPage() {
+  return (
+    <Suspense fallback={<div className={styles.loadingPage}><i className="fa-solid fa-spinner fa-spin" /></div>}>
+      <PostJobInner />
+    </Suspense>
   );
 }

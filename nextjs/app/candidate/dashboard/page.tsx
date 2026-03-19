@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import type { Application, ApplicationStatus, Profile } from '@/lib/types';
@@ -57,7 +57,7 @@ function ApplicationCard({ app }: { app: Application }) {
   );
 }
 
-export default function CandidateDashboard() {
+function CandidateDashboardInner() {
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [applications, setApplications] = useState<Application[]>([]);
@@ -256,5 +256,13 @@ export default function CandidateDashboard() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function CandidateDashboard() {
+  return (
+    <Suspense fallback={<div className={styles.loadingPage}><i className="fa-solid fa-spinner fa-spin" /></div>}>
+      <CandidateDashboardInner />
+    </Suspense>
   );
 }

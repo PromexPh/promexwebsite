@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin, getUserFromToken } from '@/lib/supabase';
+import { supabaseAdmin, getUserFromToken } from '@/lib/supabase-admin';
 import type { Job, JobStatus } from '@/lib/types';
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {

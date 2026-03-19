@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import styles from './page.module.css';
 
 type Mode = 'register' | 'login';
 
-export default function CandidateRegisterPage() {
+function CandidateRegisterInner() {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>('register');
   const [loading, setLoading] = useState(false);
@@ -201,5 +201,13 @@ export default function CandidateRegisterPage() {
         </div>
       </div>
     </section>
+  );
+}
+
+export default function CandidateRegisterPage() {
+  return (
+    <Suspense fallback={<div className={styles.authSection} />}>
+      <CandidateRegisterInner />
+    </Suspense>
   );
 }
