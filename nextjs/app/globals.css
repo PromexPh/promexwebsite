@@ -21,9 +21,7 @@
 
   --gradient-hero: linear-gradient(135deg, #4FA3C7, #6A2C91);
 
-  /* Typography — variables set by next/font/google via layout className */
-  --font-heading: var(--font-montserrat), 'Montserrat', sans-serif;
-  --font-body:    var(--font-open-sans),  'Open Sans',  sans-serif;
+  /* Typography — --font-heading / --font-body injected by next/font via html className */
 
   /* Spacing & Radius */
   --radius-sm:   6px;

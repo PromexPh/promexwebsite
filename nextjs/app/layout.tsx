@@ -6,15 +6,15 @@ import Footer from '@/components/layout/Footer';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
-  variable: '--font-montserrat',
+  weight: ['600', '700', '800'],
+  variable: '--font-heading',
   display: 'swap',
 });
 
 const openSans = Open_Sans({
   subsets: ['latin'],
   weight: ['400', '500', '600'],
-  variable: '--font-open-sans',
+  variable: '--font-body',
   display: 'swap',
 });
 
@@ -35,7 +35,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${montserrat.variable} ${openSans.variable}`}>
       <head>
         <link
           rel="stylesheet"
@@ -44,7 +44,7 @@ export default function RootLayout({
           referrerPolicy="no-referrer"
         />
       </head>
-      <body className={`${montserrat.variable} ${openSans.variable}`}>
+      <body>
         <Navbar />
         <main>{children}</main>
         <Footer />
