@@ -47,7 +47,7 @@
 html {
   scroll-behavior: smooth;
   max-width: 100vw;
-  overflow-x: hidden;
+  overflow-x: clip; /* clip prevents horizontal scroll without creating a scroll container — keeps position:sticky working */
 }
 
 body {
