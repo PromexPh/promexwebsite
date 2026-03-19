@@ -21,17 +21,19 @@ const navLinks = [
 type UserRole = 'candidate' | 'employer' | null;
 
 export default function Navbar() {
-  const [scrolled,       setScrolled]       = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [dropdownOpen,   setDropdownOpen]   = useState(false);
-  const [session,        setSession]        = useState<Session | null>(null);
-  const [userRole,       setUserRole]       = useState<UserRole>(null);
-  const [displayName,    setDisplayName]    = useState('');
-  const [authLoaded,     setAuthLoaded]     = useState(false);
+  const [scrolled,          setScrolled]          = useState(false);
+  const [mobileMenuOpen,    setMobileMenuOpen]    = useState(false);
+  const [dropdownOpen,      setDropdownOpen]      = useState(false);
+  const [employersMenuOpen, setEmployersMenuOpen] = useState(false);
+  const [session,           setSession]           = useState<Session | null>(null);
+  const [userRole,          setUserRole]          = useState<UserRole>(null);
+  const [displayName,       setDisplayName]       = useState('');
+  const [authLoaded,        setAuthLoaded]        = useState(false);
 
-  const pathname    = usePathname();
-  const router      = useRouter();
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const pathname        = usePathname();
+  const router          = useRouter();
+  const dropdownRef     = useRef<HTMLDivElement>(null);
+  const employersMenuRef = useRef<HTMLDivElement>(null);
 
   // ── Scroll ──────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -44,13 +46,17 @@ export default function Navbar() {
   useEffect(() => {
     setMobileMenuOpen(false);
     setDropdownOpen(false);
+    setEmployersMenuOpen(false);
   }, [pathname]);
 
-  // ── Click-outside closes dropdown ────────────────────────────────────────────
+  // ── Click-outside closes dropdowns ───────────────────────────────────────────
   useEffect(() => {
     function handler(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setDropdownOpen(false);
+      }
+      if (employersMenuRef.current && !employersMenuRef.current.contains(e.target as Node)) {
+        setEmployersMenuOpen(false);
       }
     }
     document.addEventListener('mousedown', handler);
@@ -106,9 +112,9 @@ export default function Navbar() {
     router.push('/');
   }
 
-  const isLoggedIn       = !!session;
-  const showRequestTalent = !isLoggedIn || userRole === 'employer';
-  const showViewJobs      = !isLoggedIn || userRole === 'candidate';
+  const isLoggedIn         = !!session;
+  const showEmployersMenu  = !isLoggedIn;
+  const showViewJobs       = !isLoggedIn || userRole === 'candidate';
 
   const initials = displayName
     .split(' ')
@@ -215,10 +221,33 @@ export default function Navbar() {
             </div>
           )}
 
-          {/* Permanent CTAs */}
-          {showRequestTalent && (
-            <Button label="Request Talent" href="/employer-inquiry" variant="primary" size="md" />
+          {/* For Employers dropdown */}
+          {showEmployersMenu && (
+            <div className={styles.employersWrap} ref={employersMenuRef}>
+              <button
+                type="button"
+                className={styles.employersBtn}
+                onClick={() => setEmployersMenuOpen((v) => !v)}
+                aria-expanded={employersMenuOpen}
+              >
+                For Employers <i className={`fa-solid fa-chevron-down ${styles.employersCaret} ${employersMenuOpen ? styles.employersCaretOpen : ''}`} aria-hidden="true" />
+              </button>
+              <div className={`${styles.employersMenu} ${employersMenuOpen ? styles.employersMenuOpen : ''}`}>
+                <Link href="/employer/register" className={styles.dropdownItem} onClick={() => setEmployersMenuOpen(false)}>
+                  <i className="fa-solid fa-building" aria-hidden="true" /> Post Jobs as a Company
+                </Link>
+                <Link href="/employer-inquiry" className={styles.dropdownItem} onClick={() => setEmployersMenuOpen(false)}>
+                  <i className="fa-solid fa-handshake" aria-hidden="true" /> Submit Hiring Inquiry
+                </Link>
+                <div className={styles.dropdownDivider} />
+                <Link href="/employer/register?mode=login" className={styles.dropdownItem} onClick={() => setEmployersMenuOpen(false)}>
+                  <i className="fa-solid fa-right-to-bracket" aria-hidden="true" /> Partner Login
+                </Link>
+              </div>
+            </div>
           )}
+
+          {/* View Overseas Jobs CTA */}
           {showViewJobs && (
             <Button label="View Overseas Jobs" href="/jobs" variant="accent" size="md" />
           )}
@@ -296,8 +325,19 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Button label="Request Talent"    href="/employer-inquiry" variant="primary" fullWidth onClick={() => setMobileMenuOpen(false)} />
-              <Button label="View Overseas Jobs" href="/jobs"            variant="accent"  fullWidth onClick={() => setMobileMenuOpen(false)} />
+              <Button label="View Overseas Jobs" href="/jobs" variant="accent" fullWidth onClick={() => setMobileMenuOpen(false)} />
+              <div className={styles.mobileEmployersSection}>
+                <p className={styles.mobileEmployersLabel}>For Employers</p>
+                <Link href="/employer/register" className={styles.mobileDashLink} onClick={() => setMobileMenuOpen(false)}>
+                  <i className="fa-solid fa-building" aria-hidden="true" /> Post Jobs as a Company
+                </Link>
+                <Link href="/employer-inquiry" className={styles.mobileDashLink} onClick={() => setMobileMenuOpen(false)}>
+                  <i className="fa-solid fa-handshake" aria-hidden="true" /> Submit Hiring Inquiry
+                </Link>
+                <Link href="/employer/register?mode=login" className={styles.mobileDashLink} onClick={() => setMobileMenuOpen(false)}>
+                  <i className="fa-solid fa-right-to-bracket" aria-hidden="true" /> Partner Login
+                </Link>
+              </div>
               <div className={styles.mobileAuthRow}>
                 <Link href="/candidate/register?mode=login" className={styles.mobileSignInBtn} onClick={() => setMobileMenuOpen(false)}>
                   Sign In

@@ -31,22 +31,34 @@ export default function EmployerInquiryPage() {
   const [form, setForm] = useState(initialForm);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   function set(field: keyof typeof initialForm, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitSuccess(true);
-      setTimeout(() => {
-        setSubmitSuccess(false);
+    setSubmitError('');
+    try {
+      const res = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        setSubmitSuccess(true);
         setForm(initialForm);
-      }, 3000);
-    }, 1500);
+      } else {
+        const d = await res.json();
+        setSubmitError(d.error || 'Submission failed. Please try again.');
+      }
+    } catch {
+      setSubmitError('Network error. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -71,6 +83,15 @@ export default function EmployerInquiryPage() {
                   <h3>Inquiry Submitted Successfully!</h3>
                   <p>Thank you for your interest. Our corporate recruitment team will review your requirements and contact you within 24 hours.</p>
                 </div>
+              </div>
+            </Reveal>
+          )}
+
+          {submitError && (
+            <Reveal animation="fade-up">
+              <div className={styles.alertError}>
+                <i className="fa-solid fa-circle-exclamation" aria-hidden="true" />
+                <p>{submitError}</p>
               </div>
             </Reveal>
           )}

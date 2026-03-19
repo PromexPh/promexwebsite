@@ -1,7 +1,7 @@
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
 export type Role = 'candidate' | 'employer';
-export type JobStatus = 'active' | 'paused' | 'closed';
+export type JobStatus = 'active' | 'paused' | 'closed' | 'draft';
 export type ApplicationStatus = 'pending' | 'reviewing' | 'shortlisted' | 'rejected' | 'hired';
 
 // ─── Domain Types ─────────────────────────────────────────────────────────────
@@ -44,11 +44,36 @@ export interface EmployerProfile {
   id: string;
   user_id: string;
   company_name: string;
-  contact_person: string;
+  contact_person?: string;
+  contact_job_title?: string;
   email: string;
   phone?: string;
   country?: string;
   industry?: string;
+  website?: string;
+  description?: string;
+  logo_url?: string;
+  is_verified?: boolean;
+  created_at: string;
+}
+
+export type InquiryStatus = 'new' | 'contacted' | 'converted';
+
+export interface Inquiry {
+  id: string;
+  company_name?: string;
+  contact_person?: string;
+  email?: string;
+  phone?: string;
+  country?: string;
+  industry?: string;
+  positions_needed?: string;
+  number_of_workers?: number;
+  urgency?: string;
+  employment_type?: string;
+  salary_range?: string;
+  message?: string;
+  status: InquiryStatus;
   created_at: string;
 }
 

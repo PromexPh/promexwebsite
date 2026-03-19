@@ -266,6 +266,86 @@
   flex-shrink: 0;
 }
 
+/* ---- For Employers dropdown ---- */
+.employersWrap {
+  position: relative;
+}
+
+.employersBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  background: transparent;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #374151;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.employersBtn:hover {
+  border-color: #c8a84b;
+  color: #c8a84b;
+}
+
+.employersCaret {
+  font-size: 0.7rem;
+  transition: transform 0.2s ease;
+}
+
+.employersCaretOpen {
+  transform: rotate(180deg);
+}
+
+.employersMenu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 220px;
+  background: #ffffff;
+  border: 1px solid #f3f4f6;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  padding: 6px;
+  z-index: 200;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.employersMenuOpen {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ─── Mobile employers section ─── */
+.mobileEmployersSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: 1px solid #f3f4f6;
+  border-radius: 10px;
+  padding: 10px;
+  background: #fafafa;
+}
+
+.mobileEmployersLabel {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: var(--color-secondary-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 6px 2px;
+}
+
 /* ---- Hamburger ---- */
 .hamburger {
   display: none;

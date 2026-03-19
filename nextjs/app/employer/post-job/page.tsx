@@ -40,10 +40,10 @@ function PostJobInner() {
     supabase.auth.getSession().then(({ data }) => {
       if (!data.session) { router.push('/employer/register'); return; }
       setToken(data.session.access_token);
-      // Pre-fill company from profile
-      supabase.from('profiles').select('company_name, role').eq('id', data.session.user.id).single().then(({ data: p }) => {
-        if (p?.role !== 'employer') { router.push('/employer/register'); return; }
-        if (p?.company_name) setForm((f) => ({ ...f, company: p.company_name! }));
+      // Pre-fill company from employers table
+      supabase.from('employers').select('company_name').eq('user_id', data.session.user.id).single().then(({ data: emp }) => {
+        if (!emp) { router.push('/employer/register'); return; }
+        if (emp?.company_name) setForm((f) => ({ ...f, company: (emp as { company_name?: string }).company_name! }));
         setAuthLoading(false);
       });
     });

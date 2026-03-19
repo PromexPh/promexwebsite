@@ -13,6 +13,22 @@ import type { Role } from '@/lib/types';
 // ALTER TABLE public.candidates ADD COLUMN IF NOT EXISTS resume_url text;
 // ALTER TABLE public.candidates ADD COLUMN IF NOT EXISTS resume_filename text;
 // ALTER TABLE public.candidates ADD COLUMN IF NOT EXISTS resume_uploaded_at timestamptz;
+//
+// ALTER TABLE public.employers ADD COLUMN IF NOT EXISTS website text;
+// ALTER TABLE public.employers ADD COLUMN IF NOT EXISTS description text;
+// ALTER TABLE public.employers ADD COLUMN IF NOT EXISTS logo_url text;
+// ALTER TABLE public.employers ADD COLUMN IF NOT EXISTS is_verified boolean DEFAULT false;
+// ALTER TABLE public.jobs ADD COLUMN IF NOT EXISTS posted_by_admin boolean DEFAULT false;
+//
+// CREATE TABLE IF NOT EXISTS public.inquiries (
+//   id uuid primary key default uuid_generate_v4(),
+//   company_name text, contact_person text, email text,
+//   phone text, country text, industry text,
+//   positions_needed text, number_of_workers integer,
+//   urgency text, employment_type text, salary_range text,
+//   message text, status text default 'new',
+//   created_at timestamptz default now()
+// );
 
 interface RegisterBody {
   email: string;
@@ -26,6 +42,8 @@ interface RegisterBody {
   contact_person?: string;
   country?: string;
   industry?: string;
+  website?: string;
+  description?: string;
 }
 
 export async function POST(req: NextRequest) {
@@ -50,7 +68,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Password must be at least 8 characters' }, { status: 400 });
   }
 
-  // Create auth user
   const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
     email,
     password,
@@ -69,19 +86,13 @@ export async function POST(req: NextRequest) {
   }
 
   const userId = authData.user.id;
-
   let insertError: { message: string } | null = null;
 
   if (role === 'candidate') {
-    const row: Record<string, unknown> = {
-      user_id: userId,
-      full_name,
-      email,
-    };
+    const row: Record<string, unknown> = { user_id: userId, full_name, email };
     if (body.phone) row.phone = body.phone;
     if (body.nationality) row.nationality = body.nationality;
     if (body.current_location) row.current_location = body.current_location;
-
     const { error } = await supabaseAdmin.from('candidates').insert(row);
     insertError = error;
   } else {
@@ -90,11 +101,13 @@ export async function POST(req: NextRequest) {
       company_name: body.company_name ?? full_name,
       contact_person: body.contact_person ?? full_name,
       email,
+      is_verified: false,
     };
     if (body.phone) row.phone = body.phone;
     if (body.country) row.country = body.country;
     if (body.industry) row.industry = body.industry;
-
+    if (body.website) row.website = body.website;
+    if (body.description) row.description = body.description;
     const { error } = await supabaseAdmin.from('employers').insert(row);
     insertError = error;
   }
