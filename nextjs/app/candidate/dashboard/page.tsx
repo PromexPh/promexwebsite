@@ -1,22 +1,342 @@
 'use client';
 
-import { useState, useEffect, useRef, Suspense } from 'react';
+import { useState, useEffect, useRef, useCallback, Suspense, Fragment } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import type { Application, ApplicationStatus, CandidateProfile, WorkExperience } from '@/lib/types';
+import type { Application, ApplicationStatus, CandidateProfile, Job, WorkExperience } from '@/lib/types';
 import styles from './page.module.css';
 
-const STATUS_CONFIG: Record<ApplicationStatus, { label: string; icon: string; color: string }> = {
-  submitted:            { label: 'Submitted',       icon: 'fa-paper-plane',     color: '#f59e0b' },
-  under_review:         { label: 'Under Review',    icon: 'fa-magnifying-glass', color: '#3b82f6' },
-  shortlisted:          { label: 'Shortlisted',     icon: 'fa-star',             color: '#8b5cf6' },
-  interview_scheduled:  { label: 'Interview',       icon: 'fa-calendar-check',   color: '#6366f1' },
-  offer_extended:       { label: 'Offer Extended',  icon: 'fa-handshake',        color: '#8CC63F' },
-  deployed:             { label: 'Deployed',        icon: 'fa-plane',            color: '#10b981' },
-  rejected:             { label: 'Rejected',        icon: 'fa-xmark',            color: '#ef4444' },
-  withdrawn:            { label: 'Withdrawn',       icon: 'fa-rotate-left',      color: '#9ca3af' },
+// ─── Status badge (new pill design) ───────────────────────────────────────────
+const STATUS_BADGE: Record<ApplicationStatus, { label: string; bg: string; color: string }> = {
+  submitted:           { label: 'Under Review',        bg: '#dbeafe', color: '#1d4ed8' },
+  under_review:        { label: 'Being Reviewed',       bg: '#fef9c3', color: '#a16207' },
+  shortlisted:         { label: 'Shortlisted ⭐',        bg: '#f3e8ff', color: '#7c3aed' },
+  interview_scheduled: { label: 'Interview Scheduled',  bg: '#ffedd5', color: '#c2410c' },
+  offer_extended:      { label: 'Offer Extended 🎉',    bg: '#dcfce7', color: '#15803d' },
+  deployed:            { label: 'Deployed ✓',           bg: '#d1fae5', color: '#065f46' },
+  rejected:            { label: 'Not Shortlisted',      bg: '#fee2e2', color: '#dc2626' },
+  withdrawn:           { label: 'Withdrawn',            bg: '#f3f4f6', color: '#6b7280' },
 };
 
+// ─── Pipeline ─────────────────────────────────────────────────────────────────
+const PIPELINE_STEPS = [
+  { key: 'submitted',           label: 'Applied'     },
+  { key: 'under_review',        label: 'Review'      },
+  { key: 'shortlisted',         label: 'Shortlisted' },
+  { key: 'interview_scheduled', label: 'Interview'   },
+  { key: 'offer',               label: 'Offer'       },
+];
+
+const STATUS_STEP_IDX: Partial<Record<string, number>> = {
+  submitted: 0, under_review: 1, shortlisted: 2,
+  interview_scheduled: 3, offer_extended: 4, deployed: 4,
+};
+
+// ─── Documents checklist ───────────────────────────────────────────────────────
+const DOC_ITEMS = [
+  'Valid passport (6 months validity)',
+  'NBI Clearance',
+  'Medical Certificate (GAMCA accredited)',
+  'Employment contract signed',
+  'OWWA membership',
+  'Pre-departure orientation (PDOS) certificate',
+  'OEC / POEA clearance',
+];
+
+function DocumentsChecklist({ appId }: { appId: string }) {
+  const key = `docs_${appId}`;
+  const [open, setOpen] = useState(false);
+  const [checked, setChecked] = useState<boolean[]>(() => {
+    if (typeof window === 'undefined') return new Array(DOC_ITEMS.length).fill(false);
+    try {
+      const saved = localStorage.getItem(key);
+      return saved ? JSON.parse(saved) : new Array(DOC_ITEMS.length).fill(false);
+    } catch { return new Array(DOC_ITEMS.length).fill(false); }
+  });
+
+  function toggle(i: number) {
+    setChecked(prev => {
+      const next = [...prev];
+      next[i] = !next[i];
+      localStorage.setItem(key, JSON.stringify(next));
+      return next;
+    });
+  }
+
+  const count = checked.filter(Boolean).length;
+  const allDone = count === DOC_ITEMS.length;
+
+  return (
+    <div className={styles.docsChecklist}>
+      <button type="button" className={styles.docsToggle} onClick={() => setOpen(o => !o)}>
+        <span className={allDone ? styles.docsAllDone : ''}>
+          {allDone ? '✓ All documents ready' : `Documents Checklist — ${count}/${DOC_ITEMS.length} ready`}
+        </span>
+        <i className={`fa-solid fa-chevron-${open ? 'up' : 'down'}`} style={{ fontSize: '0.7rem' }} aria-hidden="true" />
+      </button>
+      {open && (
+        <div className={styles.docsBody}>
+          {DOC_ITEMS.map((item, i) => (
+            <label key={item} className={styles.docsItem}>
+              <input type="checkbox" checked={checked[i]} onChange={() => toggle(i)} />
+              <span style={{ textDecoration: checked[i] ? 'line-through' : 'none', color: checked[i] ? '#9ca3af' : 'inherit' }}>
+                {item}
+              </span>
+            </label>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Application Card ──────────────────────────────────────────────────────────
+function ApplicationCard({ app, onWithdraw }: { app: Application; onWithdraw: (id: string) => void }) {
+  const badge = STATUS_BADGE[app.status];
+  const job = app.job;
+  const stepIdx = STATUS_STEP_IDX[app.status] ?? -1;
+  const isRejected = app.status === 'rejected';
+  const isWithdrawable = app.status === 'submitted' || app.status === 'under_review';
+  const [confirmWithdraw, setConfirmWithdraw] = useState(false);
+
+  function formatSalary(): string | null {
+    if (!job) return null;
+    if (job.salary_min && job.salary_max) {
+      const cur = job.salary_currency ? `${job.salary_currency} ` : '';
+      return `${cur}${job.salary_min.toLocaleString()} – ${job.salary_max.toLocaleString()}/mo`;
+    }
+    return job.salary ? `${job.salary}/mo` : null;
+  }
+
+  const salaryDisplay = formatSalary();
+  const interviewDate = (app as Application & { interview_date?: string }).interview_date;
+
+  return (
+    <div className={styles.appCard}>
+      {/* Top row: job info + status badge */}
+      <div className={styles.appCardTop}>
+        <div className={styles.appCardInfo}>
+          <h3 className={styles.appJobTitle}>{job?.title ?? 'Job removed'}</h3>
+          <div className={styles.appJobMeta}>
+            <span>{job?.company ?? '—'}</span>
+            {job?.country && (
+              <>
+                <span className={styles.appMetaDot}>·</span>
+                <span>{job.country}</span>
+              </>
+            )}
+          </div>
+          {salaryDisplay && (
+            <div className={styles.appSalary}>
+              <i className="fa-solid fa-money-bill-wave" aria-hidden="true" /> {salaryDisplay}
+            </div>
+          )}
+        </div>
+        <span className={styles.statusBadge} style={{ background: badge.bg, color: badge.color }}>
+          {badge.label}
+        </span>
+      </div>
+
+      {/* Applied date */}
+      <div className={styles.appCardDateRow}>
+        <i className="fa-solid fa-calendar-days" aria-hidden="true" />
+        Applied {new Date(app.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+      </div>
+
+      {/* Interview date card */}
+      {app.status === 'interview_scheduled' && interviewDate && (
+        <div className={styles.interviewCard}>
+          <i className="fa-solid fa-calendar-check" aria-hidden="true" /> Interview scheduled:{' '}
+          {new Date(interviewDate).toLocaleString('en-US', {
+            month: 'short', day: 'numeric', year: 'numeric',
+            hour: '2-digit', minute: '2-digit',
+          })}
+        </div>
+      )}
+
+      {/* Pipeline */}
+      {isRejected ? (
+        <div className={styles.pipelineRejected}>
+          <i className="fa-solid fa-xmark" aria-hidden="true" /> Application not shortlisted
+        </div>
+      ) : app.status !== 'withdrawn' && (
+        <div className={styles.pipelineNew}>
+          {PIPELINE_STEPS.map((step, i) => {
+            const active = i <= stepIdx;
+            const lineActive = i > 0 && i <= stepIdx;
+            return (
+              <Fragment key={step.key}>
+                {i > 0 && (
+                  <div className={`${styles.pipelineNewLine} ${lineActive ? styles.pipelineNewLineActive : ''}`} />
+                )}
+                <div className={styles.pipelineNewStep}>
+                  <div className={`${styles.pipelineNewDot} ${active ? styles.pipelineNewDotActive : ''}`} />
+                  <span className={`${styles.pipelineNewLabel} ${active ? styles.pipelineNewLabelActive : ''}`}>
+                    {step.label}
+                  </span>
+                </div>
+              </Fragment>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Documents checklist */}
+      <DocumentsChecklist appId={app.id} />
+
+      {/* Withdraw */}
+      {isWithdrawable && (
+        <div className={styles.withdrawWrap}>
+          {confirmWithdraw ? (
+            <div className={styles.withdrawConfirm}>
+              <span>Are you sure?</span>
+              <button
+                type="button"
+                className={styles.withdrawConfirmBtn}
+                onClick={() => { onWithdraw(app.id); setConfirmWithdraw(false); }}
+              >
+                Yes, withdraw
+              </button>
+              <button type="button" className={styles.withdrawCancelBtn} onClick={() => setConfirmWithdraw(false)}>
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button type="button" className={styles.withdrawLink} onClick={() => setConfirmWithdraw(true)}>
+              Withdraw Application
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Job Match Suggestions ─────────────────────────────────────────────────────
+function JobMatchSuggestions({ desiredPosition }: { desiredPosition?: string }) {
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!desiredPosition) return;
+    setLoading(true);
+    fetch(`/api/jobs?limit=3&q=${encodeURIComponent(desiredPosition)}`)
+      .then(r => r.ok ? r.json() : { jobs: [] })
+      .then(d => { setJobs((d.jobs ?? []).slice(0, 3)); setLoading(false); });
+  }, [desiredPosition]);
+
+  return (
+    <div className={styles.matchSection}>
+      <h3 className={styles.matchHeading}>Jobs You Might Like</h3>
+      {!desiredPosition ? (
+        <p className={styles.matchNoPosition}>Complete your profile to get job recommendations</p>
+      ) : loading ? (
+        <p className={styles.matchLoading}><i className="fa-solid fa-spinner fa-spin" aria-hidden="true" /> Finding matches…</p>
+      ) : jobs.length === 0 ? (
+        <p className={styles.matchNoPosition}>No matching jobs found right now. <a href="/jobs" style={{ color: '#4FA3C7' }}>Browse all jobs →</a></p>
+      ) : (
+        <>
+          <p className={styles.matchSubtext}>Based on your desired position: <strong>{desiredPosition}</strong></p>
+          <div className={styles.matchGrid}>
+            {jobs.map(job => (
+              <div key={job.id} className={styles.matchCard}>
+                <div className={styles.matchCardTitle}>{job.title}</div>
+                <div className={styles.matchCardMeta}>{job.company} · {job.country}</div>
+                {job.salary && <div className={styles.matchCardSalary}>{job.salary}/mo</div>}
+                <a href={`/jobs/${job.id}`} className={styles.matchCardBtn}>View Job →</a>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─── Empty state with featured jobs ───────────────────────────────────────────
+function EmptyStateWithJobs() {
+  const [featuredJobs, setFeaturedJobs] = useState<Job[]>([]);
+
+  useEffect(() => {
+    fetch('/api/jobs?limit=3')
+      .then(r => r.ok ? r.json() : { jobs: [] })
+      .then(d => setFeaturedJobs((d.jobs ?? []).slice(0, 3)));
+  }, []);
+
+  return (
+    <div className={styles.emptyStateNew}>
+      <svg width="120" height="120" viewBox="0 0 120 120" fill="none" className={styles.emptyStateSvg} aria-hidden="true">
+        <circle cx="60" cy="60" r="56" fill="rgba(79,163,199,0.08)" stroke="rgba(79,163,199,0.2)" strokeWidth="2" />
+        {/* Person head */}
+        <circle cx="52" cy="38" r="11" fill="#4FA3C7" opacity="0.9" />
+        {/* Person body */}
+        <path d="M33 76c0-11 8.5-18 19-18s19 7 19 18" fill="#4FA3C7" opacity="0.7" />
+        {/* Briefcase body */}
+        <rect x="68" y="58" width="26" height="22" rx="3" fill="#8CC63F" opacity="0.9" />
+        {/* Briefcase handle */}
+        <path d="M74 58v-4a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v4" fill="none" stroke="#8CC63F" strokeWidth="2.5" />
+        {/* Briefcase clasp */}
+        <line x1="68" y1="69" x2="94" y2="69" stroke="white" strokeWidth="1.5" />
+        <line x1="81" y1="58" x2="81" y2="80" stroke="white" strokeWidth="1.5" />
+      </svg>
+      <h3 className={styles.emptyStateHeading}>Start your overseas journey</h3>
+      <p className={styles.emptyStateSubtextNew}>Browse verified job opportunities and apply in minutes. Zero placement fees.</p>
+      <a href="/jobs" className={styles.emptyStateBtnNew}>Browse Jobs →</a>
+      {featuredJobs.length > 0 && (
+        <>
+          <p className={styles.emptyFeaturedLabel}>Featured opportunities</p>
+          <div className={styles.emptyFeaturedGrid}>
+            {featuredJobs.map(job => (
+              <a key={job.id} href={`/jobs/${job.id}`} className={styles.emptyFeaturedCard}>
+                <div className={styles.emptyFeaturedTitle}>{job.title}</div>
+                <div className={styles.emptyFeaturedMeta}>{job.company} · {job.country}</div>
+                {job.salary && <div className={styles.emptyFeaturedSalary}>{job.salary}/mo</div>}
+              </a>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─── Profile strength tips ─────────────────────────────────────────────────────
+function ProfileStrengthTips({ candidate, onGoTo }: { candidate: CandidateProfile; onGoTo: (id: string) => void }) {
+  const tips: { text: string; targetId: string }[] = [];
+  if (!candidate.resume_url)
+    tips.push({ text: 'Upload your CV — candidates with CVs get 3x more callbacks', targetId: 'section-cv' });
+  if (!(candidate.work_experience?.length))
+    tips.push({ text: 'Add work experience to stand out from other applicants', targetId: 'section-work' });
+  if (!(candidate.skills?.length))
+    tips.push({ text: 'Add your skills — recruiters search by skill keywords', targetId: 'section-professional' });
+  if (!candidate.desired_position)
+    tips.push({ text: 'Set your desired position to get job recommendations', targetId: 'section-professional' });
+  if (!candidate.linkedin_url)
+    tips.push({ text: 'Add your LinkedIn URL for faster profile verification', targetId: 'section-linkedin' });
+
+  const shown = tips.slice(0, 3);
+  if (shown.length === 0) return null;
+
+  return (
+    <div className={styles.tipsCard}>
+      <h3 className={styles.tipsHeading}>
+        <i className="fa-solid fa-lightbulb" style={{ color: '#f59e0b' }} aria-hidden="true" /> Strengthen Your Profile
+      </h3>
+      <div className={styles.tipsList}>
+        {shown.map((tip, i) => (
+          <div key={i} className={styles.tip}>
+            <span className={styles.tipText}>{tip.text}</span>
+            <button type="button" className={styles.tipBtn} onClick={() => onGoTo(tip.targetId)}>
+              Complete →
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 const EDUCATION_OPTIONS = ['', 'High School', 'Diploma', "Bachelor's", "Master's", 'PhD', 'Vocational/Technical'];
 
 function calcCompletion(p: CandidateProfile): number {
@@ -43,51 +363,12 @@ function completionMsg(pct: number): string {
   return "Great profile! You're ready to apply to jobs";
 }
 
-function ApplicationCard({ app }: { app: Application }) {
-  const status = STATUS_CONFIG[app.status];
-  const job = app.job;
-  return (
-    <div className={styles.appCard}>
-      <div className={styles.appCardTop}>
-        <div>
-          <h3 className={styles.appJobTitle}>{job?.title ?? 'Job removed'}</h3>
-          <div className={styles.appJobCompany}>
-            <i className="fa-solid fa-building" aria-hidden="true" /> {job?.company ?? '—'}
-          </div>
-        </div>
-        <div className={styles.appStatus} style={{ '--status-color': status.color } as React.CSSProperties}>
-          <i className={`fa-solid ${status.icon}`} aria-hidden="true" />
-          {status.label}
-        </div>
-      </div>
-      <div className={styles.appCardMeta}>
-        {job?.country && <span><i className="fa-solid fa-location-dot" aria-hidden="true" /> {job.country}</span>}
-        {job?.salary && <span><i className="fa-solid fa-money-bill-wave" aria-hidden="true" /> {job.salary}/mo</span>}
-        {job?.job_type && <span><i className="fa-solid fa-clock" aria-hidden="true" /> {job.job_type}</span>}
-        <span><i className="fa-solid fa-calendar" aria-hidden="true" /> Applied {new Date(app.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-      </div>
-      {app.cover_letter && (
-        <p className={styles.appCoverLetter}>
-          <i className="fa-solid fa-quote-left" aria-hidden="true" /> {app.cover_letter.slice(0, 140)}{app.cover_letter.length > 140 ? '…' : ''}
-        </p>
-      )}
-      <div className={styles.pipeline}>
-        {(Object.keys(STATUS_CONFIG) as ApplicationStatus[]).slice(0, 4).map((s) => (
-          <div key={s} className={`${styles.pipelineStep} ${app.status === s || (s === 'shortlisted' && app.status === 'deployed') ? styles.pipelineStepActive : ''}`}>
-            <div className={styles.pipelineDot} />
-            <span>{STATUS_CONFIG[s].label}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function saveMsg(msg: string, setter: (m: string) => void) {
   setter(msg);
   setTimeout(() => setter(''), 3000);
 }
 
+// ─── Main dashboard component ─────────────────────────────────────────────────
 function CandidateDashboardInner() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -123,18 +404,43 @@ function CandidateDashboardInner() {
   const [savingLinkedin, setSavingLinkedin] = useState(false);
   const [linkedinMsg, setLinkedinMsg] = useState('');
 
+  // ── Fetch applications (standalone, callable anytime) ──
+  const fetchApplications = useCallback(async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+    const res = await fetch('/api/applications', {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    });
+    if (res.ok) {
+      const d = await res.json();
+      console.log('Applications fetched:', d.applications?.length);
+      setApplications(d.applications ?? []);
+    }
+  }, []);
+
+  // ── Withdraw application ──
+  const withdrawApplication = useCallback(async (appId: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+    const res = await fetch('/api/applications', {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${session.access_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ application_id: appId, status: 'withdrawn' }),
+    });
+    if (res.ok) await fetchApplications();
+  }, [fetchApplications]);
+
+  // ── Initial load ──
   useEffect(() => {
     async function load() {
-      const { data: sessionData } = await supabase.auth.getSession();
-      if (!sessionData.session) { router.push('/candidate/register'); return; }
-      const t = sessionData.session.access_token;
-      const userId = sessionData.session.user.id;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { router.push('/candidate/register'); return; }
+      const userId = session.user.id;
 
-      const [{ data: cand }, appsRes] = await Promise.all([
-        supabase.from('candidates').select('*').eq('user_id', userId).single(),
-        fetch('/api/applications', { headers: { Authorization: `Bearer ${t}` } }),
-      ]);
-
+      const { data: cand } = await supabase.from('candidates').select('*').eq('user_id', userId).single();
       if (cand) {
         const c = cand as CandidateProfile;
         setCandidate(c);
@@ -155,16 +461,19 @@ function CandidateDashboardInner() {
         setLinkedinUrl(c.linkedin_url ?? '');
       }
 
-      if (appsRes.ok) {
-        const d = await appsRes.json();
-        setApplications(d.applications ?? []);
-      }
-
+      await fetchApplications();
       setLoading(false);
     }
     load();
-  }, [router]);
+  }, [router, fetchApplications]);
 
+  // ── Profile section scroll ──
+  function handleGoTo(sectionId: string) {
+    const el = document.getElementById(sectionId);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ── Save handlers ──
   async function doSavePersonal() {
     if (!candidate) return;
     setSavingPersonal(true);
@@ -305,7 +614,6 @@ function CandidateDashboardInner() {
     hired: applications.filter((a) => a.status === 'deployed' || a.status === 'offer_extended').length,
   };
 
-  // Profile chips
   const profileChips = candidate ? [
     { label: 'Full name',  done: !!candidate.full_name },
     { label: 'Phone',      done: !!candidate.phone },
@@ -317,7 +625,6 @@ function CandidateDashboardInner() {
     { label: 'CV upload',  done: !!candidate.resume_url },
   ] : [];
 
-  // Section complete flags
   const personalComplete = !!(personal.full_name && personal.phone && personal.nationality && personal.current_location);
   const professionalComplete = !!(professional.desired_position && professional.education_level && skills.length > 0);
   const cvComplete = !!candidate?.resume_url;
@@ -359,10 +666,7 @@ function CandidateDashboardInner() {
             <span className={styles.completionPct} style={{ color: completionColor(completion) }}>{completion}%</span>
           </div>
           <div className={styles.completionTrack}>
-            <div
-              className={styles.completionFill}
-              style={{ width: `${completion}%`, background: completionColor(completion) }}
-            />
+            <div className={styles.completionFill} style={{ width: `${completion}%`, background: completionColor(completion) }} />
           </div>
           <p className={styles.completionHint}>{completionMsg(completion)}</p>
         </div>
@@ -395,25 +699,27 @@ function CandidateDashboardInner() {
           </button>
         </div>
 
-        {/* Applications Tab */}
+        {/* ── Applications Tab ── */}
         {activeTab === 'applications' && (
           <div className={styles.appsSection}>
             {applications.length === 0 ? (
-              <div className={styles.emptyState}>
-                <i className="fa-solid fa-inbox" aria-hidden="true" />
-                <h3>No applications yet</h3>
-                <p>Browse open jobs and apply to get started.</p>
-                <a href="/jobs" className={styles.emptyStateBtn}>Browse Jobs →</a>
-              </div>
+              <EmptyStateWithJobs />
             ) : (
               <div className={styles.appsList}>
-                {applications.map((app) => <ApplicationCard key={app.id} app={app} />)}
+                {applications.map((app) => (
+                  <ApplicationCard key={app.id} app={app} onWithdraw={withdrawApplication} />
+                ))}
               </div>
+            )}
+
+            {/* Job match suggestions — shown when candidate has a desired position */}
+            {applications.length > 0 && candidate && (
+              <JobMatchSuggestions desiredPosition={candidate.desired_position} />
             )}
           </div>
         )}
 
-        {/* Profile Tab */}
+        {/* ── Profile Tab ── */}
         {activeTab === 'profile' && candidate && (
           <div className={styles.profileTabWrap}>
 
@@ -447,128 +753,69 @@ function CandidateDashboardInner() {
                 <div className={`${styles.profileSectionCard} ${personalComplete ? styles.profileSectionCardComplete : ''}`}>
                   <div className={styles.profileSectionHeader}>
                     <div className={styles.profileSectionIconWrap} style={{ background: 'rgba(79,163,199,0.12)' }}>
-                      <i className="fa-solid fa-user" style={{ color: '#4FA3C7' }} />
+                      <i className="fa-solid fa-user" style={{ color: '#4FA3C7' }} aria-hidden="true" />
                     </div>
                     <span className={styles.profileSectionTitle}>Personal Information</span>
-                    {personalComplete && <i className="fa-solid fa-circle-check" style={{ color: '#8CC63F', marginLeft: 'auto' }} />}
+                    {personalComplete && <i className="fa-solid fa-circle-check" style={{ color: '#8CC63F', marginLeft: 'auto' }} aria-hidden="true" />}
                   </div>
                   <div className={styles.profileInputGrid}>
                     <div className={styles.profileInputGroup}>
                       <label>Full Name *</label>
-                      <input
-                        type="text"
-                        value={personal.full_name}
-                        onChange={(e) => setPersonal((f) => ({ ...f, full_name: e.target.value }))}
-                        className={styles.profileInput}
-                        placeholder="Juan dela Cruz"
-                      />
+                      <input type="text" value={personal.full_name} onChange={(e) => setPersonal((f) => ({ ...f, full_name: e.target.value }))} className={styles.profileInput} placeholder="Juan dela Cruz" />
                     </div>
                     <div className={styles.profileInputGroup}>
                       <label>Phone</label>
-                      <input
-                        type="tel"
-                        value={personal.phone}
-                        onChange={(e) => setPersonal((f) => ({ ...f, phone: e.target.value }))}
-                        className={styles.profileInput}
-                        placeholder="+63 912 345 6789"
-                      />
+                      <input type="tel" value={personal.phone} onChange={(e) => setPersonal((f) => ({ ...f, phone: e.target.value }))} className={styles.profileInput} placeholder="+63 912 345 6789" />
                     </div>
                     <div className={styles.profileInputGroup}>
                       <label>Date of Birth</label>
-                      <input
-                        type="date"
-                        value={personal.date_of_birth}
-                        onChange={(e) => setPersonal((f) => ({ ...f, date_of_birth: e.target.value }))}
-                        className={styles.profileInput}
-                      />
+                      <input type="date" value={personal.date_of_birth} onChange={(e) => setPersonal((f) => ({ ...f, date_of_birth: e.target.value }))} className={styles.profileInput} />
                     </div>
                     <div className={styles.profileInputGroup}>
                       <label>Nationality</label>
-                      <input
-                        type="text"
-                        value={personal.nationality}
-                        onChange={(e) => setPersonal((f) => ({ ...f, nationality: e.target.value }))}
-                        className={styles.profileInput}
-                        placeholder="Filipino"
-                      />
+                      <input type="text" value={personal.nationality} onChange={(e) => setPersonal((f) => ({ ...f, nationality: e.target.value }))} className={styles.profileInput} placeholder="Filipino" />
                     </div>
                     <div className={`${styles.profileInputGroup} ${styles.profileInputFull}`}>
                       <label>Current Location</label>
-                      <input
-                        type="text"
-                        value={personal.current_location}
-                        onChange={(e) => setPersonal((f) => ({ ...f, current_location: e.target.value }))}
-                        className={styles.profileInput}
-                        placeholder="Manila, Philippines"
-                      />
+                      <input type="text" value={personal.current_location} onChange={(e) => setPersonal((f) => ({ ...f, current_location: e.target.value }))} className={styles.profileInput} placeholder="Manila, Philippines" />
                     </div>
                   </div>
                   <div className={styles.profileCardFooter}>
                     {personalMsg && <span className={styles.savedMsg}>{personalMsg}</span>}
-                    <button
-                      type="button"
-                      className={styles.profileSaveBtn}
-                      onClick={doSavePersonal}
-                      disabled={savingPersonal}
-                    >
-                      {savingPersonal ? <><i className="fa-solid fa-spinner fa-spin" /> Saving…</> : 'Save'}
+                    <button type="button" className={styles.profileSaveBtn} onClick={doSavePersonal} disabled={savingPersonal}>
+                      {savingPersonal ? <><i className="fa-solid fa-spinner fa-spin" aria-hidden="true" /> Saving…</> : 'Save'}
                     </button>
                   </div>
                 </div>
 
                 {/* Section 2 — Professional Details */}
-                <div className={`${styles.profileSectionCard} ${professionalComplete ? styles.profileSectionCardComplete : ''}`}>
+                <div id="section-professional" className={`${styles.profileSectionCard} ${professionalComplete ? styles.profileSectionCardComplete : ''}`}>
                   <div className={styles.profileSectionHeader}>
                     <div className={styles.profileSectionIconWrap} style={{ background: 'rgba(140,198,63,0.12)' }}>
-                      <i className="fa-solid fa-briefcase" style={{ color: '#8CC63F' }} />
+                      <i className="fa-solid fa-briefcase" style={{ color: '#8CC63F' }} aria-hidden="true" />
                     </div>
                     <span className={styles.profileSectionTitle}>Professional Details</span>
-                    {professionalComplete && <i className="fa-solid fa-circle-check" style={{ color: '#8CC63F', marginLeft: 'auto' }} />}
+                    {professionalComplete && <i className="fa-solid fa-circle-check" style={{ color: '#8CC63F', marginLeft: 'auto' }} aria-hidden="true" />}
                   </div>
                   <div className={styles.profileInputGrid}>
                     <div className={styles.profileInputGroup}>
                       <label>Desired Position</label>
-                      <input
-                        type="text"
-                        value={professional.desired_position}
-                        onChange={(e) => setProfessional((f) => ({ ...f, desired_position: e.target.value }))}
-                        className={styles.profileInput}
-                        placeholder="e.g. Registered Nurse"
-                      />
+                      <input type="text" value={professional.desired_position} onChange={(e) => setProfessional((f) => ({ ...f, desired_position: e.target.value }))} className={styles.profileInput} placeholder="e.g. Registered Nurse" />
                     </div>
                     <div className={styles.profileInputGroup}>
                       <label>Years of Experience</label>
-                      <input
-                        type="number"
-                        min="0"
-                        max="50"
-                        value={professional.years_experience}
-                        onChange={(e) => setProfessional((f) => ({ ...f, years_experience: e.target.value }))}
-                        className={styles.profileInput}
-                        placeholder="5"
-                      />
+                      <input type="number" min="0" max="50" value={professional.years_experience} onChange={(e) => setProfessional((f) => ({ ...f, years_experience: e.target.value }))} className={styles.profileInput} placeholder="5" />
                     </div>
                     <div className={`${styles.profileInputGroup} ${styles.profileInputFull}`}>
                       <label>Education Level</label>
-                      <select
-                        value={professional.education_level}
-                        onChange={(e) => setProfessional((f) => ({ ...f, education_level: e.target.value }))}
-                        className={styles.profileInput}
-                      >
+                      <select value={professional.education_level} onChange={(e) => setProfessional((f) => ({ ...f, education_level: e.target.value }))} className={styles.profileInput}>
                         {EDUCATION_OPTIONS.map((o) => <option key={o} value={o}>{o || 'Select education level'}</option>)}
                       </select>
                     </div>
                     <div className={`${styles.profileInputGroup} ${styles.profileInputFull}`}>
                       <label>Skills</label>
                       <div className={styles.profileSkillsRow}>
-                        <input
-                          type="text"
-                          value={skillInput}
-                          onChange={(e) => setSkillInput(e.target.value)}
-                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addSkill(); } }}
-                          placeholder="Type a skill and press Enter"
-                          className={styles.profileInput}
-                        />
+                        <input type="text" value={skillInput} onChange={(e) => setSkillInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addSkill(); } }} placeholder="Type a skill and press Enter" className={styles.profileInput} />
                         <button type="button" onClick={addSkill} className={styles.profileSkillAddBtn}>
                           <i className="fa-solid fa-plus" aria-hidden="true" />
                         </button>
@@ -578,12 +825,7 @@ function CandidateDashboardInner() {
                           {skills.map((s) => (
                             <span key={s} className={styles.profileSkillTag}>
                               {s}
-                              <button
-                                type="button"
-                                onClick={() => setSkills((prev) => prev.filter((x) => x !== s))}
-                                aria-label={`Remove ${s}`}
-                                className={styles.profileSkillRemove}
-                              >
+                              <button type="button" onClick={() => setSkills((prev) => prev.filter((x) => x !== s))} aria-label={`Remove ${s}`} className={styles.profileSkillRemove}>
                                 <i className="fa-solid fa-xmark" aria-hidden="true" />
                               </button>
                             </span>
@@ -594,13 +836,8 @@ function CandidateDashboardInner() {
                   </div>
                   <div className={styles.profileCardFooter}>
                     {professionalMsg && <span className={styles.savedMsg}>{professionalMsg}</span>}
-                    <button
-                      type="button"
-                      className={styles.profileSaveBtn}
-                      onClick={doSaveProfessional}
-                      disabled={savingProfessional}
-                    >
-                      {savingProfessional ? <><i className="fa-solid fa-spinner fa-spin" /> Saving…</> : 'Save'}
+                    <button type="button" className={styles.profileSaveBtn} onClick={doSaveProfessional} disabled={savingProfessional}>
+                      {savingProfessional ? <><i className="fa-solid fa-spinner fa-spin" aria-hidden="true" /> Saving…</> : 'Save'}
                     </button>
                   </div>
                 </div>
@@ -611,18 +848,18 @@ function CandidateDashboardInner() {
               <div className={styles.profileGridRight}>
 
                 {/* Section 3 — CV Upload */}
-                <div className={`${styles.profileSectionCard} ${cvComplete ? styles.profileSectionCardComplete : ''}`}>
+                <div id="section-cv" className={`${styles.profileSectionCard} ${cvComplete ? styles.profileSectionCardComplete : ''}`}>
                   <div className={styles.profileSectionHeader}>
                     <div className={styles.profileSectionIconWrap} style={{ background: 'rgba(231,76,60,0.12)' }}>
-                      <i className="fa-solid fa-file-pdf" style={{ color: '#E74C3C' }} />
+                      <i className="fa-solid fa-file-pdf" style={{ color: '#E74C3C' }} aria-hidden="true" />
                     </div>
                     <span className={styles.profileSectionTitle}>CV / Resume</span>
-                    {cvComplete && <i className="fa-solid fa-circle-check" style={{ color: '#8CC63F', marginLeft: 'auto' }} />}
+                    {cvComplete && <i className="fa-solid fa-circle-check" style={{ color: '#8CC63F', marginLeft: 'auto' }} aria-hidden="true" />}
                   </div>
 
                   {candidate.resume_url ? (
                     <div className={styles.profileCvExisting}>
-                      <i className="fa-solid fa-file-pdf" style={{ color: '#E74C3C', fontSize: '1.4rem' }} />
+                      <i className="fa-solid fa-file-pdf" style={{ color: '#E74C3C', fontSize: '1.4rem' }} aria-hidden="true" />
                       <div className={styles.profileCvInfo}>
                         <span className={styles.profileCvFilename}>{candidate.resume_filename ?? 'resume.pdf'}</span>
                         {candidate.resume_uploaded_at && (
@@ -632,12 +869,12 @@ function CandidateDashboardInner() {
                         )}
                       </div>
                       <a href={candidate.resume_url} target="_blank" rel="noopener noreferrer" className={styles.profileCvViewBtn}>
-                        <i className="fa-solid fa-eye" /> View
+                        <i className="fa-solid fa-eye" aria-hidden="true" /> View
                       </a>
                     </div>
                   ) : (
                     <p className={styles.profileCvMissing}>
-                      <i className="fa-solid fa-triangle-exclamation" /> No CV uploaded yet. Upload to apply for jobs.
+                      <i className="fa-solid fa-triangle-exclamation" aria-hidden="true" /> No CV uploaded yet. Upload to apply for jobs.
                     </p>
                   )}
 
@@ -652,9 +889,9 @@ function CandidateDashboardInner() {
                     }}
                   >
                     {uploading ? (
-                      <><i className="fa-solid fa-spinner fa-spin" /> Uploading…</>
+                      <><i className="fa-solid fa-spinner fa-spin" aria-hidden="true" /> Uploading…</>
                     ) : (
-                      <><i className="fa-solid fa-cloud-arrow-up" /> <span>Drop PDF here or <u>click to browse</u></span></>
+                      <><i className="fa-solid fa-cloud-arrow-up" aria-hidden="true" /> <span>Drop PDF here or <u>click to browse</u></span></>
                     )}
                   </div>
                   <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx" style={{ display: 'none' }} onChange={handleFileChange} disabled={uploading} />
@@ -666,47 +903,36 @@ function CandidateDashboardInner() {
                 </div>
 
                 {/* Section 4 — LinkedIn */}
-                <div className={`${styles.profileSectionCard} ${linkedinComplete ? styles.profileSectionCardComplete : ''}`}>
+                <div id="section-linkedin" className={`${styles.profileSectionCard} ${linkedinComplete ? styles.profileSectionCardComplete : ''}`}>
                   <div className={styles.profileSectionHeader}>
                     <div className={styles.profileSectionIconWrap} style={{ background: 'rgba(0,119,181,0.12)' }}>
-                      <i className="fa-brands fa-linkedin" style={{ color: '#0077B5' }} />
+                      <i className="fa-brands fa-linkedin" style={{ color: '#0077B5' }} aria-hidden="true" />
                     </div>
                     <span className={styles.profileSectionTitle}>LinkedIn Profile</span>
-                    {linkedinComplete && <i className="fa-solid fa-circle-check" style={{ color: '#8CC63F', marginLeft: 'auto' }} />}
+                    {linkedinComplete && <i className="fa-solid fa-circle-check" style={{ color: '#8CC63F', marginLeft: 'auto' }} aria-hidden="true" />}
                   </div>
                   <div className={styles.profileInputGroup}>
                     <label>LinkedIn URL</label>
-                    <input
-                      type="url"
-                      value={linkedinUrl}
-                      onChange={(e) => setLinkedinUrl(e.target.value)}
-                      placeholder="https://linkedin.com/in/your-profile"
-                      className={styles.profileInput}
-                    />
+                    <input type="url" value={linkedinUrl} onChange={(e) => setLinkedinUrl(e.target.value)} placeholder="https://linkedin.com/in/your-profile" className={styles.profileInput} />
                   </div>
                   <div className={styles.profileCardFooter}>
                     {linkedinMsg && <span className={styles.savedMsg}>{linkedinMsg}</span>}
-                    <button
-                      type="button"
-                      className={styles.profileSaveBtn}
-                      onClick={doSaveLinkedin}
-                      disabled={savingLinkedin}
-                    >
-                      {savingLinkedin ? <><i className="fa-solid fa-spinner fa-spin" /> Saving…</> : 'Save'}
+                    <button type="button" className={styles.profileSaveBtn} onClick={doSaveLinkedin} disabled={savingLinkedin}>
+                      {savingLinkedin ? <><i className="fa-solid fa-spinner fa-spin" aria-hidden="true" /> Saving…</> : 'Save'}
                     </button>
                   </div>
                 </div>
 
                 {/* Section 5 — Work Experience */}
-                <div className={`${styles.profileSectionCard} ${workComplete ? styles.profileSectionCardComplete : ''}`}>
+                <div id="section-work" className={`${styles.profileSectionCard} ${workComplete ? styles.profileSectionCardComplete : ''}`}>
                   <div className={styles.profileSectionHeader}>
                     <div className={styles.profileSectionIconWrap} style={{ background: 'rgba(155,89,182,0.12)' }}>
-                      <i className="fa-solid fa-building-columns" style={{ color: '#9B59B6' }} />
+                      <i className="fa-solid fa-building-columns" style={{ color: '#9B59B6' }} aria-hidden="true" />
                     </div>
                     <span className={styles.profileSectionTitle}>Work Experience</span>
-                    {workComplete && <i className="fa-solid fa-circle-check" style={{ color: '#8CC63F', marginLeft: 'auto' }} />}
+                    {workComplete && <i className="fa-solid fa-circle-check" style={{ color: '#8CC63F', marginLeft: 'auto' }} aria-hidden="true" />}
                     <button type="button" className={styles.profileAddExpBtn} onClick={addWorkEntry}>
-                      <i className="fa-solid fa-plus" /> Add
+                      <i className="fa-solid fa-plus" aria-hidden="true" /> Add
                     </button>
                   </div>
 
@@ -718,81 +944,40 @@ function CandidateDashboardInner() {
                     <div key={w.id} className={styles.profileWorkCard}>
                       <div className={styles.profileWorkCardHeader}>
                         <span className={styles.profileWorkCardTitle}>{w.title || 'New Entry'}{w.company ? ` @ ${w.company}` : ''}</span>
-                        <button
-                          type="button"
-                          className={styles.profileRemoveExpBtn}
-                          onClick={() => setWorkExp((prev) => prev.filter((x) => x.id !== w.id))}
-                          aria-label="Remove"
-                        >
-                          <i className="fa-solid fa-trash" />
+                        <button type="button" className={styles.profileRemoveExpBtn} onClick={() => setWorkExp((prev) => prev.filter((x) => x.id !== w.id))} aria-label="Remove">
+                          <i className="fa-solid fa-trash" aria-hidden="true" />
                         </button>
                       </div>
                       <div className={styles.profileInputGrid}>
                         <div className={styles.profileInputGroup}>
                           <label>Job Title</label>
-                          <input
-                            value={w.title}
-                            onChange={(e) => updateWork(w.id, 'title', e.target.value)}
-                            placeholder="e.g. Head Chef"
-                            className={styles.profileInput}
-                          />
+                          <input value={w.title} onChange={(e) => updateWork(w.id, 'title', e.target.value)} placeholder="e.g. Head Chef" className={styles.profileInput} />
                         </div>
                         <div className={styles.profileInputGroup}>
                           <label>Company</label>
-                          <input
-                            value={w.company}
-                            onChange={(e) => updateWork(w.id, 'company', e.target.value)}
-                            placeholder="Company name"
-                            className={styles.profileInput}
-                          />
+                          <input value={w.company} onChange={(e) => updateWork(w.id, 'company', e.target.value)} placeholder="Company name" className={styles.profileInput} />
                         </div>
                         <div className={styles.profileInputGroup}>
                           <label>Country</label>
-                          <input
-                            value={w.country}
-                            onChange={(e) => updateWork(w.id, 'country', e.target.value)}
-                            placeholder="Philippines"
-                            className={styles.profileInput}
-                          />
+                          <input value={w.country} onChange={(e) => updateWork(w.id, 'country', e.target.value)} placeholder="Philippines" className={styles.profileInput} />
                         </div>
                         <div className={styles.profileInputGroup}>
                           <label>Start Date</label>
-                          <input
-                            type="month"
-                            value={w.start_date}
-                            onChange={(e) => updateWork(w.id, 'start_date', e.target.value)}
-                            className={styles.profileInput}
-                          />
+                          <input type="month" value={w.start_date} onChange={(e) => updateWork(w.id, 'start_date', e.target.value)} className={styles.profileInput} />
                         </div>
                         <div className={styles.profileInputGroup}>
                           <label>End Date {w.current && <span style={{ fontWeight: 400, fontSize: '0.73rem', color: '#9ca3af' }}>(current job)</span>}</label>
-                          <input
-                            type="month"
-                            value={w.end_date}
-                            disabled={w.current}
-                            onChange={(e) => updateWork(w.id, 'end_date', e.target.value)}
-                            className={styles.profileInput}
-                          />
+                          <input type="month" value={w.end_date} disabled={w.current} onChange={(e) => updateWork(w.id, 'end_date', e.target.value)} className={styles.profileInput} />
                         </div>
                         <div className={`${styles.profileInputGroup} ${styles.profileCurrentJobCheck}`}>
                           <label className={styles.profileCheckboxLabel}>
-                            <input
-                              type="checkbox"
-                              checked={w.current}
-                              onChange={(e) => updateWork(w.id, 'current', e.target.checked)}
-                            />
+                            <input type="checkbox" checked={w.current} onChange={(e) => updateWork(w.id, 'current', e.target.checked)} />
                             Currently working here
                           </label>
                         </div>
                         <div className={`${styles.profileInputGroup} ${styles.profileInputFull}`}>
                           <label>Description</label>
-                          <textarea
-                            rows={3}
-                            value={w.description}
-                            onChange={(e) => updateWork(w.id, 'description', e.target.value)}
-                            placeholder="Brief description of responsibilities…"
-                            className={styles.profileInput}
-                          />
+                          <textarea rows={3} value={w.description} onChange={(e) => updateWork(w.id, 'description', e.target.value)} placeholder="Brief description of responsibilities…" className={styles.profileInput} />
                         </div>
                       </div>
                     </div>
@@ -801,13 +986,8 @@ function CandidateDashboardInner() {
                   {workExp.length > 0 && (
                     <div className={styles.profileCardFooter}>
                       {workMsg && <span className={styles.savedMsg}>{workMsg}</span>}
-                      <button
-                        type="button"
-                        className={styles.profileSaveBtn}
-                        onClick={doSaveWork}
-                        disabled={savingWork}
-                      >
-                        {savingWork ? <><i className="fa-solid fa-spinner fa-spin" /> Saving…</> : 'Save'}
+                      <button type="button" className={styles.profileSaveBtn} onClick={doSaveWork} disabled={savingWork}>
+                        {savingWork ? <><i className="fa-solid fa-spinner fa-spin" aria-hidden="true" /> Saving…</> : 'Save'}
                       </button>
                     </div>
                   )}
@@ -815,6 +995,10 @@ function CandidateDashboardInner() {
 
               </div>
             </div>
+
+            {/* Profile Strength Tips */}
+            <ProfileStrengthTips candidate={candidate} onGoTo={handleGoTo} />
+
           </div>
         )}
       </div>
@@ -824,7 +1008,7 @@ function CandidateDashboardInner() {
 
 export default function CandidateDashboard() {
   return (
-    <Suspense fallback={<div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', color: 'var(--color-primary)' }}><i className="fa-solid fa-spinner fa-spin" /></div>}>
+    <Suspense fallback={<div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', color: 'var(--color-primary)' }}><i className="fa-solid fa-spinner fa-spin" aria-hidden="true" /></div>}>
       <CandidateDashboardInner />
     </Suspense>
   );

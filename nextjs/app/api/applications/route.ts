@@ -19,14 +19,31 @@ export async function GET(req: NextRequest) {
   const role = await getRole(user.id);
 
   if (role === 'candidate') {
+    // Look up candidate by user_id to get the candidate table PK
+    const { data: candidate } = await supabaseAdmin
+      .from('candidates')
+      .select('id')
+      .eq('user_id', user.id)
+      .single();
+
+    if (!candidate) return NextResponse.json({ applications: [] });
+
     const { data, error } = await supabaseAdmin
       .from('applications')
-      .select('*, job:jobs(*)')
-      .eq('candidate_id', user.id)
+      .select(`
+        *,
+        job:jobs (
+          id, title, company, country, industry,
+          salary, job_type, salary_min, salary_max, salary_currency
+        )
+      `)
+      .eq('candidate_id', candidate.id)
       .order('created_at', { ascending: false });
 
+    console.log('GET applications for candidate:', candidate.id, 'found:', data?.length);
+
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json({ applications: data as Application[] });
+    return NextResponse.json({ applications: data ?? [] });
   }
 
   if (role === 'employer') {
@@ -100,9 +117,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  // TODO: Send confirmation email via Resend or Supabase Edge Functions
-  // Email to candidate: "Application Received - [Job Title] at [Company]"
-  // Email to Promex admin: new application notification
   console.log(`APPLICATION SUBMITTED: candidate applied for job`);
 
   return NextResponse.json({ application: data as Application }, { status: 201 });
@@ -128,6 +142,42 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
   }
 
+  // Candidate withdraw path
+  const { data: candidateRow } = await supabaseAdmin
+    .from('candidates')
+    .select('id')
+    .eq('user_id', user.id)
+    .single();
+
+  if (candidateRow) {
+    if (body.status !== 'withdrawn') {
+      return NextResponse.json({ error: 'Candidates can only withdraw applications' }, { status: 403 });
+    }
+    const { data: app } = await supabaseAdmin
+      .from('applications')
+      .select('id, status')
+      .eq('id', body.application_id)
+      .eq('candidate_id', candidateRow.id)
+      .single();
+
+    if (!app) return NextResponse.json({ error: 'Application not found' }, { status: 404 });
+
+    if (!['submitted', 'under_review'].includes(app.status)) {
+      return NextResponse.json({ error: 'Can only withdraw submitted or under-review applications' }, { status: 400 });
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from('applications')
+      .update({ status: 'withdrawn' })
+      .eq('id', body.application_id)
+      .select()
+      .single();
+
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ application: data as Application });
+  }
+
+  // Employer update path
   const { data: app } = await supabaseAdmin
     .from('applications')
     .select('job_id, job:jobs(employer_id)')

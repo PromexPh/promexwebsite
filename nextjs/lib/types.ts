@@ -103,6 +103,7 @@ export interface Job {
   salary: string;
   salary_min?: number;
   salary_max?: number;
+  salary_currency?: string;
   job_type: string;
   experience: string;
   description: string;
@@ -122,6 +123,7 @@ export interface Application {
   status: ApplicationStatus;
   cover_letter?: string;
   resume_url?: string;
+  interview_date?: string;
   created_at: string;
   updated_at: string;
   job?: Job;
