@@ -119,6 +119,67 @@
   font-weight: 600;
 }
 
+.slotsHint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  padding: 6px 14px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.8);
+}
+
+.urgentInline {
+  display: inline-block;
+  margin-left: 8px;
+  background: #E74C3C;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  vertical-align: middle;
+}
+
+/* ---- Breadcrumb ---- */
+.breadcrumb {
+  background: var(--color-card);
+  border-bottom: 1px solid var(--color-border);
+  padding: 12px 0;
+  font-family: var(--font-body);
+  font-size: 0.83rem;
+  color: var(--color-secondary-text);
+}
+
+.breadcrumb .container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.breadcrumb a {
+  color: var(--color-secondary-text);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.breadcrumb a:hover { color: var(--color-primary); }
+
+.breadcrumb i {
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+
+.breadcrumb span {
+  color: var(--color-dark-text);
+  font-weight: 500;
+}
+
 /* ---- Content ---- */
 .jobContent {
   padding: 64px 0 96px;
@@ -306,6 +367,30 @@
   margin-bottom: 16px;
 }
 
+.shareBtn {
+  width: 100%;
+  padding: 10px 14px;
+  background: transparent;
+  border: 1.5px solid #E5E7EB;
+  border-radius: var(--radius-md);
+  color: #6C757D;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  transition: all 0.2s ease;
+}
+
+.shareBtn:hover {
+  border-color: #4FA3C7;
+  color: #4FA3C7;
+}
+
 .sidebarNote {
   font-family: var(--font-body);
   font-size: 0.78rem;
@@ -324,493 +409,7 @@
   color: #4FA3C7;
 }
 
-.sidebarShare {
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 20px 24px;
-  text-align: center;
-}
-
-.sidebarShare p {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: var(--color-secondary-text);
-  margin: 0 0 12px;
-}
-
-.shareButtons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-.shareButtons button {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: 1.5px solid var(--color-border);
-  background: transparent;
-  color: var(--color-secondary-text);
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.shareButtons button:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-/* ── Modal ──────────────────────────────────── */
-.modalBackdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(10, 22, 40, 0.75);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 20px;
-}
-
-.modal {
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  width: 100%;
-  max-width: 580px;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
-}
-
-.modalClose {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1.5px solid var(--color-border);
-  background: transparent;
-  color: var(--color-secondary-text);
-  font-size: 1rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  z-index: 2;
-}
-
-.modalClose:hover {
-  border-color: #dc2626;
-  color: #dc2626;
-}
-
-/* Steps */
-.modalSteps {
-  display: flex;
-  border-bottom: 1px solid var(--color-border);
-  padding: 24px 28px 0;
-  gap: 0;
-}
-
-.modalStep {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding-bottom: 16px;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s ease;
-  opacity: 0.4;
-}
-
-.modalStepActive {
-  border-bottom-color: var(--portal-gold);
-  opacity: 1;
-}
-
-.modalStepNum {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--color-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 0.8rem;
-  color: var(--color-secondary-text);
-  transition: all 0.2s ease;
-}
-
-.modalStepActive .modalStepNum {
-  background: var(--portal-gold);
-  color: var(--portal-navy);
-}
-
-.modalStepLabel {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.75rem;
-  color: var(--color-secondary-text);
-  text-align: center;
-}
-
-.modalStepActive .modalStepLabel {
-  color: var(--color-dark-text);
-}
-
-/* Body */
-.modalBody {
-  padding: 28px 28px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.modalSectionTitle {
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: var(--color-dark-text);
-  margin: 0;
-}
-
-.modalRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.modalField {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.modalField label {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.8rem;
-  color: var(--color-dark-text);
-}
-
-.modalField small {
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  color: var(--color-secondary-text);
-}
-
-.modalField input,
-.modalField select,
-.modalField textarea {
-  font-family: var(--font-body);
-  font-size: 0.92rem;
-  color: var(--color-dark-text);
-  background: var(--color-bg);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 10px 14px;
-  outline: none;
-  width: 100%;
-  box-sizing: border-box;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.modalField input:focus,
-.modalField select:focus,
-.modalField textarea:focus {
-  border-color: var(--portal-gold);
-  box-shadow: 0 0 0 3px rgba(200, 168, 75, 0.15);
-}
-
-.modalField textarea { resize: vertical; }
-
-.req { color: #dc2626; }
-
-.modalError {
-  background: rgba(220, 38, 38, 0.08);
-  border: 1px solid rgba(220, 38, 38, 0.3);
-  border-radius: var(--radius-md);
-  padding: 12px 16px;
-  font-family: var(--font-body);
-  font-size: 0.88rem;
-  color: #dc2626;
-  margin: 0;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-
-/* Actions */
-.modalActions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  padding: 24px 28px 28px;
-}
-
-.modalBackBtn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 20px;
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: transparent;
-  color: var(--color-secondary-text);
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.88rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.modalBackBtn:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-.modalNextBtn,
-.modalSubmitBtn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 24px;
-  border: none;
-  border-radius: var(--radius-md);
-  background: var(--portal-navy);
-  color: var(--portal-gold);
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 0.92rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.modalSubmitBtn {
-  background: var(--portal-gold);
-  color: var(--portal-navy);
-}
-
-.modalNextBtn:hover:not(:disabled),
-.modalSubmitBtn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(200, 168, 75, 0.3);
-}
-
-.modalNextBtn:disabled,
-.modalSubmitBtn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Success */
-.modalSuccess {
-  padding: 48px 28px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 16px;
-}
-
-.modalSuccessIcon {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: rgba(140, 198, 63, 0.15);
-  border: 2px solid rgba(140, 198, 63, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.8rem;
-  color: #8cc63f;
-}
-
-.modalSuccess h2 {
-  font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 1.5rem;
-  color: var(--color-dark-text);
-  margin: 0;
-}
-
-.modalSuccess p {
-  font-family: var(--font-body);
-  font-size: 0.93rem;
-  color: var(--color-secondary-text);
-  line-height: 1.7;
-  margin: 0;
-  max-width: 360px;
-}
-
-.modalDoneBtn {
-  padding: 10px 32px;
-  border: none;
-  border-radius: var(--radius-md);
-  background: var(--portal-navy);
-  color: var(--portal-gold);
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 0.92rem;
-  cursor: pointer;
-  margin-top: 8px;
-  transition: all 0.2s ease;
-}
-
-.modalDoneBtn:hover {
-  background: var(--portal-navy-2);
-}
-
-/* ── Responsive ─────────────────────────────── */
-@media (max-width: 900px) {
-  .jobContentLayout {
-    grid-template-columns: 1fr;
-  }
-
-  .jobSidebar {
-    position: static;
-    order: -1;
-  }
-
-  .sidebarCard {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    align-items: start;
-  }
-
-  .sidebarSalary {
-    grid-column: 1 / -1;
-    margin-bottom: 0;
-  }
-}
-
-@media (max-width: 600px) {
-  .jobHero {
-    padding: 80px 0 60px;
-  }
-
-  .jobSection {
-    padding: 24px 20px;
-  }
-
-  .modalRow {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebarCard {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ── Breadcrumb ─────────────────────────────── */
-.breadcrumb {
-  background: var(--color-card);
-  border-bottom: 1px solid var(--color-border);
-  padding: 12px 0;
-}
-
-.breadcrumb .container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  color: var(--color-secondary-text);
-  flex-wrap: wrap;
-}
-
-.breadcrumb a {
-  color: var(--color-primary);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.breadcrumb a:hover { color: var(--portal-gold); }
-
-.breadcrumb i {
-  font-size: 0.65rem;
-  opacity: 0.5;
-}
-
-.breadcrumb span {
-  color: var(--color-dark-text);
-  font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 220px;
-}
-
-/* ── Hero extras ────────────────────────────── */
-.urgentInline {
-  display: inline-block;
-  background: #ef4444;
-  color: #fff;
-  border-radius: 20px;
-  padding: 2px 10px;
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.07em;
-  margin-left: 10px;
-  vertical-align: middle;
-}
-
-.slotsHint {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 16px;
-  padding: 6px 14px;
-  background: rgba(200, 168, 75, 0.15);
-  border: 1px solid rgba(200, 168, 75, 0.35);
-  border-radius: 20px;
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  color: var(--portal-gold-light);
-  font-weight: 500;
-}
-
-/* ── Share button (sidebar) ─────────────────── */
-.shareBtn {
-  width: 100%;
-  padding: 11px;
-  background: transparent;
-  border: 1px solid #E5E7EB;
-  border-radius: var(--radius-md);
-  color: #6C757D;
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.88rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.shareBtn:hover {
-  border-color: #4FA3C7;
-  color: #4FA3C7;
-}
-
-/* ── Similar Jobs ───────────────────────────── */
+/* ---- Similar Jobs ---- */
 .similarSection {
   background: var(--color-card);
   border: 1px solid var(--color-border);
@@ -821,35 +420,32 @@
 
 .similarGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 16px;
 }
 
 .similarCard {
   display: block;
-  padding: 18px 20px;
   background: var(--color-bg);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
   text-decoration: none;
   transition: all 0.2s ease;
 }
 
 .similarCard:hover {
-  border-color: var(--portal-gold);
+  border-color: #4FA3C7;
+  box-shadow: 0 4px 14px rgba(79,163,199,0.15);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
 }
 
 .similarTitle {
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   color: var(--color-dark-text);
   margin-bottom: 4px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .similarCompany {
@@ -870,967 +466,350 @@
 }
 
 .similarSalary {
-  color: var(--portal-gold);
+  color: #8CC63F;
   font-weight: 600;
-  white-space: nowrap;
 }
 
-@media (max-width: 900px) {
-  .similarGrid { grid-template-columns: 1fr 1fr; }
+/* ── Modals ───────────────────────────────────────────────────────────────── */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
 }
 
-@media (max-width: 500px) {
-  .similarGrid { grid-template-columns: 1fr; }
+.modalBox {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
+  padding: 32px;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  text-align: center;
 }
 
-/* ── New single-screen Apply Modal extras ───── */
-.modalHeader {
-  padding: 28px 28px 20px;
-  border-bottom: 1px solid var(--color-border);
+.modalBoxWide {
+  max-width: 480px;
+  text-align: left;
 }
 
-.modalTitle {
-  font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 1.3rem;
-  color: var(--color-dark-text);
+.modalCloseBtn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: #f3f4f6;
+  border-radius: 50%;
+  color: #6c757d;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.modalCloseBtn:hover { background: #e5e7eb; }
+
+.modalJobMeta {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: #9ca3af;
   margin: 0 0 8px;
 }
 
-.modalJobInfo {
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  color: var(--color-secondary-text);
-}
-
-.candidateSummary {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  flex-wrap: wrap;
-}
-
-.candidateAvatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--portal-navy), var(--portal-navy-2));
-  border: 2px solid var(--portal-gold);
-  color: var(--portal-gold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 1.1rem;
-  flex-shrink: 0;
-}
-
-.candidateName {
+.modalHeading {
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--color-dark-text);
+  font-size: 1.25rem;
+  color: #2E2E2E;
+  margin: 0 0 20px;
 }
 
-.candidateEmail {
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-  color: var(--color-secondary-text);
-}
-
-.cvChip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  background: rgba(200, 168, 75, 0.1);
-  border: 1px solid rgba(200, 168, 75, 0.3);
-  border-radius: 20px;
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  color: var(--portal-gold);
-  margin-left: auto;
-  white-space: nowrap;
-  max-width: 180px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.optional {
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  font-weight: 400;
-  color: var(--color-secondary-text);
-}
-
-/* ── Apply Panel (drawer) ─────────────────────── */
-.panelBackdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(10, 22, 40, 0.6);
-  backdrop-filter: blur(3px);
-  z-index: 900;
-}
-
-.applyPanel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  max-width: 520px;
-  background: var(--color-card);
-  box-shadow: -8px 0 48px rgba(0,0,0,0.2);
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.panelClose {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1.5px solid var(--color-border);
-  background: var(--color-bg);
-  color: var(--color-secondary-text);
-  font-size: 1rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-  z-index: 10;
-}
-
-.panelClose:hover { border-color: #dc2626; color: #dc2626; }
-
-.panelScroll {
-  flex: 1;
-  overflow-y: auto;
-  padding: 56px 28px 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-/* Job bar */
-.panelJobBar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-}
-
-.panelJobDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.panelJobInfo {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.panelJobTitle {
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: var(--color-dark-text);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.panelJobCompany {
-  font-family: var(--font-body);
-  font-size: 0.78rem;
-  color: var(--color-secondary-text);
-}
-
-.panelJobSalary {
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 0.85rem;
-  color: var(--color-accent-dark);
-  white-space: nowrap;
-}
-
-/* Sections */
-.panelSection {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.panelSectionLabel {
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 0.82rem;
-  color: var(--color-dark-text);
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.panelLabelMuted {
-  font-weight: 400;
-  color: var(--color-secondary-text);
-  text-transform: none;
-  letter-spacing: 0;
-}
-
-/* Method grid */
-.methodGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.methodCard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 16px 8px;
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background: var(--color-card);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: center;
-}
-
-.methodCard:hover { border-color: var(--color-primary); }
-.methodCardActive { border-width: 2px; }
-
-.methodIcon {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-}
-
-.methodTitle {
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 0.8rem;
-  color: var(--color-dark-text);
-}
-
-.methodSub {
-  font-family: var(--font-body);
-  font-size: 0.72rem;
-  color: var(--color-secondary-text);
-  line-height: 1.3;
-}
-
-/* Method detail area */
-.methodDetail { display: flex; flex-direction: column; gap: 10px; }
-
-.savedCv {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  background: rgba(79,163,199,0.06);
-  border: 1.5px solid rgba(79,163,199,0.3);
-  border-radius: var(--radius-md);
+.modalSubtext {
   font-family: var(--font-body);
   font-size: 0.88rem;
-  color: var(--color-dark-text);
+  color: #6c757d;
+  margin: 0 0 16px;
+  line-height: 1.5;
 }
 
-.savedCv i { color: var(--color-primary); }
-.savedCv span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.modalIconCircle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  margin: 0 auto 16px;
+}
 
-.replaceCvBtn {
-  border: none;
-  background: none;
-  color: var(--color-primary);
+.modalBtnStack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.modalPrimaryBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 20px;
+  background: #4FA3C7;
+  color: #ffffff;
+  border-radius: 12px;
   font-family: var(--font-heading);
   font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 0.2s;
+  border: none;
+  cursor: pointer;
+}
+.modalPrimaryBtn:hover { background: #3C8DB1; }
+
+.modalSecondaryBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 20px;
+  background: transparent;
+  color: #374151;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+  cursor: pointer;
+}
+.modalSecondaryBtn:hover { border-color: #4FA3C7; color: #4FA3C7; }
+
+.modalTrustNote {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.modalSkipLink {
+  background: none;
+  border: none;
+  font-family: var(--font-body);
   font-size: 0.8rem;
+  color: #9ca3af;
   cursor: pointer;
   text-decoration: underline;
-  flex-shrink: 0;
-}
-
-.cvUploadZone {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 24px;
-  border: 2px dashed var(--color-border);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all 0.2s;
-  color: var(--color-secondary-text);
-  font-family: var(--font-body);
-  font-size: 0.88rem;
-}
-
-.cvUploadZone:hover { border-color: var(--color-primary); color: var(--color-primary); }
-.cvUploadZone i { font-size: 1.5rem; }
-.cvUploadZone small { font-size: 0.75rem; }
-.hiddenInput { display: none; }
-
-.methodInput {
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  color: var(--color-dark-text);
-  background: var(--color-bg);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 10px 14px;
-  outline: none;
+  margin-top: 10px;
+  display: block;
   width: 100%;
-  box-sizing: border-box;
-  transition: border-color 0.2s;
+  text-align: center;
 }
+.modalSkipLink:hover { color: #6c757d; }
 
-.methodInput:focus { border-color: var(--color-primary); }
-
-.methodTextarea {
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  color: var(--color-dark-text);
-  background: var(--color-bg);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 10px 14px;
-  outline: none;
-  width: 100%;
-  box-sizing: border-box;
-  resize: vertical;
-  transition: border-color 0.2s;
-}
-
-.methodTextarea:focus { border-color: var(--color-primary); }
-
-.formMethodFields { display: flex; flex-direction: column; gap: 12px; }
-
-.formMethodField {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.formMethodField label {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.78rem;
-  color: var(--color-dark-text);
-}
-
-/* Add-on chips */
-.addonChips { display: flex; flex-wrap: wrap; gap: 8px; }
-
-.addonChip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 14px;
-  border: 1.5px dashed var(--color-border);
-  border-radius: var(--radius-pill);
-  background: transparent;
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-  color: var(--color-secondary-text);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.addonChip:hover { border-color: var(--color-accent); color: var(--color-accent-dark); }
-
-.addonChipOn {
-  border-style: solid;
-  border-color: var(--color-accent);
-  background: rgba(140,198,63,0.08);
-  color: var(--color-accent-dark);
-}
-
-.addonInput { margin-top: 4px; }
-
-/* Strength */
-.strengthHeader {
+.modalProgressWrap {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-.strengthPct {
-  font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 1.1rem;
-}
-
-.strengthTrack {
+.modalProgressBar {
+  flex: 1;
   height: 8px;
-  background: var(--color-border);
-  border-radius: 99px;
+  background: #f3f4f6;
+  border-radius: 9999px;
   overflow: hidden;
 }
 
-.strengthFill {
-  height: 100%;
-  border-radius: 99px;
-  transition: width 0.4s ease, background 0.4s ease;
-}
-
-.strengthPills { display: flex; flex-wrap: wrap; gap: 6px; }
-
-.strengthPill {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  background: var(--color-border);
-  color: var(--color-secondary-text);
-}
-
-.strengthPillDone {
-  background: rgba(140,198,63,0.12);
-  color: var(--color-accent-dark);
-}
-
-/* Time + submit */
-.timeEstimate {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  color: var(--color-secondary-text);
-}
-
-.timeEstimate i { color: var(--color-primary); }
-
-.panelError {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  background: rgba(220,38,38,0.08);
-  border: 1px solid rgba(220,38,38,0.3);
-  border-radius: var(--radius-md);
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  color: #dc2626;
-  margin: 0;
-}
-
-.panelActions { display: flex; gap: 10px; }
-
-.saveLaterBtn {
-  flex: 1;
-  padding: 12px;
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: transparent;
-  color: var(--color-secondary-text);
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.88rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  transition: all 0.2s;
-}
-
-.saveLaterBtn:hover { border-color: var(--color-primary); color: var(--color-primary); }
-
-.submitBtn {
-  flex: 2;
-  padding: 12px;
-  background: var(--color-primary);
-  border: none;
-  border-radius: var(--radius-md);
-  color: #ffffff;
+.modalProgressPct {
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 0.92rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.2s;
+  font-size: 0.85rem;
+  flex-shrink: 0;
 }
 
-.submitBtn:hover:not(:disabled) { background: var(--color-primary-dark); transform: translateY(-1px); }
-.submitBtn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-.panelTrust {
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  color: var(--color-secondary-text);
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
-.panelTrust i { color: var(--color-accent); }
-
-/* Panel success state */
-.panelSuccess {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 60px 40px;
-  gap: 16px;
-}
-
-.panelSuccessIcon {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: rgba(140,198,63,0.12);
-  border: 2px solid rgba(140,198,63,0.4);
-  color: var(--color-accent);
-  font-size: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.panelSuccessTitle {
-  font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 1.4rem;
-  color: var(--color-dark-text);
-  margin: 0;
-}
-
-.panelSuccessMsg {
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  color: var(--color-secondary-text);
-  line-height: 1.6;
-  margin: 0;
-}
-
-.panelSuccessSteps {
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-  width: 100%;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.panelSuccessStepsTitle {
+/* Modal C — Apply modal styles */
+.modalJobTitle {
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 0.82rem;
-  color: var(--color-dark-text);
+  font-size: 1.1rem;
+  color: #2E2E2E;
+  margin: 0 0 2px;
+}
+
+.modalJobCompany {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: #6c757d;
   margin: 0 0 4px;
 }
 
-.panelSuccessStep {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  color: var(--color-secondary-text);
-}
-
-.panelSuccessStep i { color: var(--color-accent); width: 16px; text-align: center; }
-
-.panelDoneBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 32px;
-  background: var(--color-primary);
-  border: none;
-  border-radius: var(--radius-md);
-  color: #ffffff;
+.modalJobSalary {
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 0.95rem;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 0.2s;
-}
-
-.panelDoneBtn:hover { background: var(--color-primary-dark); }
-
-/* Share button in sidebar (duplicate removed — handled by primary rule above) */
-
-/* Slots hint in hero */
-.slotsHint {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  background: rgba(140,198,63,0.15);
-  border: 1px solid rgba(140,198,63,0.3);
-  border-radius: 20px;
-  font-family: var(--font-body);
-  font-size: 0.82rem;
+  font-size: 1rem;
   color: #8CC63F;
-  margin-top: 4px;
-}
-
-.urgentInline {
-  margin-left: 8px;
-  padding: 2px 8px;
-  background: rgba(230,126,34,0.2);
-  border: 1px solid rgba(230,126,34,0.4);
-  color: #E67E22;
-  border-radius: 20px;
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-}
-
-/* Breadcrumb */
-.breadcrumb {
-  position: relative;
-  z-index: 10;
-  background: var(--color-bg);
-  border-bottom: 1px solid var(--color-border);
-  padding: 8px 0;
-}
-
-.breadcrumb > div {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  color: var(--color-secondary-text);
-}
-
-.breadcrumb a { color: var(--color-primary); text-decoration: none; transition: color 0.2s; }
-.breadcrumb a:hover { color: var(--color-primary-dark); }
-.breadcrumb i { font-size: 0.6rem; }
-.breadcrumb span { color: var(--color-dark-text); font-weight: 500; }
-
-/* Similar jobs */
-.similarSection { margin-top: 0; }
-
-.similarGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-
-.similarCard {
-  display: block;
-  background: var(--color-bg);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 16px;
-  text-decoration: none;
-  transition: all 0.2s;
-  cursor: pointer;
-}
-
-.similarCard:hover {
-  border-color: var(--color-primary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.similarTitle {
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 0.88rem;
-  color: var(--color-dark-text);
-  margin-bottom: 4px;
-}
-
-.similarCompany {
-  font-family: var(--font-body);
-  font-size: 0.78rem;
-  color: var(--color-secondary-text);
-  margin-bottom: 8px;
-}
-
-.similarMeta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  color: var(--color-secondary-text);
-}
-
-.similarSalary {
-  font-family: var(--font-heading);
-  font-weight: 700;
-  color: var(--color-accent-dark);
-}
-
-/* Candidate summary in old modal (keep for CompleteProfileModal) */
-.candidateSummary { display: flex; align-items: center; gap: 12px; }
-.candidateAvatar { width: 40px; height: 40px; border-radius: 50%; background: var(--color-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-weight: 700; font-size: 1rem; flex-shrink: 0; }
-.candidateName { font-family: var(--font-heading); font-weight: 700; font-size: 0.9rem; color: var(--color-dark-text); }
-.candidateEmail { font-family: var(--font-body); font-size: 0.8rem; color: var(--color-secondary-text); }
-.cvChip { margin-left: auto; display: flex; align-items: center; gap: 5px; padding: 4px 10px; background: rgba(79,163,199,0.1); border-radius: 20px; font-family: var(--font-body); font-size: 0.75rem; color: var(--color-primary); }
-.optional { color: var(--color-secondary-text); font-weight: 400; }
-
-/* Modal success (for CompleteProfileModal) */
-.modalSuccess { padding: 48px 28px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
-.modalSuccessIcon { width: 64px; height: 64px; border-radius: 50%; background: rgba(140,198,63,0.12); border: 2px solid rgba(140,198,63,0.4); color: var(--color-accent); font-size: 1.8rem; display: flex; align-items: center; justify-content: center; }
-.modalSuccess h2 { font-family: var(--font-heading); font-weight: 800; font-size: 1.3rem; color: var(--color-dark-text); margin: 0; }
-.modalSuccess p { font-family: var(--font-body); font-size: 0.9rem; color: var(--color-secondary-text); line-height: 1.6; margin: 0; }
-.modalDoneBtn { display: inline-flex; align-items: center; padding: 11px 28px; background: var(--color-primary); border: none; border-radius: var(--radius-md); color: #fff; font-family: var(--font-heading); font-weight: 700; font-size: 0.92rem; cursor: pointer; text-decoration: none; transition: background 0.2s; }
-.modalDoneBtn:hover { background: var(--color-primary-dark); }
-
-/* Mobile */
-@media (max-width: 900px) {
-  .jobContentLayout { grid-template-columns: 1fr; }
-  .jobSidebar { position: static; }
-  .similarGrid { grid-template-columns: 1fr 1fr; }
-  .applyPanel { max-width: 100%; top: auto; height: 90vh; border-radius: var(--radius-xl) var(--radius-xl) 0 0; box-shadow: 0 -8px 48px rgba(0,0,0,0.2); }
-  .methodGrid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-}
-
-@media (max-width: 600px) {
-  .jobHero { padding: 80px 0 60px; }
-  .similarGrid { grid-template-columns: 1fr; }
-  .panelScroll { padding: 56px 20px 28px; }
-  .panelActions { flex-direction: column; }
-  .submitBtn { flex: none; }
-  .saveLaterBtn { flex: none; }
-}
-
-/* ── New success screen ────────────────────────── */
-@keyframes checkmarkPop {
-  0%   { transform: scale(0); opacity: 0; }
-  60%  { transform: scale(1.15); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-.panelSuccessCheckmark {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: rgba(79,163,199,0.12);
-  border: 2px solid rgba(79,163,199,0.4);
-  color: #4FA3C7;
-  font-size: 2.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: checkmarkPop 0.4s ease forwards;
-}
-
-.panelSuccessStepsList {
-  list-style: decimal;
-  padding-left: 20px;
   margin: 0;
+}
+
+.modalDivider {
+  height: 1px;
+  background: #f3f4f6;
+  margin: 16px 0;
+}
+
+.modalSectionLabel {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #9ca3af;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+}
+
+.modalCvRow {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 8px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+}
+
+.modalCvName {
+  flex: 1;
   font-family: var(--font-body);
   font-size: 0.85rem;
-  color: var(--color-secondary-text);
-  line-height: 1.5;
-  text-align: left;
-}
-
-.panelSuccessEmail {
-  font-family: var(--font-body);
-  font-size: 0.83rem;
-  color: var(--color-secondary-text);
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.panelSuccessEmail i { color: #4FA3C7; }
-
-.panelSuccessBtns {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-}
-
-.panelSuccessLinkBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 24px;
-  background: #4FA3C7;
-  border: none;
-  border-radius: var(--radius-md);
-  color: #ffffff;
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 0.92rem;
-  text-decoration: none;
-  transition: background 0.2s;
-}
-
-.panelSuccessLinkBtn:hover { background: #3C8DB1; }
-
-.panelSuccessSecondBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 11px 24px;
-  background: transparent;
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-md);
-  color: var(--color-secondary-text);
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.92rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.panelSuccessSecondBtn:hover {
-  border-color: #4FA3C7;
-  color: #4FA3C7;
-}
-
-/* ── Login Prompt Modal ────────────────────────── */
-.loginModalBtns {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-}
-
-.loginModalPrimary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px 24px;
-  background: #4FA3C7;
-  border-radius: var(--radius-md);
-  color: #ffffff;
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 0.95rem;
-  text-decoration: none;
-  transition: background 0.2s;
-}
-
-.loginModalPrimary:hover { background: #3C8DB1; }
-
-.loginModalSecondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 11px 24px;
-  background: transparent;
-  border: 1.5px solid #E5E7EB;
-  border-radius: var(--radius-md);
-  color: var(--color-dark-text);
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.95rem;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-.loginModalSecondary:hover {
-  border-color: #4FA3C7;
-  color: #4FA3C7;
-}
-
-.loginModalFooter {
-  font-family: var(--font-body);
-  font-size: 0.78rem;
-  color: var(--color-secondary-text);
-  margin: 0;
-  line-height: 1.5;
-}
-
-/* ── Complete Profile Modal extras ──────────────── */
-.profileProgressWrap {
-  width: 100%;
-  margin: 8px 0;
-}
-
-.profileProgressHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.profileProgressLabel {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.82rem;
-  color: var(--color-secondary-text);
-}
-
-.profileProgressPct {
-  font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 0.95rem;
-}
-
-.profileProgressTrack {
-  height: 8px;
-  background: var(--color-border);
-  border-radius: 99px;
+  color: #374151;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.profileProgressFill {
-  height: 100%;
-  border-radius: 99px;
-  transition: width 0.5s ease;
-}
-
-.skipLink {
+.modalChangeCv {
   background: none;
   border: none;
   font-family: var(--font-body);
-  font-size: 0.82rem;
-  color: var(--color-secondary-text);
+  font-size: 0.78rem;
+  color: #4FA3C7;
   cursor: pointer;
-  text-decoration: underline;
   padding: 0;
-  margin-top: 4px;
-  transition: color 0.2s;
+  flex-shrink: 0;
+  text-decoration: underline;
 }
 
-.skipLink:hover { color: var(--color-dark-text); }
+.modalCoverInput {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: #374151;
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s;
+  background: #ffffff;
+}
+.modalCoverInput:focus { border-color: #4FA3C7; }
+
+.modalError {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: #E74C3C;
+  margin: 8px 0 0;
+}
+
+.modalActionsRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.modalCancelBtn {
+  background: none;
+  border: none;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 10px 0;
+  transition: color 0.15s;
+}
+.modalCancelBtn:hover { color: #6c757d; }
+
+.modalSubmitBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: #4FA3C7;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.modalSubmitBtn:hover:not(:disabled) { background: #3C8DB1; }
+.modalSubmitBtn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+/* ── Success screen ──────────────────────────────────────────────────────── */
+.successCheckmark {
+  font-size: 3rem;
+  color: #8CC63F;
+  margin: 0 auto 16px;
+  display: flex;
+  justify-content: center;
+  animation: checkPop 0.4s ease-out both;
+}
+
+@keyframes checkPop {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.successStepsLabel {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: #374151;
+  margin: 0 0 8px;
+}
+
+.successStepsList {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: #6c757d;
+  padding-left: 18px;
+  margin: 0 0 14px;
+  line-height: 1.8;
+  text-align: left;
+}
+
+.successEmailNote {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin: 0 0 20px;
+  text-align: center;
+}

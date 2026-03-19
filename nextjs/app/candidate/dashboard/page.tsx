@@ -17,29 +17,27 @@ const STATUS_CONFIG: Record<ApplicationStatus, { label: string; icon: string; co
 const EDUCATION_OPTIONS = ['', 'High School', 'Diploma', "Bachelor's", "Master's", 'PhD', 'Vocational/Technical'];
 
 function calcCompletion(p: CandidateProfile): number {
-  let score = 0;
-  if (p.full_name) score += 15;
-  if (p.phone) score += 10;
-  if (p.nationality && p.current_location) score += 10;
-  if (p.desired_position) score += 10;
-  if (p.education_level) score += 10;
-  if ((p.skills?.length ?? 0) > 0) score += 10;
-  if ((p.work_experience?.length ?? 0) > 0) score += 15;
-  if (p.resume_url) score += 20;
-  return Math.min(100, score);
+  let s = 0;
+  if (p.full_name) s += 15;
+  if (p.phone) s += 10;
+  if (p.nationality && p.current_location) s += 10;
+  if (p.desired_position) s += 10;
+  if (p.education_level) s += 10;
+  if ((p.skills?.length ?? 0) > 0) s += 10;
+  if ((p.work_experience?.length ?? 0) > 0) s += 15;
+  if (p.resume_url) s += 20;
+  return Math.min(100, s);
 }
 
 function completionColor(pct: number): string {
-  if (pct < 60) return '#E67E22';
-  if (pct < 80) return '#8CC63F';
-  return '#4FA3C7';
+  return pct < 40 ? '#E67E22' : pct < 80 ? '#8CC63F' : '#4FA3C7';
 }
 
-function completionMessage(pct: number): string {
+function completionMsg(pct: number): string {
   if (pct <= 30) return 'Complete your profile to start applying';
-  if (pct <= 60) return 'Good start! Add more details';
-  if (pct <= 80) return 'Almost there! Upload your CV';
-  return "Great profile! You're ready to apply";
+  if (pct <= 60) return 'Good start! Add more details to strengthen your profile';
+  if (pct <= 80) return 'Almost there! Upload your CV to apply to jobs';
+  return "Great profile! You're ready to apply to jobs";
 }
 
 function ApplicationCard({ app }: { app: Application }) {
@@ -281,6 +279,25 @@ function CandidateDashboardInner() {
     hired: applications.filter((a) => a.status === 'hired').length,
   };
 
+  // Profile chips
+  const profileChips = candidate ? [
+    { label: 'Full name',  done: !!candidate.full_name },
+    { label: 'Phone',      done: !!candidate.phone },
+    { label: 'Location',   done: !!(candidate.nationality && candidate.current_location) },
+    { label: 'Position',   done: !!candidate.desired_position },
+    { label: 'Education',  done: !!candidate.education_level },
+    { label: 'Skills',     done: (candidate.skills?.length ?? 0) > 0 },
+    { label: 'Experience', done: (candidate.work_experience?.length ?? 0) > 0 },
+    { label: 'CV upload',  done: !!candidate.resume_url },
+  ] : [];
+
+  // Section complete flags
+  const personalComplete = !!(personal.full_name && personal.phone && personal.nationality && personal.current_location);
+  const professionalComplete = !!(professional.desired_position && professional.education_level && skills.length > 0);
+  const cvComplete = !!candidate?.resume_url;
+  const linkedinComplete = !!linkedinUrl;
+  const workComplete = workExp.length > 0;
+
   return (
     <div className={styles.dashboardPage}>
       {/* Header */}
@@ -321,7 +338,7 @@ function CandidateDashboardInner() {
               style={{ width: `${completion}%`, background: completionColor(completion) }}
             />
           </div>
-          <p className={styles.completionHint}>{completionMessage(completion)}</p>
+          <p className={styles.completionHint}>{completionMsg(completion)}</p>
         </div>
 
         {/* Stats */}
@@ -371,237 +388,407 @@ function CandidateDashboardInner() {
         )}
 
         {/* Profile Tab */}
-        {activeTab === 'profile' && (
-          <div className={styles.profileSections}>
+        {activeTab === 'profile' && candidate && (
+          <div className={styles.profileTabWrap}>
 
-            {/* ── Section 1: Personal Info ── */}
-            <div className={styles.sectionCard}>
-              <h2 className={styles.sectionTitle}><i className="fa-solid fa-user" aria-hidden="true" /> Personal Information</h2>
-              <div className={styles.profileForm}>
-                <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label>Full Name <span className={styles.req}>*</span></label>
-                    <input value={personal.full_name} onChange={(e) => setPersonal((f) => ({ ...f, full_name: e.target.value }))} placeholder="Juan dela Cruz" />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Phone</label>
-                    <input value={personal.phone} onChange={(e) => setPersonal((f) => ({ ...f, phone: e.target.value }))} placeholder="+63 912 345 6789" />
-                  </div>
-                </div>
-                <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label>Date of Birth</label>
-                    <input type="date" value={personal.date_of_birth} onChange={(e) => setPersonal((f) => ({ ...f, date_of_birth: e.target.value }))} />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Nationality</label>
-                    <input value={personal.nationality} onChange={(e) => setPersonal((f) => ({ ...f, nationality: e.target.value }))} placeholder="Filipino" />
-                  </div>
-                </div>
-                <div className={styles.formGroup}>
-                  <label>Current Location</label>
-                  <input value={personal.current_location} onChange={(e) => setPersonal((f) => ({ ...f, current_location: e.target.value }))} placeholder="Manila, Philippines" />
-                </div>
-                <div className={styles.sectionActions}>
-                  <button type="button" className={styles.saveBtn} onClick={doSavePersonal} disabled={savingPersonal}>
-                    {savingPersonal ? <><i className="fa-solid fa-spinner fa-spin" /> Saving…</> : <><i className="fa-solid fa-floppy-disk" /> Save Personal Info</>}
-                  </button>
-                  {personalMsg && <span className={`${styles.saveMsg} ${personalMsg.includes('Failed') ? styles.saveMsgError : ''}`}>{personalMsg}</span>}
-                </div>
+            {/* Profile completion card */}
+            <div className={styles.profileCompletionCard}>
+              <div className={styles.profileCompletionHeader}>
+                <span className={styles.profileCompletionLabel}>PROFILE COMPLETION</span>
+                <span className={styles.profileCompletionPct} style={{ color: completionColor(completion) }}>
+                  {completion}%
+                </span>
               </div>
-            </div>
-
-            {/* ── Section 2: Professional ── */}
-            <div className={styles.sectionCard}>
-              <h2 className={styles.sectionTitle}><i className="fa-solid fa-briefcase" aria-hidden="true" /> Professional Details</h2>
-              <div className={styles.profileForm}>
-                <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label>Desired Position</label>
-                    <input value={professional.desired_position} onChange={(e) => setProfessional((f) => ({ ...f, desired_position: e.target.value }))} placeholder="e.g. Registered Nurse" />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Years of Experience</label>
-                    <input type="number" min="0" max="50" value={professional.years_experience} onChange={(e) => setProfessional((f) => ({ ...f, years_experience: e.target.value }))} placeholder="5" />
-                  </div>
-                </div>
-                <div className={styles.formGroup}>
-                  <label>Education Level</label>
-                  <select value={professional.education_level} onChange={(e) => setProfessional((f) => ({ ...f, education_level: e.target.value }))}>
-                    {EDUCATION_OPTIONS.map((o) => <option key={o} value={o}>{o || 'Select education level'}</option>)}
-                  </select>
-                </div>
-                {/* Skills Tags */}
-                <div className={styles.formGroup}>
-                  <label>Skills</label>
-                  <div className={styles.skillsInput}>
-                    <input
-                      value={skillInput}
-                      onChange={(e) => setSkillInput(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addSkill(); } }}
-                      placeholder="Type a skill and press Enter"
-                    />
-                    <button type="button" onClick={addSkill} className={styles.skillAddBtn}>
-                      <i className="fa-solid fa-plus" aria-hidden="true" />
-                    </button>
-                  </div>
-                  {skills.length > 0 && (
-                    <div className={styles.skillTags}>
-                      {skills.map((s) => (
-                        <span key={s} className={styles.skillTag}>
-                          {s}
-                          <button type="button" onClick={() => setSkills((prev) => prev.filter((x) => x !== s))} aria-label={`Remove ${s}`}>
-                            <i className="fa-solid fa-xmark" aria-hidden="true" />
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <div className={styles.sectionActions}>
-                  <button type="button" className={styles.saveBtn} onClick={doSaveProfessional} disabled={savingProfessional}>
-                    {savingProfessional ? <><i className="fa-solid fa-spinner fa-spin" /> Saving…</> : <><i className="fa-solid fa-floppy-disk" /> Save Professional Info</>}
-                  </button>
-                  {professionalMsg && <span className={`${styles.saveMsg} ${professionalMsg.includes('Failed') ? styles.saveMsgError : ''}`}>{professionalMsg}</span>}
-                </div>
+              <div className={styles.profileCompletionTrack}>
+                <div className={styles.profileCompletionFill} style={{ width: `${completion}%`, background: completionColor(completion) }} />
               </div>
-            </div>
-
-            {/* ── Section 3: Work Experience ── */}
-            <div className={styles.sectionCard}>
-              <div className={styles.sectionTitleRow}>
-                <h2 className={styles.sectionTitle}><i className="fa-solid fa-building-columns" aria-hidden="true" /> Work Experience</h2>
-                <button type="button" className={styles.addExpBtn} onClick={addWorkEntry}>
-                  <i className="fa-solid fa-plus" aria-hidden="true" /> Add Entry
-                </button>
-              </div>
-              <div className={styles.profileForm}>
-                {workExp.length === 0 && (
-                  <p className={styles.noExpMsg}>No work experience added yet. Click &quot;Add Entry&quot; to begin.</p>
-                )}
-                {workExp.map((w) => (
-                  <div key={w.id} className={styles.workCard}>
-                    <div className={styles.workCardHeader}>
-                      <span className={styles.workCardTitle}>{w.title || 'New Entry'}{w.company ? ` @ ${w.company}` : ''}</span>
-                      <button type="button" className={styles.removeExpBtn} onClick={() => setWorkExp((prev) => prev.filter((x) => x.id !== w.id))} aria-label="Remove">
-                        <i className="fa-solid fa-trash" aria-hidden="true" />
-                      </button>
-                    </div>
-                    <div className={styles.formRow}>
-                      <div className={styles.formGroup}>
-                        <label>Job Title</label>
-                        <input value={w.title} onChange={(e) => updateWork(w.id, 'title', e.target.value)} placeholder="e.g. Head Chef" />
-                      </div>
-                      <div className={styles.formGroup}>
-                        <label>Company</label>
-                        <input value={w.company} onChange={(e) => updateWork(w.id, 'company', e.target.value)} placeholder="Company name" />
-                      </div>
-                    </div>
-                    <div className={styles.formRow}>
-                      <div className={styles.formGroup}>
-                        <label>Country</label>
-                        <input value={w.country} onChange={(e) => updateWork(w.id, 'country', e.target.value)} placeholder="Philippines" />
-                      </div>
-                      <div className={styles.formGroup}>
-                        <label>Start Date</label>
-                        <input type="month" value={w.start_date} onChange={(e) => updateWork(w.id, 'start_date', e.target.value)} />
-                      </div>
-                    </div>
-                    <div className={styles.formRow}>
-                      <div className={styles.formGroup}>
-                        <label>End Date {w.current && <span className={styles.optional}>(current job)</span>}</label>
-                        <input type="month" value={w.end_date} disabled={w.current} onChange={(e) => updateWork(w.id, 'end_date', e.target.value)} />
-                      </div>
-                      <div className={`${styles.formGroup} ${styles.currentJobCheck}`}>
-                        <label className={styles.checkboxLabel}>
-                          <input type="checkbox" checked={w.current} onChange={(e) => updateWork(w.id, 'current', e.target.checked)} />
-                          Currently working here
-                        </label>
-                      </div>
-                    </div>
-                    <div className={styles.formGroup}>
-                      <label>Description</label>
-                      <textarea rows={3} value={w.description} onChange={(e) => updateWork(w.id, 'description', e.target.value)} placeholder="Brief description of responsibilities…" />
-                    </div>
-                  </div>
+              <div className={styles.profileChips}>
+                {profileChips.map(chip => (
+                  <span key={chip.label} className={chip.done ? styles.profileChipDone : styles.profileChipTodo}>
+                    {chip.label}{chip.done ? ' ✓' : ''}
+                  </span>
                 ))}
-                {workExp.length > 0 && (
-                  <div className={styles.sectionActions}>
-                    <button type="button" className={styles.saveBtn} onClick={doSaveWork} disabled={savingWork}>
-                      {savingWork ? <><i className="fa-solid fa-spinner fa-spin" /> Saving…</> : <><i className="fa-solid fa-floppy-disk" /> Save Work Experience</>}
-                    </button>
-                    {workMsg && <span className={`${styles.saveMsg} ${workMsg.includes('Failed') ? styles.saveMsgError : ''}`}>{workMsg}</span>}
-                  </div>
-                )}
               </div>
+              <p className={styles.profileCompletionMsg}>{completionMsg(completion)}</p>
             </div>
 
-            {/* ── Section 4: CV Upload ── */}
-            <div className={styles.sectionCard}>
-              <h2 className={styles.sectionTitle}><i className="fa-solid fa-file-pdf" aria-hidden="true" /> CV / Resume</h2>
-              <div className={styles.profileForm}>
-                {candidate?.resume_url ? (
-                  <div className={styles.cvCurrentRow}>
-                    <div className={styles.cvCurrentInfo}>
-                      <i className="fa-solid fa-file-pdf" aria-hidden="true" />
-                      <div>
-                        <div className={styles.cvFilename}>{candidate.resume_filename ?? 'resume.pdf'}</div>
+            {/* Two-column grid */}
+            <div className={styles.profileGrid}>
+              {/* Left column */}
+              <div className={styles.profileGridLeft}>
+
+                {/* Section 1 — Personal Info */}
+                <div className={`${styles.profileSectionCard} ${personalComplete ? styles.profileSectionCardComplete : ''}`}>
+                  <div className={styles.profileSectionHeader}>
+                    <div className={styles.profileSectionIconWrap} style={{ background: 'rgba(79,163,199,0.12)' }}>
+                      <i className="fa-solid fa-user" style={{ color: '#4FA3C7' }} />
+                    </div>
+                    <span className={styles.profileSectionTitle}>Personal Information</span>
+                    {personalComplete && <i className="fa-solid fa-circle-check" style={{ color: '#8CC63F', marginLeft: 'auto' }} />}
+                  </div>
+                  <div className={styles.profileInputGrid}>
+                    <div className={styles.profileInputGroup}>
+                      <label>Full Name *</label>
+                      <input
+                        type="text"
+                        value={personal.full_name}
+                        onChange={(e) => setPersonal((f) => ({ ...f, full_name: e.target.value }))}
+                        className={styles.profileInput}
+                        placeholder="Juan dela Cruz"
+                      />
+                    </div>
+                    <div className={styles.profileInputGroup}>
+                      <label>Phone</label>
+                      <input
+                        type="tel"
+                        value={personal.phone}
+                        onChange={(e) => setPersonal((f) => ({ ...f, phone: e.target.value }))}
+                        className={styles.profileInput}
+                        placeholder="+63 912 345 6789"
+                      />
+                    </div>
+                    <div className={styles.profileInputGroup}>
+                      <label>Date of Birth</label>
+                      <input
+                        type="date"
+                        value={personal.date_of_birth}
+                        onChange={(e) => setPersonal((f) => ({ ...f, date_of_birth: e.target.value }))}
+                        className={styles.profileInput}
+                      />
+                    </div>
+                    <div className={styles.profileInputGroup}>
+                      <label>Nationality</label>
+                      <input
+                        type="text"
+                        value={personal.nationality}
+                        onChange={(e) => setPersonal((f) => ({ ...f, nationality: e.target.value }))}
+                        className={styles.profileInput}
+                        placeholder="Filipino"
+                      />
+                    </div>
+                    <div className={`${styles.profileInputGroup} ${styles.profileInputFull}`}>
+                      <label>Current Location</label>
+                      <input
+                        type="text"
+                        value={personal.current_location}
+                        onChange={(e) => setPersonal((f) => ({ ...f, current_location: e.target.value }))}
+                        className={styles.profileInput}
+                        placeholder="Manila, Philippines"
+                      />
+                    </div>
+                  </div>
+                  <div className={styles.profileCardFooter}>
+                    {personalMsg && <span className={styles.savedMsg}>{personalMsg}</span>}
+                    <button
+                      type="button"
+                      className={styles.profileSaveBtn}
+                      onClick={doSavePersonal}
+                      disabled={savingPersonal}
+                    >
+                      {savingPersonal ? <><i className="fa-solid fa-spinner fa-spin" /> Saving…</> : 'Save'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Section 2 — Professional Details */}
+                <div className={`${styles.profileSectionCard} ${professionalComplete ? styles.profileSectionCardComplete : ''}`}>
+                  <div className={styles.profileSectionHeader}>
+                    <div className={styles.profileSectionIconWrap} style={{ background: 'rgba(140,198,63,0.12)' }}>
+                      <i className="fa-solid fa-briefcase" style={{ color: '#8CC63F' }} />
+                    </div>
+                    <span className={styles.profileSectionTitle}>Professional Details</span>
+                    {professionalComplete && <i className="fa-solid fa-circle-check" style={{ color: '#8CC63F', marginLeft: 'auto' }} />}
+                  </div>
+                  <div className={styles.profileInputGrid}>
+                    <div className={styles.profileInputGroup}>
+                      <label>Desired Position</label>
+                      <input
+                        type="text"
+                        value={professional.desired_position}
+                        onChange={(e) => setProfessional((f) => ({ ...f, desired_position: e.target.value }))}
+                        className={styles.profileInput}
+                        placeholder="e.g. Registered Nurse"
+                      />
+                    </div>
+                    <div className={styles.profileInputGroup}>
+                      <label>Years of Experience</label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="50"
+                        value={professional.years_experience}
+                        onChange={(e) => setProfessional((f) => ({ ...f, years_experience: e.target.value }))}
+                        className={styles.profileInput}
+                        placeholder="5"
+                      />
+                    </div>
+                    <div className={`${styles.profileInputGroup} ${styles.profileInputFull}`}>
+                      <label>Education Level</label>
+                      <select
+                        value={professional.education_level}
+                        onChange={(e) => setProfessional((f) => ({ ...f, education_level: e.target.value }))}
+                        className={styles.profileInput}
+                      >
+                        {EDUCATION_OPTIONS.map((o) => <option key={o} value={o}>{o || 'Select education level'}</option>)}
+                      </select>
+                    </div>
+                    <div className={`${styles.profileInputGroup} ${styles.profileInputFull}`}>
+                      <label>Skills</label>
+                      <div className={styles.profileSkillsRow}>
+                        <input
+                          type="text"
+                          value={skillInput}
+                          onChange={(e) => setSkillInput(e.target.value)}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addSkill(); } }}
+                          placeholder="Type a skill and press Enter"
+                          className={styles.profileInput}
+                        />
+                        <button type="button" onClick={addSkill} className={styles.profileSkillAddBtn}>
+                          <i className="fa-solid fa-plus" aria-hidden="true" />
+                        </button>
+                      </div>
+                      {skills.length > 0 && (
+                        <div className={styles.profileSkillTagsWrap}>
+                          {skills.map((s) => (
+                            <span key={s} className={styles.profileSkillTag}>
+                              {s}
+                              <button
+                                type="button"
+                                onClick={() => setSkills((prev) => prev.filter((x) => x !== s))}
+                                aria-label={`Remove ${s}`}
+                                className={styles.profileSkillRemove}
+                              >
+                                <i className="fa-solid fa-xmark" aria-hidden="true" />
+                              </button>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className={styles.profileCardFooter}>
+                    {professionalMsg && <span className={styles.savedMsg}>{professionalMsg}</span>}
+                    <button
+                      type="button"
+                      className={styles.profileSaveBtn}
+                      onClick={doSaveProfessional}
+                      disabled={savingProfessional}
+                    >
+                      {savingProfessional ? <><i className="fa-solid fa-spinner fa-spin" /> Saving…</> : 'Save'}
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Right column */}
+              <div className={styles.profileGridRight}>
+
+                {/* Section 3 — CV Upload */}
+                <div className={`${styles.profileSectionCard} ${cvComplete ? styles.profileSectionCardComplete : ''}`}>
+                  <div className={styles.profileSectionHeader}>
+                    <div className={styles.profileSectionIconWrap} style={{ background: 'rgba(231,76,60,0.12)' }}>
+                      <i className="fa-solid fa-file-pdf" style={{ color: '#E74C3C' }} />
+                    </div>
+                    <span className={styles.profileSectionTitle}>CV / Resume</span>
+                    {cvComplete && <i className="fa-solid fa-circle-check" style={{ color: '#8CC63F', marginLeft: 'auto' }} />}
+                  </div>
+
+                  {candidate.resume_url ? (
+                    <div className={styles.profileCvExisting}>
+                      <i className="fa-solid fa-file-pdf" style={{ color: '#E74C3C', fontSize: '1.4rem' }} />
+                      <div className={styles.profileCvInfo}>
+                        <span className={styles.profileCvFilename}>{candidate.resume_filename ?? 'resume.pdf'}</span>
                         {candidate.resume_uploaded_at && (
-                          <div className={styles.cvUploadedAt}>Uploaded {new Date(candidate.resume_uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                          <span className={styles.profileCvDate}>
+                            Uploaded {new Date(candidate.resume_uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                          </span>
                         )}
                       </div>
+                      <a href={candidate.resume_url} target="_blank" rel="noopener noreferrer" className={styles.profileCvViewBtn}>
+                        <i className="fa-solid fa-eye" /> View
+                      </a>
                     </div>
-                    <a href={candidate.resume_url} target="_blank" rel="noopener noreferrer" className={styles.cvViewBtn}>
-                      <i className="fa-solid fa-eye" aria-hidden="true" /> View
-                    </a>
-                  </div>
-                ) : (
-                  <p className={styles.noCvMsg}><i className="fa-solid fa-triangle-exclamation" aria-hidden="true" /> No CV uploaded yet. Upload your CV to apply for jobs.</p>
-                )}
-
-                <div
-                  className={styles.uploadZone}
-                  onClick={() => fileInputRef.current?.click()}
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handleFileChange({ target: { files: [f] } } as unknown as React.ChangeEvent<HTMLInputElement>); }}
-                >
-                  {uploading ? (
-                    <><i className="fa-solid fa-spinner fa-spin" aria-hidden="true" /> Uploading…</>
                   ) : (
-                    <><i className="fa-solid fa-cloud-arrow-up" aria-hidden="true" /> <span>Drop PDF here or <u>click to browse</u></span></>
+                    <p className={styles.profileCvMissing}>
+                      <i className="fa-solid fa-triangle-exclamation" /> No CV uploaded yet. Upload to apply for jobs.
+                    </p>
+                  )}
+
+                  <div
+                    className={styles.profileCvZone}
+                    onClick={() => fileInputRef.current?.click()}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      const f = e.dataTransfer.files[0];
+                      if (f) handleFileChange({ target: { files: [f] } } as unknown as React.ChangeEvent<HTMLInputElement>);
+                    }}
+                  >
+                    {uploading ? (
+                      <><i className="fa-solid fa-spinner fa-spin" /> Uploading…</>
+                    ) : (
+                      <><i className="fa-solid fa-cloud-arrow-up" /> <span>Drop PDF here or <u>click to browse</u></span></>
+                    )}
+                  </div>
+                  <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx" style={{ display: 'none' }} onChange={handleFileChange} disabled={uploading} />
+                  {uploadMsg && (
+                    <p className={`${styles.savedMsg} ${uploadMsg.includes('failed') || uploadMsg.includes('Failed') ? styles.savedMsgError : ''}`}>
+                      {uploadMsg}
+                    </p>
                   )}
                 </div>
-                <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx" className={styles.fileInputHidden} onChange={handleFileChange} disabled={uploading} />
-                {uploadMsg && (
-                  <p className={`${styles.saveMsg} ${uploadMsg.includes('failed') || uploadMsg.includes('Failed') ? styles.saveMsgError : ''}`}>
-                    {uploadMsg}
-                  </p>
-                )}
+
+                {/* Section 4 — LinkedIn */}
+                <div className={`${styles.profileSectionCard} ${linkedinComplete ? styles.profileSectionCardComplete : ''}`}>
+                  <div className={styles.profileSectionHeader}>
+                    <div className={styles.profileSectionIconWrap} style={{ background: 'rgba(0,119,181,0.12)' }}>
+                      <i className="fa-brands fa-linkedin" style={{ color: '#0077B5' }} />
+                    </div>
+                    <span className={styles.profileSectionTitle}>LinkedIn Profile</span>
+                    {linkedinComplete && <i className="fa-solid fa-circle-check" style={{ color: '#8CC63F', marginLeft: 'auto' }} />}
+                  </div>
+                  <div className={styles.profileInputGroup}>
+                    <label>LinkedIn URL</label>
+                    <input
+                      type="url"
+                      value={linkedinUrl}
+                      onChange={(e) => setLinkedinUrl(e.target.value)}
+                      placeholder="https://linkedin.com/in/your-profile"
+                      className={styles.profileInput}
+                    />
+                  </div>
+                  <div className={styles.profileCardFooter}>
+                    {linkedinMsg && <span className={styles.savedMsg}>{linkedinMsg}</span>}
+                    <button
+                      type="button"
+                      className={styles.profileSaveBtn}
+                      onClick={doSaveLinkedin}
+                      disabled={savingLinkedin}
+                    >
+                      {savingLinkedin ? <><i className="fa-solid fa-spinner fa-spin" /> Saving…</> : 'Save'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Section 5 — Work Experience */}
+                <div className={`${styles.profileSectionCard} ${workComplete ? styles.profileSectionCardComplete : ''}`}>
+                  <div className={styles.profileSectionHeader}>
+                    <div className={styles.profileSectionIconWrap} style={{ background: 'rgba(155,89,182,0.12)' }}>
+                      <i className="fa-solid fa-building-columns" style={{ color: '#9B59B6' }} />
+                    </div>
+                    <span className={styles.profileSectionTitle}>Work Experience</span>
+                    {workComplete && <i className="fa-solid fa-circle-check" style={{ color: '#8CC63F', marginLeft: 'auto' }} />}
+                    <button type="button" className={styles.profileAddExpBtn} onClick={addWorkEntry}>
+                      <i className="fa-solid fa-plus" /> Add
+                    </button>
+                  </div>
+
+                  {workExp.length === 0 && (
+                    <p className={styles.profileNoExpMsg}>No work experience added yet. Click &quot;Add&quot; to begin.</p>
+                  )}
+
+                  {workExp.map((w) => (
+                    <div key={w.id} className={styles.profileWorkCard}>
+                      <div className={styles.profileWorkCardHeader}>
+                        <span className={styles.profileWorkCardTitle}>{w.title || 'New Entry'}{w.company ? ` @ ${w.company}` : ''}</span>
+                        <button
+                          type="button"
+                          className={styles.profileRemoveExpBtn}
+                          onClick={() => setWorkExp((prev) => prev.filter((x) => x.id !== w.id))}
+                          aria-label="Remove"
+                        >
+                          <i className="fa-solid fa-trash" />
+                        </button>
+                      </div>
+                      <div className={styles.profileInputGrid}>
+                        <div className={styles.profileInputGroup}>
+                          <label>Job Title</label>
+                          <input
+                            value={w.title}
+                            onChange={(e) => updateWork(w.id, 'title', e.target.value)}
+                            placeholder="e.g. Head Chef"
+                            className={styles.profileInput}
+                          />
+                        </div>
+                        <div className={styles.profileInputGroup}>
+                          <label>Company</label>
+                          <input
+                            value={w.company}
+                            onChange={(e) => updateWork(w.id, 'company', e.target.value)}
+                            placeholder="Company name"
+                            className={styles.profileInput}
+                          />
+                        </div>
+                        <div className={styles.profileInputGroup}>
+                          <label>Country</label>
+                          <input
+                            value={w.country}
+                            onChange={(e) => updateWork(w.id, 'country', e.target.value)}
+                            placeholder="Philippines"
+                            className={styles.profileInput}
+                          />
+                        </div>
+                        <div className={styles.profileInputGroup}>
+                          <label>Start Date</label>
+                          <input
+                            type="month"
+                            value={w.start_date}
+                            onChange={(e) => updateWork(w.id, 'start_date', e.target.value)}
+                            className={styles.profileInput}
+                          />
+                        </div>
+                        <div className={styles.profileInputGroup}>
+                          <label>End Date {w.current && <span style={{ fontWeight: 400, fontSize: '0.73rem', color: '#9ca3af' }}>(current job)</span>}</label>
+                          <input
+                            type="month"
+                            value={w.end_date}
+                            disabled={w.current}
+                            onChange={(e) => updateWork(w.id, 'end_date', e.target.value)}
+                            className={styles.profileInput}
+                          />
+                        </div>
+                        <div className={`${styles.profileInputGroup} ${styles.profileCurrentJobCheck}`}>
+                          <label className={styles.profileCheckboxLabel}>
+                            <input
+                              type="checkbox"
+                              checked={w.current}
+                              onChange={(e) => updateWork(w.id, 'current', e.target.checked)}
+                            />
+                            Currently working here
+                          </label>
+                        </div>
+                        <div className={`${styles.profileInputGroup} ${styles.profileInputFull}`}>
+                          <label>Description</label>
+                          <textarea
+                            rows={3}
+                            value={w.description}
+                            onChange={(e) => updateWork(w.id, 'description', e.target.value)}
+                            placeholder="Brief description of responsibilities…"
+                            className={styles.profileInput}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+
+                  {workExp.length > 0 && (
+                    <div className={styles.profileCardFooter}>
+                      {workMsg && <span className={styles.savedMsg}>{workMsg}</span>}
+                      <button
+                        type="button"
+                        className={styles.profileSaveBtn}
+                        onClick={doSaveWork}
+                        disabled={savingWork}
+                      >
+                        {savingWork ? <><i className="fa-solid fa-spinner fa-spin" /> Saving…</> : 'Save'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+
               </div>
             </div>
-
-            {/* ── Section 5: LinkedIn ── */}
-            <div className={styles.sectionCard}>
-              <h2 className={styles.sectionTitle}><i className="fa-brands fa-linkedin" aria-hidden="true" /> LinkedIn Profile</h2>
-              <div className={styles.profileForm}>
-                <div className={styles.formGroup}>
-                  <label>LinkedIn URL</label>
-                  <input
-                    value={linkedinUrl}
-                    onChange={(e) => setLinkedinUrl(e.target.value)}
-                    placeholder="https://linkedin.com/in/your-profile"
-                    type="url"
-                  />
-                </div>
-                <div className={styles.sectionActions}>
-                  <button type="button" className={styles.saveBtn} onClick={doSaveLinkedin} disabled={savingLinkedin}>
-                    {savingLinkedin ? <><i className="fa-solid fa-spinner fa-spin" /> Saving…</> : <><i className="fa-solid fa-floppy-disk" /> Save LinkedIn</>}
-                  </button>
-                  {linkedinMsg && <span className={`${styles.saveMsg} ${linkedinMsg.includes('Failed') ? styles.saveMsgError : ''}`}>{linkedinMsg}</span>}
-                </div>
-              </div>
-            </div>
-
           </div>
         )}
       </div>

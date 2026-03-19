@@ -835,3 +835,474 @@
   .dashHeaderRight { gap: 8px; }
   .currentJobCheck { padding-top: 0; justify-content: flex-start; }
 }
+
+/* ─── New Profile Tab ─────────────────────────── */
+.profileTabWrap {
+  padding-bottom: 80px;
+}
+
+.profileCompletionCard {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.profileCompletionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.profileCompletionLabel {
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.profileCompletionPct {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.profileCompletionTrack {
+  height: 8px;
+  background: #f3f4f6;
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.profileCompletionFill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.4s ease;
+}
+
+.profileChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.profileChipDone {
+  background: rgba(140,198,63,0.1);
+  color: #3d6b12;
+  border: 1px solid rgba(140,198,63,0.3);
+  border-radius: 9999px;
+  padding: 4px 12px;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+}
+
+.profileChipTodo {
+  background: #f3f4f6;
+  color: #9ca3af;
+  border: 1px solid #e5e7eb;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+}
+
+.profileCompletionMsg {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin: 0;
+}
+
+/* Grid layout */
+.profileGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.profileGridLeft,
+.profileGridRight {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Section card */
+.profileSectionCard {
+  background: #ffffff;
+  border-radius: 16px;
+  border-left: 4px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 24px;
+}
+
+.profileSectionCardComplete {
+  border-left-color: #8CC63F;
+}
+
+.profileSectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.profileSectionIconWrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.profileSectionTitle {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #2E2E2E;
+}
+
+/* Input grid */
+.profileInputGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.profileInputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profileInputGroup label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: #6c757d;
+  display: block;
+}
+
+.profileInput {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: #374151;
+  width: 100%;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+  background: #ffffff;
+}
+
+.profileInput:focus {
+  border-color: #4FA3C7;
+}
+
+.profileInputFull {
+  grid-column: span 2;
+}
+
+.profileCardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.savedMsg {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: #8CC63F;
+  font-weight: 500;
+}
+
+.savedMsgError {
+  color: #dc2626;
+}
+
+.profileSaveBtn {
+  background: #4FA3C7;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profileSaveBtn:hover:not(:disabled) { background: #3C8DB1; }
+.profileSaveBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Skills */
+.profileSkillsRow {
+  display: flex;
+  gap: 8px;
+}
+
+.profileSkillsRow .profileInput {
+  flex: 1;
+}
+
+.profileSkillAddBtn {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 12px;
+  background: #4FA3C7;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.profileSkillAddBtn:hover { background: #3C8DB1; }
+
+.profileSkillTagsWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.profileSkillTag {
+  background: rgba(79,163,199,0.1);
+  color: #2d7a9f;
+  border: 1px solid rgba(79,163,199,0.2);
+  border-radius: 9999px;
+  padding: 4px 12px;
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profileSkillRemove {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.profileSkillRemove:hover { color: #dc2626; }
+
+/* CV section */
+.profileCvExisting {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(79,163,199,0.06);
+  border: 1px solid rgba(79,163,199,0.2);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+}
+
+.profileCvInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.profileCvFilename {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: #2E2E2E;
+}
+
+.profileCvDate {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.profileCvViewBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border: 1.5px solid #4FA3C7;
+  border-radius: 10px;
+  color: #4FA3C7;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.profileCvViewBtn:hover { background: rgba(79,163,199,0.1); }
+
+.profileCvMissing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: #f59e0b;
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.25);
+  border-radius: 10px;
+}
+
+.profileCvZone {
+  border: 2px dashed rgba(79,163,199,0.4);
+  border-radius: 12px;
+  padding: 28px 24px;
+  text-align: center;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+  margin-top: 4px;
+}
+
+.profileCvZone:hover {
+  border-color: #4FA3C7;
+  background: rgba(79,163,199,0.05);
+  color: #374151;
+}
+
+.profileCvZone i { font-size: 1.2rem; color: #4FA3C7; }
+
+/* Work Experience */
+.profileAddExpBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  background: transparent;
+  border: 1.5px solid #4FA3C7;
+  border-radius: 10px;
+  color: #4FA3C7;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.profileAddExpBtn:hover { background: rgba(79,163,199,0.1); }
+
+.profileNoExpMsg {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: #9ca3af;
+  text-align: center;
+  padding: 20px 0;
+  margin: 0;
+}
+
+.profileWorkCard {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.profileWorkCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.profileWorkCardTitle {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: #2E2E2E;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profileRemoveExpBtn {
+  background: none;
+  border: 1px solid rgba(220,38,38,0.3);
+  border-radius: 8px;
+  color: #dc2626;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.profileRemoveExpBtn:hover { background: rgba(220,38,38,0.08); }
+
+.profileCurrentJobCheck {
+  justify-content: flex-end;
+  padding-top: 20px;
+}
+
+.profileCheckboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: #374151;
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.profileCheckboxLabel input[type="checkbox"] {
+  width: auto;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .profileGrid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .profileInputGrid { grid-template-columns: 1fr; }
+  .profileInputFull { grid-column: span 1; }
+  .profileSectionCard { padding: 18px; }
+  .profileCurrentJobCheck { padding-top: 0; justify-content: flex-start; }
+}

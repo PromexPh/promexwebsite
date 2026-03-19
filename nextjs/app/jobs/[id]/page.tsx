@@ -45,7 +45,7 @@ function calcProfileCompletion(p: CandidateProfile): number {
   return Math.min(100, score);
 }
 
-// ── Apply Panel ───────────────────────────────────────────────────────────────
+// ── Constants (kept for reference, unused by new modals) ─────────────────────
 type ApplyMethod = 'cv' | 'linkedin' | 'form';
 type AddonKey   = 'portfolio' | 'video' | 'certs' | 'cover';
 
@@ -59,97 +59,101 @@ const ADDON_CONFIG: Record<AddonKey, { label: string; icon: string; points: numb
 const METHOD_BASE: Record<ApplyMethod, number> = { cv: 60, linkedin: 55, form: 65 };
 const METHOD_TIME: Record<ApplyMethod, number>  = { cv: 2,  linkedin: 1,  form: 5  };
 
-interface ApplyPanelProps {
-  job: Job;
-  candidate: CandidateProfile;
-  token: string;
-  onClose: () => void;
-  onSuccess: () => void;
-  initialMethod?: ApplyMethod;
+// Suppress unused variable warnings for constants kept per spec
+void ADDON_CONFIG;
+void METHOD_BASE;
+void METHOD_TIME;
+
+// ── Modal A — Login Prompt ───────────────────────────────────────────────────
+function LoginPromptModal({ jobId, job, onClose }: { jobId: string; job: Job; onClose: () => void }) {
+  return (
+    <div className={styles.modalBackdrop} onClick={onClose}>
+      <div className={styles.modalBox} onClick={e => e.stopPropagation()}>
+        <button className={styles.modalCloseBtn} onClick={onClose} type="button">
+          <i className="fa-solid fa-xmark" />
+        </button>
+        <p className={styles.modalJobMeta}>{job.title} · {job.company}</p>
+        <h2 className={styles.modalHeading}>Sign in to apply</h2>
+        <div className={styles.modalBtnStack}>
+          <a href={`/candidate/register?redirect=/jobs/${jobId}`} className={styles.modalPrimaryBtn}>
+            Create Free Account
+          </a>
+          <a href={`/candidate/register?mode=login&redirect=/jobs/${jobId}`} className={styles.modalSecondaryBtn}>
+            Sign In
+          </a>
+        </div>
+        <p className={styles.modalTrustNote}>Free to apply · Zero placement fees · DMW accredited</p>
+      </div>
+    </div>
+  );
 }
 
-function ApplyPanel({ job, candidate, token, onClose, onSuccess, initialMethod }: ApplyPanelProps) {
-  const [method,     setMethod]     = useState<ApplyMethod>(initialMethod ?? 'cv');
-  const [addons,     setAddons]     = useState<Set<AddonKey>>(new Set());
-  const [addonVals,  setAddonVals]  = useState<Record<AddonKey, string>>({ portfolio: '', video: '', certs: '', cover: '' });
-  const [cvFile,     setCvFile]     = useState<File | null>(null);
-  const [linkedinUrl, setLinkedinUrl] = useState(candidate.linkedin_url ?? '');
-  const [formSummary, setFormSummary] = useState('');
-  const [formPosition, setFormPosition] = useState('');
-  const [formWhy, setFormWhy]       = useState('');
-  const [loading,    setLoading]    = useState(false);
-  const [error,      setError]      = useState('');
-  const [submitted,  setSubmitted]  = useState(false);
+// ── Modal B — Complete Profile ────────────────────────────────────────────────
+function CompleteProfileModal({ candidate, onClose, onSkip }: { candidate: CandidateProfile; onClose: () => void; onSkip: () => void }) {
+  const pct = calcProfileCompletion(candidate);
+  const barColor = pct < 40 ? '#E67E22' : pct < 80 ? '#8CC63F' : '#4FA3C7';
+  return (
+    <div className={styles.modalBackdrop} onClick={onClose}>
+      <div className={styles.modalBox} onClick={e => e.stopPropagation()}>
+        <button className={styles.modalCloseBtn} onClick={onClose} type="button">
+          <i className="fa-solid fa-xmark" />
+        </button>
+        <div className={styles.modalIconCircle} style={{ background: 'rgba(230,126,34,0.12)', color: '#E67E22' }}>
+          <i className="fa-solid fa-user-pen" />
+        </div>
+        <h2 className={styles.modalHeading}>Complete your profile first</h2>
+        <p className={styles.modalSubtext}>Upload your CV before applying. It only takes a minute.</p>
+        <div className={styles.modalProgressWrap}>
+          <div className={styles.modalProgressBar}>
+            <div style={{ width: `${pct}%`, background: barColor, height: '100%', borderRadius: 9999, transition: 'width 0.4s ease' }} />
+          </div>
+          <span className={styles.modalProgressPct} style={{ color: barColor }}>{pct}%</span>
+        </div>
+        <a href="/candidate/dashboard" className={styles.modalPrimaryBtn}>
+          Go to My Profile →
+        </a>
+        <button type="button" className={styles.modalSkipLink} onClick={() => { onSkip(); onClose(); }}>
+          Skip — fill a form instead
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Modal C — Apply Modal ─────────────────────────────────────────────────────
+function ApplyModal({ job, candidate, token, onClose, onSuccess }: { job: Job; candidate: CandidateProfile; token: string; onClose: () => void; onSuccess: () => void }) {
+  const [coverLetter, setCoverLetter] = useState('');
+  const [cvFile, setCvFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [submitted, setSubmitted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Strength calculation
-  const methodBase = METHOD_BASE[method];
-  let totalPoints = methodBase;
-  let totalMinutes = METHOD_TIME[method];
-  (Object.keys(ADDON_CONFIG) as AddonKey[]).forEach((k) => {
-    if (addons.has(k)) { totalPoints += ADDON_CONFIG[k].points; totalMinutes += ADDON_CONFIG[k].minutes; }
-  });
-  const strengthScore = Math.min(100, totalPoints);
-  const strengthColor = strengthScore >= 80 ? '#4FA3C7' : strengthScore >= 60 ? '#8CC63F' : '#E67E22';
-
-  function toggleAddon(key: AddonKey) {
-    setAddons((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key); else next.add(key);
-      return next;
-    });
-  }
-
-  function setAddonVal(key: AddonKey, val: string) {
-    setAddonVals((prev) => ({ ...prev, [key]: val }));
-  }
+  const firstName = candidate.full_name?.split(' ')[0] ?? 'there';
+  const displayFilename = cvFile ? cvFile.name : (candidate.resume_filename ?? 'Your saved CV');
 
   async function handleSubmit() {
     setLoading(true);
     setError('');
     try {
-      let resumeUrl: string | null = candidate.resume_url ?? null;
-
-      // Upload new CV file
-      if (method === 'cv' && cvFile) {
-        const ext  = cvFile.name.split('.').pop() ?? 'pdf';
+      let resumeUrl = candidate.resume_url ?? null;
+      if (cvFile) {
+        const ext = cvFile.name.split('.').pop() ?? 'pdf';
         const path = `${candidate.user_id}/${Date.now()}.${ext}`;
         const { error: upErr } = await supabase.storage.from('resumes').upload(path, cvFile, { upsert: true });
         if (!upErr) {
           const { data: urlData } = supabase.storage.from('resumes').getPublicUrl(path);
           resumeUrl = urlData.publicUrl;
-          // Update candidate profile
           await supabase.from('candidates').update({ resume_url: resumeUrl, resume_filename: cvFile.name }).eq('user_id', candidate.user_id);
         }
       }
-
-      // Build cover letter from form method or addon
-      let coverLetter: string | null = null;
-      if (method === 'form') {
-        const parts = [];
-        if (formSummary)  parts.push(`Background: ${formSummary}`);
-        if (formPosition) parts.push(`Current/last role: ${formPosition}`);
-        if (formWhy)      parts.push(`Why I'm applying: ${formWhy}`);
-        coverLetter = parts.join('\n\n') || null;
-      } else if (addons.has('cover') && addonVals.cover) {
-        coverLetter = addonVals.cover;
-      }
-
-      // Build linkedin url
-      const linkedinFinal = method === 'linkedin' ? linkedinUrl : (candidate.linkedin_url ?? null);
-
       const res = await fetch('/api/applications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          job_id: job.id,
-          resume_url: resumeUrl,
-          cover_letter: coverLetter,
-          linkedin_url: linkedinFinal,
-        }),
+        body: JSON.stringify({ job_id: job.id, resume_url: resumeUrl, cover_letter: coverLetter || null }),
       });
       const data = await res.json();
-      if (!res.ok) { setError(data.error || 'Failed to submit application'); return; }
+      if (!res.ok) { setError(data.error || 'Failed to submit'); return; }
       setSubmitted(true);
       onSuccess();
     } catch {
@@ -159,364 +163,74 @@ function ApplyPanel({ job, candidate, token, onClose, onSuccess, initialMethod }
     }
   }
 
-  const firstName = candidate.full_name?.split(' ')[0] ?? 'there';
-
-  // Success state
   if (submitted) {
     return (
-      <>
-        <div className={styles.panelBackdrop} onClick={onClose} />
-        <div className={styles.applyPanel}>
-          <div className={styles.panelSuccess}>
-            <div className={styles.panelSuccessCheckmark}>
-              <i className="fa-solid fa-circle-check" aria-hidden="true" />
-            </div>
-            <h2 className={styles.panelSuccessTitle}>Application Submitted!</h2>
-            <p className={styles.panelSuccessMsg}>
-              Thank you {firstName}. We&apos;ve received your application for <strong>{job.title}</strong> at <strong>{job.company}</strong>.
-            </p>
-            <div className={styles.panelSuccessSteps}>
-              <p className={styles.panelSuccessStepsTitle}>What happens next:</p>
-              <ol className={styles.panelSuccessStepsList}>
-                <li>Our recruitment team reviews your application (1–3 business days)</li>
-                <li>Shortlisted candidates are contacted for a screening call</li>
-                <li>Selected candidates proceed to employer interview</li>
-                <li>Job offer and deployment processing</li>
-              </ol>
-            </div>
-            <p className={styles.panelSuccessEmail}>
-              <i className="fa-solid fa-envelope" aria-hidden="true" /> Check your email at <strong>{candidate.email}</strong> for a confirmation.
-            </p>
-            <div className={styles.panelSuccessBtns}>
-              <Link href="/candidate/dashboard?tab=applications" className={styles.panelSuccessLinkBtn}>
-                View My Applications →
-              </Link>
-              <button type="button" className={styles.panelSuccessSecondBtn} onClick={onClose}>
-                Browse More Jobs
-              </button>
-            </div>
+      <div className={styles.modalBackdrop} onClick={onClose}>
+        <div className={styles.modalBox} onClick={e => e.stopPropagation()}>
+          <div className={styles.successCheckmark}>
+            <i className="fa-solid fa-circle-check" />
+          </div>
+          <h2 className={styles.modalHeading}>Application Submitted!</h2>
+          <p className={styles.modalSubtext}>
+            Thank you {firstName}. We&apos;ve received your application for <strong>{job.title}</strong> at <strong>{job.company}</strong>.
+          </p>
+          <div className={styles.modalDivider} />
+          <p className={styles.successStepsLabel}>What happens next</p>
+          <ol className={styles.successStepsList}>
+            <li>Our team reviews your application (1–3 business days)</li>
+            <li>Shortlisted candidates are contacted for screening</li>
+            <li>Selected candidates proceed to employer interview</li>
+            <li>Job offer and deployment processing</li>
+          </ol>
+          <p className={styles.successEmailNote}>
+            <i className="fa-solid fa-envelope" /> Check your email at <strong>{candidate.email}</strong> for a confirmation.
+          </p>
+          <div className={styles.modalBtnStack}>
+            <a href="/candidate/dashboard" className={styles.modalPrimaryBtn}>View My Applications</a>
+            <a href="/jobs" className={styles.modalSecondaryBtn}>Browse More Jobs</a>
           </div>
         </div>
-      </>
+      </div>
     );
   }
 
   return (
-    <>
-      <div className={styles.panelBackdrop} onClick={onClose} />
-      <div className={styles.applyPanel}>
-        {/* Close */}
-        <button className={styles.panelClose} onClick={onClose} type="button" aria-label="Close">
-          <i className="fa-solid fa-xmark" aria-hidden="true" />
-        </button>
-
-        <div className={styles.panelScroll}>
-          {/* Section 1 — Job summary bar */}
-          <div className={styles.panelJobBar}>
-            <div className={styles.panelJobDot} style={{ background: industryColor(job.industry) }} />
-            <div className={styles.panelJobInfo}>
-              <span className={styles.panelJobTitle}>{job.title}</span>
-              <span className={styles.panelJobCompany}>{job.company} · {job.country}</span>
-            </div>
-            <span className={styles.panelJobSalary}>{formatSalary(job)}</span>
-          </div>
-
-          {/* Section 2 — Method */}
-          <div className={styles.panelSection}>
-            <p className={styles.panelSectionLabel}>Choose your primary method</p>
-            <div className={styles.methodGrid}>
-              {/* CV Card */}
-              <button
-                type="button"
-                className={`${styles.methodCard} ${method === 'cv' ? styles.methodCardActive : ''}`}
-                onClick={() => setMethod('cv')}
-                style={method === 'cv' ? { borderColor: '#4FA3C7', background: 'rgba(79,163,199,0.06)' } : {}}
-              >
-                <div className={styles.methodIcon} style={{ background: 'rgba(79,163,199,0.12)', color: '#4FA3C7' }}>
-                  <i className="fa-solid fa-file-arrow-up" aria-hidden="true" />
-                </div>
-                <span className={styles.methodTitle}>Upload CV</span>
-                <span className={styles.methodSub}>PDF or DOCX, up to 5MB</span>
-              </button>
-
-              {/* LinkedIn Card */}
-              <button
-                type="button"
-                className={`${styles.methodCard} ${method === 'linkedin' ? styles.methodCardActive : ''}`}
-                onClick={() => setMethod('linkedin')}
-                style={method === 'linkedin' ? { borderColor: '#0077B5', background: 'rgba(0,119,181,0.06)' } : {}}
-              >
-                <div className={styles.methodIcon} style={{ background: 'rgba(0,119,181,0.12)', color: '#0077B5' }}>
-                  <i className="fa-brands fa-linkedin" aria-hidden="true" />
-                </div>
-                <span className={styles.methodTitle}>LinkedIn</span>
-                <span className={styles.methodSub}>Paste your profile URL</span>
-              </button>
-
-              {/* Form Card */}
-              <button
-                type="button"
-                className={`${styles.methodCard} ${method === 'form' ? styles.methodCardActive : ''}`}
-                onClick={() => setMethod('form')}
-                style={method === 'form' ? { borderColor: '#6A2C91', background: 'rgba(106,44,145,0.06)' } : {}}
-              >
-                <div className={styles.methodIcon} style={{ background: 'rgba(106,44,145,0.12)', color: '#6A2C91' }}>
-                  <i className="fa-solid fa-pen-to-square" aria-hidden="true" />
-                </div>
-                <span className={styles.methodTitle}>Fill Form</span>
-                <span className={styles.methodSub}>No CV? We guide you</span>
-              </button>
-            </div>
-
-            {/* CV detail */}
-            {method === 'cv' && (
-              <div className={styles.methodDetail}>
-                {candidate.resume_url && !cvFile ? (
-                  <div className={styles.savedCv}>
-                    <i className="fa-solid fa-file-pdf" aria-hidden="true" />
-                    <span>{candidate.resume_filename ?? 'Saved CV'}</span>
-                    <button type="button" className={styles.replaceCvBtn} onClick={() => fileInputRef.current?.click()}>Replace</button>
-                  </div>
-                ) : cvFile ? (
-                  <div className={styles.savedCv}>
-                    <i className="fa-solid fa-file-check" aria-hidden="true" />
-                    <span>{cvFile.name}</span>
-                    <button type="button" className={styles.replaceCvBtn} onClick={() => setCvFile(null)}>Remove</button>
-                  </div>
-                ) : (
-                  <div className={styles.cvUploadZone} onClick={() => fileInputRef.current?.click()}>
-                    <i className="fa-solid fa-cloud-arrow-up" aria-hidden="true" />
-                    <span>Click to upload CV</span>
-                    <small>PDF or DOCX · max 5MB</small>
-                  </div>
-                )}
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".pdf,.doc,.docx"
-                  className={styles.hiddenInput}
-                  onChange={(e) => setCvFile(e.target.files?.[0] ?? null)}
-                />
-              </div>
-            )}
-
-            {/* LinkedIn detail */}
-            {method === 'linkedin' && (
-              <div className={styles.methodDetail}>
-                <input
-                  type="url"
-                  value={linkedinUrl}
-                  onChange={(e) => setLinkedinUrl(e.target.value)}
-                  placeholder="https://linkedin.com/in/yourprofile"
-                  className={styles.methodInput}
-                />
-              </div>
-            )}
-
-            {/* Form detail */}
-            {method === 'form' && (
-              <div className={styles.methodDetail}>
-                <div className={styles.formMethodFields}>
-                  <div className={styles.formMethodField}>
-                    <label>Brief background / experience summary</label>
-                    <textarea rows={3} value={formSummary} onChange={(e) => setFormSummary(e.target.value)} placeholder="e.g. 5 years in healthcare as a registered nurse…" className={styles.methodTextarea} />
-                  </div>
-                  <div className={styles.formMethodField}>
-                    <label>Current / last position</label>
-                    <input type="text" value={formPosition} onChange={(e) => setFormPosition(e.target.value)} placeholder="Registered Nurse at St. Luke's Hospital" className={styles.methodInput} />
-                  </div>
-                  <div className={styles.formMethodField}>
-                    <label>Why are you applying?</label>
-                    <textarea rows={2} value={formWhy} onChange={(e) => setFormWhy(e.target.value)} placeholder="I'm excited about this opportunity because…" className={styles.methodTextarea} />
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Section 3 — Optional add-ons */}
-          <div className={styles.panelSection}>
-            <p className={styles.panelSectionLabel}>Also add <span className={styles.panelLabelMuted}>(optional)</span></p>
-            <div className={styles.addonChips}>
-              {(Object.keys(ADDON_CONFIG) as AddonKey[]).map((key) => {
-                const on = addons.has(key);
-                return (
-                  <button
-                    key={key}
-                    type="button"
-                    className={`${styles.addonChip} ${on ? styles.addonChipOn : ''}`}
-                    onClick={() => toggleAddon(key)}
-                  >
-                    <i className={`fa-solid ${ADDON_CONFIG[key].icon}`} aria-hidden="true" />
-                    {ADDON_CONFIG[key].label}
-                    {on && <i className="fa-solid fa-check" aria-hidden="true" />}
-                  </button>
-                );
-              })}
-            </div>
-            {/* Inline inputs for toggled add-ons */}
-            {(Object.keys(ADDON_CONFIG) as AddonKey[]).filter((k) => addons.has(k)).map((key) => (
-              <div key={key} className={styles.addonInput}>
-                {key === 'certs' || key === 'cover' ? (
-                  <textarea
-                    rows={key === 'cover' ? 4 : 2}
-                    value={addonVals[key]}
-                    onChange={(e) => setAddonVal(key, e.target.value)}
-                    placeholder={ADDON_CONFIG[key].placeholder}
-                    className={styles.methodTextarea}
-                  />
-                ) : (
-                  <input
-                    type="url"
-                    value={addonVals[key]}
-                    onChange={(e) => setAddonVal(key, e.target.value)}
-                    placeholder={ADDON_CONFIG[key].placeholder}
-                    className={styles.methodInput}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Section 4 — Strength bar */}
-          <div className={styles.panelSection}>
-            <div className={styles.strengthHeader}>
-              <span className={styles.panelSectionLabel}>Application strength</span>
-              <span className={styles.strengthPct} style={{ color: strengthColor }}>{strengthScore}%</span>
-            </div>
-            <div className={styles.strengthTrack}>
-              <div className={styles.strengthFill} style={{ width: `${strengthScore}%`, background: strengthColor }} />
-            </div>
-            <div className={styles.strengthPills}>
-              {[
-                { label: method === 'cv' ? (cvFile ? 'CV uploaded ✓' : candidate.resume_url ? 'Saved CV ✓' : 'No CV') : method === 'linkedin' ? 'LinkedIn ✓' : 'Form ✓', done: true },
-                ...(Object.keys(ADDON_CONFIG) as AddonKey[]).map((k) => ({ label: ADDON_CONFIG[k].label, done: addons.has(k) })),
-              ].map((pill) => (
-                <span key={pill.label} className={`${styles.strengthPill} ${pill.done ? styles.strengthPillDone : ''}`}>
-                  {pill.label}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Section 5 — Time + Submit */}
-          <div className={styles.panelSection}>
-            <div className={styles.timeEstimate}>
-              <i className="fa-solid fa-clock" aria-hidden="true" />
-              <span>Estimated time: <strong>{totalMinutes} minute{totalMinutes !== 1 ? 's' : ''}</strong></span>
-            </div>
-
-            {error && <p className={styles.panelError}><i className="fa-solid fa-circle-exclamation" /> {error}</p>}
-
-            <div className={styles.panelActions}>
-              <button type="button" className={styles.saveLaterBtn} onClick={onClose}>
-                <i className="fa-solid fa-bookmark" aria-hidden="true" /> Save for later
-              </button>
-              <button type="button" className={styles.submitBtn} onClick={handleSubmit} disabled={loading}>
-                {loading
-                  ? <><i className="fa-solid fa-spinner fa-spin" aria-hidden="true" /> Submitting…</>
-                  : <><i className="fa-solid fa-paper-plane" aria-hidden="true" /> Submit application</>
-                }
-              </button>
-            </div>
-            <p className={styles.panelTrust}>
-              <i className="fa-solid fa-shield-halved" aria-hidden="true" /> Zero placement fees · DMW accredited · Reviewed within 48 hrs
-            </p>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
-
-// ── Login Prompt Modal ──────────────────────────────────────────────────────
-function LoginPromptModal({ jobId, onClose }: { jobId: string; onClose: () => void }) {
-  return (
     <div className={styles.modalBackdrop} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button className={styles.modalClose} onClick={onClose} type="button" aria-label="Close">
-          <i className="fa-solid fa-xmark" aria-hidden="true" />
+      <div className={`${styles.modalBox} ${styles.modalBoxWide}`} onClick={e => e.stopPropagation()}>
+        <button className={styles.modalCloseBtn} onClick={onClose} type="button">
+          <i className="fa-solid fa-xmark" />
         </button>
-        <div className={styles.modalSuccess}>
-          <div className={styles.modalSuccessIcon} style={{ background: 'rgba(79,163,199,0.12)', border: '2px solid rgba(79,163,199,0.4)', color: '#4FA3C7' }}>
-            <i className="fa-solid fa-user-lock" aria-hidden="true" />
-          </div>
-          <h2>Sign in to apply</h2>
-          <div className={styles.loginModalBtns}>
-            <a
-              href={`/candidate/register?redirect=/jobs/${jobId}`}
-              className={styles.loginModalPrimary}
-            >
-              <i className="fa-solid fa-user-plus" aria-hidden="true" /> Create Account
-            </a>
-            <a
-              href={`/candidate/register?mode=login&redirect=/jobs/${jobId}`}
-              className={styles.loginModalSecondary}
-            >
-              <i className="fa-solid fa-right-to-bracket" aria-hidden="true" /> Sign In
-            </a>
-          </div>
-          <p className={styles.loginModalFooter}>
-            Creating an account is free. Promex never charges placement fees.
-          </p>
+        {/* Job header */}
+        <p className={styles.modalJobTitle}>{job.title}</p>
+        <p className={styles.modalJobCompany}>{job.company}</p>
+        <p className={styles.modalJobSalary}>{formatSalary(job)}</p>
+        <div className={styles.modalDivider} />
+        {/* CV section */}
+        <p className={styles.modalSectionLabel}>APPLYING WITH</p>
+        <div className={styles.modalCvRow}>
+          <i className="fa-solid fa-file-pdf" style={{ color: '#E74C3C' }} />
+          <span className={styles.modalCvName}>{displayFilename}</span>
+          <i className="fa-solid fa-circle-check" style={{ color: '#8CC63F' }} />
+          <button type="button" className={styles.modalChangeCv} onClick={() => fileInputRef.current?.click()}>
+            Change CV
+          </button>
+          <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx" style={{ display: 'none' }} onChange={e => setCvFile(e.target.files?.[0] ?? null)} />
         </div>
-      </div>
-    </div>
-  );
-}
-
-// ── Complete Profile Modal ──────────────────────────────────────────────────
-function CompleteProfileModal({
-  onClose,
-  candidate,
-  onSkip,
-}: {
-  onClose: () => void;
-  candidate: CandidateProfile;
-  onSkip: () => void;
-}) {
-  const completion = calcProfileCompletion(candidate);
-  const completionColor = completion < 60 ? '#E67E22' : completion < 80 ? '#8CC63F' : '#4FA3C7';
-
-  return (
-    <div className={styles.modalBackdrop} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button className={styles.modalClose} onClick={onClose} type="button" aria-label="Close">
-          <i className="fa-solid fa-xmark" aria-hidden="true" />
-        </button>
-        <div className={styles.modalSuccess}>
-          <div className={styles.modalSuccessIcon} style={{ background: 'rgba(245,158,11,0.15)', border: '2px solid rgba(245,158,11,0.4)', color: '#f59e0b' }}>
-            <i className="fa-solid fa-user-pen" aria-hidden="true" />
-          </div>
-          <h2>Complete your profile first</h2>
-          <p>Upload your CV to your profile before applying. It takes less than 2 minutes.</p>
-
-          <div className={styles.profileProgressWrap}>
-            <div className={styles.profileProgressHeader}>
-              <span className={styles.profileProgressLabel}>Profile completion</span>
-              <span className={styles.profileProgressPct} style={{ color: completionColor }}>{completion}%</span>
-            </div>
-            <div className={styles.profileProgressTrack}>
-              <div
-                className={styles.profileProgressFill}
-                style={{ width: `${completion}%`, background: completionColor }}
-              />
-            </div>
-          </div>
-
-          <a
-            href="/candidate/dashboard?tab=profile&section=cv"
-            className={styles.modalDoneBtn}
-            style={{ background: '#4FA3C7', color: '#fff' }}
-          >
-            Complete My Profile →
-          </a>
-          <button
-            type="button"
-            className={styles.skipLink}
-            onClick={() => { onSkip(); onClose(); }}
-          >
-            Skip — fill a form instead
+        {/* Cover letter */}
+        <textarea
+          className={styles.modalCoverInput}
+          rows={3}
+          placeholder="Add a brief note to the recruiter... (optional)"
+          value={coverLetter}
+          onChange={e => setCoverLetter(e.target.value)}
+        />
+        {error && <p className={styles.modalError}>{error}</p>}
+        <div className={styles.modalDivider} />
+        {/* Actions */}
+        <div className={styles.modalActionsRow}>
+          <button type="button" className={styles.modalCancelBtn} onClick={onClose}>Cancel</button>
+          <button type="button" className={styles.modalSubmitBtn} onClick={handleSubmit} disabled={loading}>
+            {loading ? <><i className="fa-solid fa-spinner fa-spin" /> Submitting…</> : 'Submit Application'}
           </button>
         </div>
       </div>
@@ -536,7 +250,8 @@ function JobDetailInner() {
   const [showPanel,        setShowPanel]        = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showLoginModal,   setShowLoginModal]   = useState(false);
-  const [forceFormMethod,  setForceFormMethod]  = useState(false);
+  // forceFormMethod kept for legacy skip flow (CompleteProfileModal onSkip)
+  const [, setForceFormMethod]  = useState(false);
   const [alreadyApplied,   setAlreadyApplied]   = useState(false);
   const [candidate,        setCandidate]        = useState<CandidateProfile | null>(null);
   const [token,            setToken]            = useState('');
@@ -579,17 +294,8 @@ function JobDetailInner() {
   }
 
   function handleApplyClick() {
-    // Step 1 — Not logged in
-    if (!candidate) {
-      setShowLoginModal(true);
-      return;
-    }
-    // Step 2 — Logged in but no resume_url
-    if (!candidate.resume_url) {
-      setShowProfileModal(true);
-      return;
-    }
-    // Step 3 — Logged in AND has resume_url
+    if (!candidate) { setShowLoginModal(true); return; }
+    if (!candidate.resume_url) { setShowProfileModal(true); return; }
     setShowPanel(true);
   }
 
@@ -731,27 +437,23 @@ function JobDetailInner() {
       </section>
 
       {showPanel && job && candidate && (
-        <ApplyPanel
+        <ApplyModal
           job={job}
           candidate={candidate}
           token={token}
           onClose={() => { setShowPanel(false); setForceFormMethod(false); }}
           onSuccess={() => { setAlreadyApplied(true); addToast('Application submitted!', 'success'); }}
-          initialMethod={forceFormMethod ? 'form' : 'cv'}
         />
       )}
       {showProfileModal && candidate && (
         <CompleteProfileModal
           onClose={() => setShowProfileModal(false)}
           candidate={candidate}
-          onSkip={() => {
-            setForceFormMethod(true);
-            setShowPanel(true);
-          }}
+          onSkip={() => { setForceFormMethod(true); setShowPanel(true); }}
         />
       )}
-      {showLoginModal && (
-        <LoginPromptModal jobId={id} onClose={() => setShowLoginModal(false)} />
+      {showLoginModal && job && (
+        <LoginPromptModal jobId={id} job={job} onClose={() => setShowLoginModal(false)} />
       )}
     </>
   );
