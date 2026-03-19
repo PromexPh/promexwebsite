@@ -122,14 +122,12 @@ function CompleteProfileModal({ candidate, onClose, onSkip }: { candidate: Candi
 
 // ── Modal C — Apply Modal ─────────────────────────────────────────────────────
 function ApplyModal({ job, candidate, token, onClose, onSuccess }: { job: Job; candidate: CandidateProfile; token: string; onClose: () => void; onSuccess: () => void }) {
-  const [coverLetter, setCoverLetter] = useState('');
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const firstName = candidate.full_name?.split(' ')[0] ?? 'there';
   const displayFilename = cvFile ? cvFile.name : (candidate.resume_filename ?? 'Your saved CV');
 
   async function handleSubmit() {
@@ -150,7 +148,7 @@ function ApplyModal({ job, candidate, token, onClose, onSuccess }: { job: Job; c
       const res = await fetch('/api/applications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ job_id: job.id, resume_url: resumeUrl, cover_letter: coverLetter || null }),
+        body: JSON.stringify({ job_id: job.id, resume_url: resumeUrl }),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || 'Failed to submit'); return; }
@@ -167,28 +165,14 @@ function ApplyModal({ job, candidate, token, onClose, onSuccess }: { job: Job; c
     return (
       <div className={styles.modalBackdrop} onClick={onClose}>
         <div className={styles.modalBox} onClick={e => e.stopPropagation()}>
-          <div className={styles.successCheckmark}>
+          <div className={styles.successAnimCheck}>
             <i className="fa-solid fa-circle-check" />
           </div>
-          <h2 className={styles.modalHeading}>Application Submitted!</h2>
-          <p className={styles.modalSubtext}>
-            Thank you {firstName}. We&apos;ve received your application for <strong>{job.title}</strong> at <strong>{job.company}</strong>.
-          </p>
-          <div className={styles.modalDivider} />
-          <p className={styles.successStepsLabel}>What happens next</p>
-          <ol className={styles.successStepsList}>
-            <li>Our team reviews your application (1–3 business days)</li>
-            <li>Shortlisted candidates are contacted for screening</li>
-            <li>Selected candidates proceed to employer interview</li>
-            <li>Job offer and deployment processing</li>
-          </ol>
-          <p className={styles.successEmailNote}>
-            <i className="fa-solid fa-envelope" /> Check your email at <strong>{candidate.email}</strong> for a confirmation.
-          </p>
-          <div className={styles.modalBtnStack}>
-            <a href="/candidate/dashboard" className={styles.modalPrimaryBtn}>View My Applications</a>
-            <a href="/jobs" className={styles.modalSecondaryBtn}>Browse More Jobs</a>
-          </div>
+          <h2 className={styles.successTitle}>Application Sent!</h2>
+          <p className={styles.successSub}>We&apos;ll be in touch within 1–3 business days.</p>
+          <a href="/candidate/dashboard" className={styles.successDashBtn}>
+            View My Applications →
+          </a>
         </div>
       </div>
     );
@@ -196,41 +180,35 @@ function ApplyModal({ job, candidate, token, onClose, onSuccess }: { job: Job; c
 
   return (
     <div className={styles.modalBackdrop} onClick={onClose}>
-      <div className={`${styles.modalBox} ${styles.modalBoxWide}`} onClick={e => e.stopPropagation()}>
+      <div className={styles.confirmModal} onClick={e => e.stopPropagation()}>
         <button className={styles.modalCloseBtn} onClick={onClose} type="button">
           <i className="fa-solid fa-xmark" />
         </button>
-        {/* Job header */}
-        <p className={styles.modalJobTitle}>{job.title}</p>
-        <p className={styles.modalJobCompany}>{job.company}</p>
-        <p className={styles.modalJobSalary}>{formatSalary(job)}</p>
-        <div className={styles.modalDivider} />
+
+        {/* Job summary card */}
+        <div className={styles.confirmJobCard}>
+          <p className={styles.confirmJobTitle}>{job.title}</p>
+          <p className={styles.confirmJobMeta}>{job.company} · {job.country}</p>
+          <p className={styles.confirmJobSalary}>{formatSalary(job)}</p>
+        </div>
+
         {/* CV section */}
-        <p className={styles.modalSectionLabel}>APPLYING WITH</p>
-        <div className={styles.modalCvRow}>
-          <i className="fa-solid fa-file-pdf" style={{ color: '#E74C3C' }} />
+        <p className={styles.confirmCvLabel}>Applying with</p>
+        <div className={styles.confirmCvRow}>
+          <i className="fa-solid fa-file-pdf" style={{ color: '#E74C3C', fontSize: '1.1rem' }} />
           <span className={styles.modalCvName}>{displayFilename}</span>
           <i className="fa-solid fa-circle-check" style={{ color: '#8CC63F' }} />
-          <button type="button" className={styles.modalChangeCv} onClick={() => fileInputRef.current?.click()}>
-            Change CV
-          </button>
+          <a href="/candidate/dashboard" className={styles.modalChangeCv}>Change CV</a>
           <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx" style={{ display: 'none' }} onChange={e => setCvFile(e.target.files?.[0] ?? null)} />
         </div>
-        {/* Cover letter */}
-        <textarea
-          className={styles.modalCoverInput}
-          rows={3}
-          placeholder="Add a brief note to the recruiter... (optional)"
-          value={coverLetter}
-          onChange={e => setCoverLetter(e.target.value)}
-        />
+
         {error && <p className={styles.modalError}>{error}</p>}
-        <div className={styles.modalDivider} />
+
         {/* Actions */}
-        <div className={styles.modalActionsRow}>
+        <div className={styles.confirmActions}>
           <button type="button" className={styles.modalCancelBtn} onClick={onClose}>Cancel</button>
-          <button type="button" className={styles.modalSubmitBtn} onClick={handleSubmit} disabled={loading}>
-            {loading ? <><i className="fa-solid fa-spinner fa-spin" /> Submitting…</> : 'Submit Application'}
+          <button type="button" className={styles.confirmApplyBtn} onClick={handleSubmit} disabled={loading}>
+            {loading ? <><i className="fa-solid fa-spinner fa-spin" /> Applying…</> : 'Confirm & Apply →'}
           </button>
         </div>
       </div>

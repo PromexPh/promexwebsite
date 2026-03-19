@@ -271,7 +271,10 @@
 /* ---- Sidebar ---- */
 .jobSidebar {
   position: sticky;
-  top: 100px;
+  top: 88px;
+  align-self: flex-start;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -826,3 +829,139 @@
   margin: 0 0 20px;
   text-align: center;
 }
+
+/* ── Redesigned confirm modal ── */
+.confirmModal {
+  position: relative;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+  padding: 32px 28px 28px;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.confirmJobCard {
+  background: #f8f9fa;
+  border-radius: 14px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.confirmJobTitle {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--color-dark-text);
+  margin: 0;
+}
+
+.confirmJobMeta {
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  color: #6c757d;
+  margin: 0;
+}
+
+.confirmJobSalary {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #15803d;
+  margin: 4px 0 0;
+}
+
+.confirmCvLabel {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--color-secondary-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.confirmCvRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 11px 14px;
+}
+
+.confirmActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.confirmApplyBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  background: var(--color-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.97rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.confirmApplyBtn:hover:not(:disabled) { background: #3C8DB1; }
+.confirmApplyBtn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+/* ── New success state ── */
+.successAnimCheck {
+  font-size: 3.5rem;
+  color: #16a34a;
+  margin: 0 auto 12px;
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.3); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+.successTitle {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--color-dark-text);
+  margin: 0 0 8px;
+}
+
+.successSub {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: #6c757d;
+  margin: 0 0 24px;
+  line-height: 1.6;
+}
+
+.successDashBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 24px;
+  background: var(--color-primary);
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 14px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+}
+.successDashBtn:hover { background: #3C8DB1; }
