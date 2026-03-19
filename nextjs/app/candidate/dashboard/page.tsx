@@ -404,18 +404,36 @@ function CandidateDashboardInner() {
   const [savingLinkedin, setSavingLinkedin] = useState(false);
   const [linkedinMsg, setLinkedinMsg] = useState('');
 
-  // ── Fetch applications (standalone, callable anytime) ──
+  // ── Fetch applications directly from Supabase (bypasses API route auth issues) ──
   const fetchApplications = useCallback(async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) return;
-    const res = await fetch('/api/applications', {
-      headers: { Authorization: `Bearer ${session.access_token}` },
-    });
-    if (res.ok) {
-      const d = await res.json();
-      console.log('Applications fetched:', d.applications?.length);
-      setApplications(d.applications ?? []);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: candidateRow } = await supabase
+      .from('candidates')
+      .select('id')
+      .eq('user_id', user.id)
+      .single();
+
+    if (!candidateRow) {
+      console.log('No candidate row found for user:', user.id);
+      return;
     }
+
+    const { data: apps, error } = await supabase
+      .from('applications')
+      .select(`
+        *,
+        job:jobs (
+          id, title, company, country, industry,
+          job_type, salary_min, salary_max, salary_currency
+        )
+      `)
+      .eq('candidate_id', candidateRow.id)
+      .order('created_at', { ascending: false });
+
+    console.log('Applications fetched:', apps?.length, error);
+    setApplications(apps ?? []);
   }, []);
 
   // ── Withdraw application ──
