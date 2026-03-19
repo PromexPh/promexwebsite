@@ -5,6 +5,7 @@ import Reveal from '@/components/ui/Reveal';
 import Button from '@/components/ui/Button';
 import styles from './page.module.css';
 import type { Job, JobsResponse } from '@/lib/types';
+import { supabase } from '@/lib/supabase';
 
 const COUNTRIES = ['All Countries', 'Saudi Arabia', 'UAE', 'Qatar', 'Kuwait', 'Singapore', 'Japan', 'Canada', 'Australia'];
 const INDUSTRIES = ['All Industries', 'Hospitality', 'Healthcare', 'Retail', 'Engineering', 'IT & Technology', 'Construction'];
@@ -63,8 +64,21 @@ export default function JobsPage() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState<Set<string>>(new Set());
+  const [appliedJobIds, setAppliedJobIds] = useState<Set<string>>(new Set());
 
   useEffect(() => { setSaved(getSaved()); }, []);
+
+  useEffect(() => {
+    async function loadApplied() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data: cand } = await supabase.from('candidates').select('id').eq('user_id', user.id).single();
+      if (!cand) return;
+      const { data } = await supabase.from('applications').select('job_id').eq('candidate_id', (cand as { id: string }).id);
+      if (data) setAppliedJobIds(new Set(data.map((a: { job_id: string }) => a.job_id)));
+    }
+    loadApplied();
+  }, []);
 
   function toggleSave(e: React.MouseEvent, jobId: string) {
     e.stopPropagation();
@@ -208,22 +222,25 @@ export default function JobsPage() {
                 </div>
               )}
 
-              {!loading && displayJobs.map((job, i) => (
+              {!loading && displayJobs.map((job, i) => {
+                const isApplied = appliedJobIds.has(job.id);
+                return (
                 <Reveal key={job.id} animation="fade-up" delay={i * 60}>
                   <div
-                    className={`${styles.jobCard} ${selectedJob?.id === job.id ? styles.jobCardSelected : ''}`}
+                    className={`${styles.jobCard} ${selectedJob?.id === job.id ? styles.jobCardSelected : ''} ${isApplied ? styles.jobCardApplied : ''}`}
                     onClick={() => setSelectedJob(job)}
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => e.key === 'Enter' && setSelectedJob(job)}
                   >
-                    {/* Top row: industry tag + URGENT */}
+                    {/* Top row: industry tag + badges */}
                     <div className={styles.jobCardTop}>
                       <div className={styles.industryTag}>
                         <span className={styles.industryDot} style={{ background: industryColor(job.industry) }} />
                         {job.industry}
                       </div>
                       <div className={styles.jobCardTopRight}>
+                        {isApplied && <span className={styles.appliedBadge}>✓ Applied</span>}
                         {(job as { posted_by_admin?: boolean }).posted_by_admin && (
                           <span className={styles.promexBadge}>By Promex</span>
                         )}
@@ -259,12 +276,15 @@ export default function JobsPage() {
                         >
                           <i className={`fa-${saved.has(job.id) ? 'solid' : 'regular'} fa-bookmark`} aria-hidden="true" />
                         </button>
-                        <span className={styles.jobViewDetails}>View Job →</span>
+                        <span className={`${styles.jobViewDetails} ${isApplied ? styles.jobViewDetailsApplied : ''}`}>
+                          {isApplied ? 'View Application →' : 'View Job →'}
+                        </span>
                       </div>
                     </div>
                   </div>
                 </Reveal>
-              ))}
+                );
+              })}
 
               {/* Pagination */}
               {!loading && activeTab === 'all' && totalPages > 1 && (

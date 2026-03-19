@@ -271,17 +271,20 @@ function JobDetailInner() {
         setSimilarJobs((simData.jobs as Job[]).filter((j) => j.id !== id).slice(0, 3));
       }
 
-      const { data: sessionData } = await supabase.auth.getSession();
-      if (sessionData.session) {
-        const t = sessionData.session.access_token;
-        setToken(t);
-        const userId = sessionData.session.user.id;
-        const { data: cand } = await supabase.from('candidates').select('*').eq('user_id', userId).single();
-        if (cand) setCandidate(cand as CandidateProfile);
-        const appRes = await fetch('/api/applications', { headers: { Authorization: `Bearer ${t}` } });
-        if (appRes.ok) {
-          const appData = await appRes.json();
-          setAlreadyApplied(appData.applications.some((a: { job_id: string }) => a.job_id === id));
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (sessionData.session) setToken(sessionData.session.access_token);
+        const { data: cand } = await supabase.from('candidates').select('*').eq('user_id', user.id).single();
+        if (cand) {
+          setCandidate(cand as CandidateProfile);
+          const { data: existing } = await supabase
+            .from('applications')
+            .select('id')
+            .eq('candidate_id', (cand as CandidateProfile & { id: string }).id)
+            .eq('job_id', id)
+            .maybeSingle();
+          setAlreadyApplied(!!existing);
         }
       }
     }
@@ -412,9 +415,14 @@ function JobDetailInner() {
               </div>
 
               {alreadyApplied ? (
-                <div className={styles.appliedBadge}>
-                  <i className="fa-solid fa-circle-check" aria-hidden="true" /> Application Submitted
-                </div>
+                <>
+                  <div className={styles.appliedBadge}>
+                    <i className="fa-solid fa-circle-check" aria-hidden="true" /> Already Applied
+                  </div>
+                  <Link href="/candidate/dashboard" className={styles.viewApplicationLink}>
+                    View your application →
+                  </Link>
+                </>
               ) : (
                 <button className={styles.applyBtn} onClick={handleApplyClick} type="button">
                   <i className="fa-solid fa-paper-plane" aria-hidden="true" /> Apply Now

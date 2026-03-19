@@ -291,6 +291,29 @@
   box-shadow: 0 0 0 2px rgba(79,163,199,0.15);
 }
 
+.jobCardApplied {
+  border-left: 3px solid #16a34a;
+  opacity: 0.92;
+}
+
+.appliedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: #dcfce7;
+  color: #15803d;
+  border-radius: 99px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+}
+
+.jobViewDetailsApplied {
+  color: #15803d;
+}
+
 .jobCardTop {
   display: flex;
   align-items: center;
