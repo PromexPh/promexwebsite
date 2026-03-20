@@ -77,18 +77,18 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  let body: Partial<Job> & { posted_by_admin?: boolean; experience_required?: string };
+  let body: Partial<Job> & { posted_by_admin?: boolean; experience_required?: string; salary_min?: number; salary_max?: number; salary_currency?: string; is_urgent?: boolean; posted_at?: string };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   }
 
-  const requiredFields = ['title', 'company', 'country', 'industry', 'salary', 'job_type', 'description'];
+  const requiredFields = ['title', 'company', 'country', 'industry', 'job_type', 'description'];
   for (const field of requiredFields) {
     if (!(body as Record<string, unknown>)[field]) return NextResponse.json({ error: `Missing required field: ${field}` }, { status: 400 });
   }
-  const experienceValue = body.experience_required ?? body.experience;
+  const experienceValue = body.experience_required;
   if (!experienceValue) return NextResponse.json({ error: 'Missing required field: experience_required' }, { status: 400 });
 
   // Admin post: always active
@@ -98,10 +98,11 @@ export async function POST(req: NextRequest) {
       .insert({
         employer_id: null,
         title: body.title, company: body.company, country: body.country, industry: body.industry,
-        salary: body.salary, job_type: body.job_type, experience_required: experienceValue,
+        job_type: body.job_type, experience_required: experienceValue,
+        salary_min: body.salary_min ?? 0, salary_max: body.salary_max ?? 0, salary_currency: body.salary_currency ?? 'PHP',
         description: body.description, requirements: body.requirements ?? [], benefits: body.benefits ?? [],
         status: 'active', posted_by_admin: true,
-        urgent: body.urgent ?? false, slots_available: body.slots_available ?? 0,
+        is_urgent: body.is_urgent ?? false, slots_available: body.slots_available ?? 0,
       })
       .select().single();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -127,10 +128,11 @@ export async function POST(req: NextRequest) {
     .insert({
       employer_id: user.id,
       title: body.title, company: body.company, country: body.country, industry: body.industry,
-      salary: body.salary, job_type: body.job_type, experience_required: experienceValue,
+      job_type: body.job_type, experience_required: experienceValue,
+      salary_min: body.salary_min ?? 0, salary_max: body.salary_max ?? 0, salary_currency: body.salary_currency ?? 'PHP',
       description: body.description, requirements: body.requirements ?? [], benefits: body.benefits ?? [],
       status: jobStatus,
-      urgent: body.urgent ?? false, slots_available: body.slots_available ?? 0,
+      is_urgent: body.is_urgent ?? false, slots_available: body.slots_available ?? 0,
     })
     .select().single();
 

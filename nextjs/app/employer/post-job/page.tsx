@@ -12,13 +12,16 @@ interface JobForm {
   company: string;
   country: string;
   industry: string;
-  salary: string;
+  salary_min: string;
+  salary_max: string;
   job_type: string;
   experience_required: string;
   description: string;
   requirements: string;
   responsibilities: string;
   benefits: string;
+  slots_available: string;
+  is_urgent: boolean;
 }
 
 function PostJobInner() {
@@ -32,15 +35,15 @@ function PostJobInner() {
 
   const [form, setForm] = useState<JobForm>({
     title: '', company: '', country: '', industry: '',
-    salary: '', job_type: '', experience_required: '', description: '',
+    salary_min: '', salary_max: '', job_type: '', experience_required: '', description: '',
     requirements: '', responsibilities: '', benefits: '',
+    slots_available: '', is_urgent: false,
   });
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (!data.session) { router.push('/employer/register'); return; }
       setToken(data.session.access_token);
-      // Pre-fill company from employers table
       supabase.from('employers').select('company_name').eq('user_id', data.session.user.id).single().then(({ data: emp }) => {
         if (!emp) { router.push('/employer/register'); return; }
         if (emp?.company_name) setForm((f) => ({ ...f, company: (emp as { company_name?: string }).company_name! }));
@@ -49,7 +52,7 @@ function PostJobInner() {
     });
   }, [router]);
 
-  function update(field: keyof JobForm, value: string) {
+  function update(field: keyof JobForm, value: string | boolean) {
     setForm((f) => ({ ...f, [field]: value }));
     setError('');
   }
@@ -71,12 +74,17 @@ function PostJobInner() {
         company: form.company,
         country: form.country,
         industry: form.industry,
-        salary: form.salary,
         job_type: form.job_type,
+        salary_min: Number(form.salary_min),
+        salary_max: Number(form.salary_max),
+        salary_currency: 'PHP',
         experience_required: form.experience_required,
         description: form.description,
         requirements: [...parseLines(form.requirements), ...parseLines(form.responsibilities)],
         benefits: parseLines(form.benefits),
+        slots_available: Number(form.slots_available) || 0,
+        is_urgent: form.is_urgent,
+        posted_at: new Date().toISOString(),
       }),
     });
 
@@ -105,7 +113,7 @@ function PostJobInner() {
           <p>Your job listing is now live. Candidates can start applying immediately.</p>
           <div className={styles.successActions}>
             <a href="/employer/dashboard" className={styles.successBtn}>Go to Dashboard</a>
-            <button type="button" className={styles.successBtnOutline} onClick={() => { setSubmitted(false); setStep(1); setForm({ title: '', company: form.company, country: '', industry: '', salary: '', job_type: '', experience_required: '', description: '', requirements: '', responsibilities: '', benefits: '' }); }}>
+            <button type="button" className={styles.successBtnOutline} onClick={() => { setSubmitted(false); setStep(1); setForm({ title: '', company: form.company, country: '', industry: '', salary_min: '', salary_max: '', job_type: '', experience_required: '', description: '', requirements: '', responsibilities: '', benefits: '', slots_available: '', is_urgent: false }); }}>
               Post Another Job
             </button>
           </div>
@@ -114,7 +122,7 @@ function PostJobInner() {
     );
   }
 
-  const step1Valid = form.title && form.company && form.country && form.industry && form.salary && form.job_type && form.experience_required;
+  const step1Valid = form.title && form.company && form.country && form.industry && form.salary_min && form.salary_max && form.job_type && form.experience_required;
   const step2Valid = form.description.length >= 50;
 
   return (
@@ -176,9 +184,15 @@ function PostJobInner() {
                 </div>
                 <div className={styles.formRow}>
                   <div className={styles.formGroup}>
-                    <label>Salary Range <span className={styles.req}>*</span></label>
-                    <input value={form.salary} onChange={(e) => update('salary', e.target.value)} placeholder="e.g. ₱25,000 - ₱35,000" required />
+                    <label>Salary Min (₱/mo) <span className={styles.req}>*</span></label>
+                    <input type="number" min="0" value={form.salary_min} onChange={(e) => update('salary_min', e.target.value)} placeholder="e.g. 25000" required />
                   </div>
+                  <div className={styles.formGroup}>
+                    <label>Salary Max (₱/mo) <span className={styles.req}>*</span></label>
+                    <input type="number" min="0" value={form.salary_max} onChange={(e) => update('salary_max', e.target.value)} placeholder="e.g. 35000" required />
+                  </div>
+                </div>
+                <div className={styles.formRow}>
                   <div className={styles.formGroup}>
                     <label>Job Type <span className={styles.req}>*</span></label>
                     <select value={form.job_type} onChange={(e) => update('job_type', e.target.value)} required>
@@ -189,18 +203,31 @@ function PostJobInner() {
                       <option>Seasonal</option>
                     </select>
                   </div>
+                  <div className={styles.formGroup}>
+                    <label>Experience Required <span className={styles.req}>*</span></label>
+                    <select value={form.experience_required} onChange={(e) => update('experience_required', e.target.value)} required>
+                      <option value="">Select experience</option>
+                      <option>No experience required</option>
+                      <option>1+ years</option>
+                      <option>2+ years</option>
+                      <option>3+ years</option>
+                      <option>5+ years</option>
+                      <option>10+ years</option>
+                    </select>
+                  </div>
                 </div>
-                <div className={styles.formGroup}>
-                  <label>Experience Required <span className={styles.req}>*</span></label>
-                  <select value={form.experience_required} onChange={(e) => update('experience_required', e.target.value)} required>
-                    <option value="">Select experience</option>
-                    <option>No experience required</option>
-                    <option>1+ years</option>
-                    <option>2+ years</option>
-                    <option>3+ years</option>
-                    <option>5+ years</option>
-                    <option>10+ years</option>
-                  </select>
+                <div className={styles.formRow}>
+                  <div className={styles.formGroup}>
+                    <label>Slots Available</label>
+                    <input type="number" min="0" value={form.slots_available} onChange={(e) => update('slots_available', e.target.value)} placeholder="e.g. 5" />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label>Urgent Hiring?</label>
+                    <select value={form.is_urgent ? 'yes' : 'no'} onChange={(e) => update('is_urgent', e.target.value === 'yes')}>
+                      <option value="no">No</option>
+                      <option value="yes">Yes — Urgent</option>
+                    </select>
+                  </div>
                 </div>
               </>
             )}
@@ -240,7 +267,9 @@ function PostJobInner() {
                       <h3 className={styles.previewTitle}>{form.title}</h3>
                       <div className={styles.previewCompany}><i className="fa-solid fa-building" /> {form.company}</div>
                     </div>
-                    <div className={styles.previewSalary}>₱{form.salary}<span>/mo</span></div>
+                    <div className={styles.previewSalary}>
+                      ₱{Number(form.salary_min).toLocaleString()} – ₱{Number(form.salary_max).toLocaleString()}<span>/mo</span>
+                    </div>
                   </div>
                   <div className={styles.previewMeta}>
                     <span><i className="fa-solid fa-location-dot" /> {form.country}</span>
