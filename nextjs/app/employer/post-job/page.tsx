@@ -182,14 +182,61 @@ function PostJobInner() {
                     </select>
                   </div>
                 </div>
-                <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label>Salary Min (₱/mo) <span className={styles.req}>*</span></label>
-                    <input type="number" min="0" value={form.salary_min} onChange={(e) => update('salary_min', e.target.value)} placeholder="e.g. 25000" required />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Salary Max (₱/mo) <span className={styles.req}>*</span></label>
-                    <input type="number" min="0" value={form.salary_max} onChange={(e) => update('salary_max', e.target.value)} placeholder="e.g. 35000" required />
+                <div className={styles.formGroup}>
+                  <label>Salary Range (₱/mo) <span className={styles.req}>*</span></label>
+                  <div className={styles.salaryWidget}>
+                    <div className={styles.salaryInputRow}>
+                      <div className={styles.salaryInputWrap}>
+                        <span className={styles.salaryPrefix}>₱</span>
+                        <input
+                          className={styles.salaryInput}
+                          type="number" min="0" step="1000"
+                          value={form.salary_min}
+                          onChange={(e) => update('salary_min', e.target.value)}
+                          placeholder="25,000"
+                          required
+                        />
+                      </div>
+                      <span className={styles.salaryDash}>—</span>
+                      <div className={styles.salaryInputWrap}>
+                        <span className={styles.salaryPrefix}>₱</span>
+                        <input
+                          className={styles.salaryInput}
+                          type="number" min="0" step="1000"
+                          value={form.salary_max}
+                          onChange={(e) => update('salary_max', e.target.value)}
+                          placeholder="35,000"
+                          required
+                        />
+                      </div>
+                    </div>
+                    {(form.salary_min || form.salary_max) && (
+                      <div className={styles.salaryPreview}>
+                        <span className={styles.salaryPreviewLabel}>Preview:</span>
+                        <span className={styles.salaryPreviewValue}>
+                          ₱{form.salary_min ? Number(form.salary_min).toLocaleString() : '—'} – ₱{form.salary_max ? Number(form.salary_max).toLocaleString() : '—'}/mo
+                        </span>
+                      </div>
+                    )}
+                    <div className={styles.salaryPresets}>
+                      {([
+                        { label: '₱15k–20k', min: '15000', max: '20000' },
+                        { label: '₱20k–30k', min: '20000', max: '30000' },
+                        { label: '₱30k–45k', min: '30000', max: '45000' },
+                        { label: '₱45k–60k', min: '45000', max: '60000' },
+                        { label: '₱60k–80k', min: '60000', max: '80000' },
+                        { label: '₱80k–120k', min: '80000', max: '120000' },
+                      ] as { label: string; min: string; max: string }[]).map((p) => (
+                        <button
+                          key={p.label}
+                          type="button"
+                          className={`${styles.salaryPresetBtn} ${form.salary_min === p.min && form.salary_max === p.max ? styles.salaryPresetBtnActive : ''}`}
+                          onClick={() => { setForm((f) => ({ ...f, salary_min: p.min, salary_max: p.max })); setError(''); }}
+                        >
+                          {p.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 <div className={styles.formRow}>
