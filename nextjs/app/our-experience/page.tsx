@@ -29,6 +29,7 @@ const allCountries = [
   { flag: '🇰🇷', name: 'South Korea', deployed: '1,000+', sectors: 'IT, Manufacturing, Healthcare',    region: 'Asia' as Region },
   { flag: '🇭🇰', name: 'Hong Kong',   deployed: '800+',   sectors: 'Finance, Hospitality, IT',         region: 'Asia' as Region },
   { flag: '🇹🇼', name: 'Taiwan',      deployed: '600+',   sectors: 'Engineering, IT, Manufacturing',   region: 'Asia' as Region },
+  { flag: '🇲🇾', name: 'Malaysia',    deployed: '800+',   sectors: 'Hospitality, Construction',         region: 'Asia' as Region },
 ];
 
 const clientCategories = [
