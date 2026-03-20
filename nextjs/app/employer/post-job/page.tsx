@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, FormEvent, Suspense } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import styles from './page.module.css';
 
@@ -26,6 +26,10 @@ interface JobForm {
 
 function PostJobInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editJobId = searchParams.get('edit');
+  const isEditMode = Boolean(editJobId);
+
   const [step, setStep] = useState<Step>(1);
   const [loading, setLoading] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
@@ -33,7 +37,7 @@ function PostJobInner() {
   const [userEmail, setUserEmail] = useState('');
   const [token, setToken] = useState('');
   const [error, setError] = useState('');
-  const [submittedJob, setSubmittedJob] = useState<{ title: string; job_reference?: string; status: string } | null>(null);
+  const [submittedJob, setSubmittedJob] = useState<{ title: string; job_reference?: string; status: string; updated?: boolean } | null>(null);
 
   const [form, setForm] = useState<JobForm>({
     title: '', company: '', country: '', industry: '',
@@ -43,19 +47,45 @@ function PostJobInner() {
   });
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(async ({ data }) => {
       if (!data.session) { router.push('/employer/register'); return; }
       setToken(data.session.access_token);
       setUserEmail(data.session.user.email ?? '');
-      supabase.from('employers').select('company_name, is_verified').eq('user_id', data.session.user.id).single().then(({ data: emp }) => {
-        if (!emp) { router.push('/employer/register'); return; }
-        const e = emp as { company_name?: string; is_verified?: boolean };
-        if (e.company_name) setForm((f) => ({ ...f, company: e.company_name! }));
-        setIsVerified(e.is_verified === true);
-        setAuthLoading(false);
-      });
+
+      const { data: emp } = await supabase.from('employers').select('company_name, is_verified').eq('user_id', data.session.user.id).single();
+      if (!emp) { router.push('/employer/register'); return; }
+      const e = emp as { company_name?: string; is_verified?: boolean };
+      if (e.company_name) setForm((f) => ({ ...f, company: e.company_name! }));
+      setIsVerified(e.is_verified === true);
+
+      if (editJobId) {
+        const { data: job } = await supabase.from('jobs').select('*').eq('id', editJobId).single();
+        if (job) {
+          const j = job as Record<string, unknown>;
+          const reqLines = Array.isArray(j.requirements) ? (j.requirements as string[]).join('\n') : '';
+          const benLines = Array.isArray(j.benefits) ? (j.benefits as string[]).join('\n') : '';
+          setForm({
+            title: String(j.title ?? ''),
+            company: String(j.company ?? e.company_name ?? ''),
+            country: String(j.country ?? ''),
+            industry: String(j.industry ?? ''),
+            salary_min: j.salary_min != null ? String(j.salary_min) : '',
+            salary_max: j.salary_max != null ? String(j.salary_max) : '',
+            job_type: String(j.job_type ?? ''),
+            experience_required: String(j.experience_required ?? ''),
+            description: String(j.description ?? ''),
+            requirements: reqLines,
+            responsibilities: '',
+            benefits: benLines,
+            slots_available: j.slots_available != null ? String(j.slots_available) : '',
+            is_urgent: Boolean(j.is_urgent),
+          });
+        }
+      }
+
+      setAuthLoading(false);
     });
-  }, [router]);
+  }, [router, editJobId]);
 
   function update(field: keyof JobForm, value: string | boolean) {
     setForm((f) => ({ ...f, [field]: value }));
@@ -71,33 +101,37 @@ function PostJobInner() {
     setLoading(true);
     setError('');
 
-    const res = await fetch('/api/jobs', {
-      method: 'POST',
+    const payload = {
+      title: form.title,
+      company: form.company,
+      country: form.country,
+      industry: form.industry,
+      job_type: form.job_type,
+      salary_min: Number(form.salary_min),
+      salary_max: Number(form.salary_max),
+      salary_currency: 'PHP',
+      experience_required: form.experience_required,
+      description: form.description,
+      requirements: [...parseLines(form.requirements), ...parseLines(form.responsibilities)],
+      benefits: parseLines(form.benefits),
+      slots_available: Number(form.slots_available) || 0,
+      is_urgent: form.is_urgent,
+    };
+
+    const url = isEditMode ? `/api/jobs/${editJobId}` : '/api/jobs';
+    const method = isEditMode ? 'PATCH' : 'POST';
+
+    const res = await fetch(url, {
+      method,
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({
-        title: form.title,
-        company: form.company,
-        country: form.country,
-        industry: form.industry,
-        job_type: form.job_type,
-        salary_min: Number(form.salary_min),
-        salary_max: Number(form.salary_max),
-        salary_currency: 'PHP',
-        experience_required: form.experience_required,
-        description: form.description,
-        requirements: [...parseLines(form.requirements), ...parseLines(form.responsibilities)],
-        benefits: parseLines(form.benefits),
-        slots_available: Number(form.slots_available) || 0,
-        is_urgent: form.is_urgent,
-        posted_at: new Date().toISOString(),
-      }),
+      body: JSON.stringify(isEditMode ? payload : { ...payload, posted_at: new Date().toISOString() }),
     });
 
     const data = await res.json();
     setLoading(false);
 
-    if (!res.ok) { setError(data.error || 'Failed to post job'); return; }
-    setSubmittedJob({ title: data.job?.title ?? form.title, job_reference: data.job?.job_reference, status: data.isDraft ? 'draft' : 'active' });
+    if (!res.ok) { setError(data.error || (isEditMode ? 'Failed to update job' : 'Failed to post job')); return; }
+    setSubmittedJob({ title: data.job?.title ?? form.title, job_reference: data.job?.job_reference, status: data.job?.status ?? (data.isDraft ? 'draft' : 'active'), updated: isEditMode });
   }
 
   if (authLoading) {
@@ -109,7 +143,7 @@ function PostJobInner() {
     );
   }
 
-  if (isVerified === false) {
+  if (isVerified === false && !isEditMode) {
     return (
       <div className={styles.pendingContainer}>
         <div className={styles.pendingIcon}>⏳</div>
@@ -157,7 +191,7 @@ function PostJobInner() {
       <div className={styles.successPage}>
         <div className={styles.successCard}>
           <div className={styles.successIcon}><i className="fa-solid fa-check" aria-hidden="true" /></div>
-          <h2>Job Posted Successfully!</h2>
+          <h2>{submittedJob.updated ? 'Job Updated!' : 'Job Posted Successfully!'}</h2>
           <div className={styles.successJobMeta}>
             <span className={styles.successJobTitle}>{submittedJob.title}</span>
             {submittedJob.job_reference && (
@@ -192,8 +226,8 @@ function PostJobInner() {
           <a href="/employer/dashboard" className={styles.backLink}>
             <i className="fa-solid fa-arrow-left" aria-hidden="true" /> Back to Dashboard
           </a>
-          <h1 className={styles.postJobTitle}>Post a New Job</h1>
-          <p className={styles.postJobSubtitle}>Fill in the details below to publish your job listing</p>
+          <h1 className={styles.postJobTitle}>{isEditMode ? 'Edit Job Posting' : 'Post a New Job'}</h1>
+          <p className={styles.postJobSubtitle}>{isEditMode ? 'Update the details below and save your changes' : 'Fill in the details below to publish your job listing'}</p>
         </div>
 
         {/* Step Indicator */}
@@ -215,7 +249,7 @@ function PostJobInner() {
             {/* Step 1 */}
             {step === 1 && (
               <>
-                <h2 className={styles.formCardTitle}><i className="fa-solid fa-briefcase" aria-hidden="true" /> Job Details</h2>
+                <h2 className={styles.formCardTitle}><i className="fa-solid fa-briefcase" aria-hidden="true" /> {isEditMode ? 'Edit Job Details' : 'Job Details'}</h2>
                 <div className={styles.formRow}>
                   <div className={styles.formGroup}>
                     <label>Job Title <span className={styles.req}>*</span></label>
@@ -423,8 +457,10 @@ function PostJobInner() {
             ) : (
               <button type="submit" className={styles.navSubmitBtn} disabled={loading}>
                 {loading
-                  ? <><i className="fa-solid fa-spinner fa-spin" /> Publishing…</>
-                  : <><i className="fa-solid fa-rocket" /> Publish Job</>
+                  ? <><i className="fa-solid fa-spinner fa-spin" /> {isEditMode ? 'Saving…' : 'Publishing…'}</>
+                  : isEditMode
+                    ? <><i className="fa-solid fa-floppy-disk" /> Save Changes</>
+                    : <><i className="fa-solid fa-rocket" /> Publish Job</>
                 }
               </button>
             )}

@@ -22,37 +22,37 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // Verify ownership
-  const { data: job } = await supabaseAdmin
-    .from('jobs')
-    .select('employer_id')
-    .eq('id', params.id)
-    .single();
+  // Verify ownership via employers.id (PK), not user.id
+  const [{ data: job }, { data: empRow }] = await Promise.all([
+    supabaseAdmin.from('jobs').select('employer_id').eq('id', params.id).single(),
+    supabaseAdmin.from('employers').select('id').eq('user_id', user.id).single(),
+  ]);
 
   if (!job) {
     return NextResponse.json({ error: 'Job not found' }, { status: 404 });
   }
 
-  if (job.employer_id !== user.id) {
+  if (!empRow || job.employer_id !== empRow.id) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  let body: Partial<Job>;
+  let body: Partial<Job> & { experience_required?: string; salary_min?: number; salary_max?: number; salary_currency?: string; is_urgent?: boolean; slots_available?: number };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   }
 
-  const allowedFields: (keyof Job)[] = [
-    'title', 'company', 'country', 'industry', 'salary', 'job_type',
-    'experience', 'description', 'requirements', 'benefits', 'status',
+  const allowedFields = [
+    'title', 'company', 'country', 'industry', 'job_type',
+    'experience_required', 'description', 'requirements', 'benefits',
+    'salary_min', 'salary_max', 'salary_currency', 'is_urgent', 'slots_available', 'status',
   ];
 
   const updates: Partial<Job> = {};
   for (const field of allowedFields) {
     if (field in body) {
-      (updates as Record<string, unknown>)[field] = body[field];
+      (updates as Record<string, unknown>)[field] = (body as Record<string, unknown>)[field];
     }
   }
 
