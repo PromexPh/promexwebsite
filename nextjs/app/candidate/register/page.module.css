@@ -1,70 +1,58 @@
 /* ── Auth Page (Candidate Register/Login) ───── */
 
-.authSection {
+.authPage {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--portal-navy) 0%, var(--portal-navy-2) 100%);
-  display: flex;
-  align-items: center;
-  padding: 60px 0;
+  background: #F7F9FB;
+  padding-bottom: 60px;
+}
+
+.authHero {
+  background: linear-gradient(135deg, #4FA3C7 0%, #6A2C91 100%);
+  padding: 100px 24px 72px;
+  text-align: center;
+}
+
+.authHeroTitle {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 2rem;
+  color: #ffffff;
+  margin: 0 0 10px;
+}
+
+.authHeroSubtitle {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
 }
 
 .authContainer {
   display: flex;
   justify-content: center;
+  margin-top: -48px;
+  position: relative;
+  z-index: 1;
 }
 
 .authCard {
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  padding: 48px 44px;
+  background: #ffffff;
+  border: 1px solid #f3f4f6;
+  border-radius: 16px;
+  padding: 36px 40px 32px;
   width: 100%;
-  max-width: 520px;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
-}
-
-.authTop {
-  text-align: center;
-  margin-bottom: 28px;
-}
-
-.authIcon {
-  width: 72px;
-  height: 72px;
-  background: linear-gradient(135deg, var(--portal-navy) 0%, var(--portal-navy-2) 100%);
-  border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.8rem;
-  color: var(--portal-gold);
-  margin: 0 auto 16px;
-}
-
-.authTitle {
-  font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 1.5rem;
-  color: var(--color-dark-text);
-  margin: 0 0 8px;
-}
-
-.authSubtitle {
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  color: var(--color-secondary-text);
-  margin: 0;
-  line-height: 1.5;
+  max-width: 480px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 }
 
 /* Toggle */
 .authToggle {
   display: flex;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
   padding: 4px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   gap: 4px;
 }
 
@@ -72,12 +60,12 @@
   flex: 1;
   padding: 8px;
   border: none;
-  border-radius: 20px;
+  border-radius: 999px;
   background: transparent;
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: 0.88rem;
-  color: var(--color-secondary-text);
+  color: #6b7280;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -88,11 +76,60 @@
   box-shadow: 0 2px 8px rgba(79, 163, 199, 0.25);
 }
 
+/* Social login */
+.socialBtns {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.socialBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+}
+
+.socialBtn:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 20px;
+  color: #9ca3af;
+  font-size: 0.78rem;
+  font-family: var(--font-body);
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+
 /* Error */
 .authError {
   background: rgba(220, 38, 38, 0.08);
   border: 1px solid rgba(220, 38, 38, 0.3);
-  border-radius: var(--radius-md);
+  border-radius: 8px;
   padding: 12px 16px;
   font-family: var(--font-body);
   font-size: 0.88rem;
@@ -100,20 +137,14 @@
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 /* Form */
 .authForm {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-
-.formRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 14px;
 }
 
 .formGroup {
@@ -126,7 +157,7 @@
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: 0.8rem;
-  color: var(--color-dark-text);
+  color: #374151;
 }
 
 .req { color: #dc2626; }
@@ -135,10 +166,10 @@
 .formGroup select {
   font-family: var(--font-body);
   font-size: 0.93rem;
-  color: var(--color-dark-text);
-  background: var(--color-bg);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-md);
+  color: #1f2937;
+  background: #f9fafb;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
   padding: 10px 14px;
   outline: none;
   width: 100%;
@@ -150,6 +181,7 @@
 .formGroup select:focus {
   border-color: #4FA3C7;
   box-shadow: 0 0 0 3px rgba(79, 163, 199, 0.15);
+  background: #fff;
 }
 
 .authSubmitBtn {
@@ -157,7 +189,7 @@
   padding: 13px;
   background: #4FA3C7;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: 12px;
   color: #ffffff;
   font-family: var(--font-heading);
   font-weight: 700;
@@ -185,7 +217,7 @@
 .authSwitch {
   font-family: var(--font-body);
   font-size: 0.88rem;
-  color: var(--color-secondary-text);
+  color: #6b7280;
   text-align: center;
   margin: 16px 0 8px;
 }
@@ -193,7 +225,7 @@
 .authSwitch button {
   background: none;
   border: none;
-  color: var(--portal-gold);
+  color: #4FA3C7;
   font-family: var(--font-heading);
   font-weight: 600;
   cursor: pointer;
@@ -204,13 +236,13 @@
 .authNote {
   font-family: var(--font-body);
   font-size: 0.82rem;
-  color: var(--color-secondary-text);
+  color: #9ca3af;
   text-align: center;
   margin: 0;
 }
 
 .authNote a {
-  color: var(--color-primary);
+  color: #4FA3C7;
   text-decoration: none;
   font-weight: 600;
 }
@@ -218,6 +250,8 @@
 .authNote a:hover { text-decoration: underline; }
 
 @media (max-width: 560px) {
-  .authCard { padding: 32px 24px; }
-  .formRow { grid-template-columns: 1fr; }
+  .authHero { padding: 80px 20px 60px; }
+  .authHeroTitle { font-size: 1.5rem; }
+  .authCard { padding: 28px 20px 24px; }
+  .socialBtns { flex-direction: column; }
 }
