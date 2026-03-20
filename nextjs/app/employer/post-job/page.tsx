@@ -142,9 +142,6 @@ function PostJobInner() {
           <a href="/employer/dashboard" className={styles.pendingBtnPrimary}>
             Go to Dashboard
           </a>
-          <a href="/employer-inquiry" className={styles.pendingBtnSecondary}>
-            Submit a Hiring Inquiry instead
-          </a>
         </div>
         <p className={styles.pendingNote}>
           Questions? Email us at{' '}
