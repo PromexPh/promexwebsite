@@ -24,12 +24,11 @@ const allCountries = [
   { flag: '🇮🇹', name: 'Italy',         deployed: '900+',    sectors: 'Hospitality, Healthcare',        region: 'Europe' as Region },
   { flag: '🇨🇾', name: 'Cyprus',        deployed: '700+',    sectors: 'Hospitality, Construction',      region: 'Europe' as Region },
   { flag: '🇲🇹', name: 'Malta',         deployed: '500+',    sectors: 'Healthcare, Hospitality',        region: 'Europe' as Region },
-  { flag: '🇸🇬', name: 'Singapore',     deployed: '3,500+',  sectors: 'Healthcare, IT, Finance',        region: 'Asia' as Region },
-  { flag: '🇭🇰', name: 'Hong Kong',     deployed: '2,200+',  sectors: 'Domestic, Hospitality, Finance', region: 'Asia' as Region },
-  { flag: '🇯🇵', name: 'Japan',         deployed: '1,500+',  sectors: 'Manufacturing, Healthcare',      region: 'Asia' as Region },
-  { flag: '🇰🇷', name: 'South Korea',   deployed: '1,100+',  sectors: 'Manufacturing, IT',              region: 'Asia' as Region },
-  { flag: '🇹🇼', name: 'Taiwan',        deployed: '900+',    sectors: 'Electronics, Manufacturing',     region: 'Asia' as Region },
-  { flag: '🇲🇾', name: 'Malaysia',      deployed: '800+',    sectors: 'Hospitality, Construction',      region: 'Asia' as Region },
+  { flag: '🇸🇬', name: 'Singapore',   deployed: '2,000+', sectors: 'IT, Finance, Healthcare',          region: 'Asia' as Region },
+  { flag: '🇯🇵', name: 'Japan',       deployed: '1,500+', sectors: 'Engineering, Manufacturing, IT',   region: 'Asia' as Region },
+  { flag: '🇰🇷', name: 'South Korea', deployed: '1,000+', sectors: 'IT, Manufacturing, Healthcare',    region: 'Asia' as Region },
+  { flag: '🇭🇰', name: 'Hong Kong',   deployed: '800+',   sectors: 'Finance, Hospitality, IT',         region: 'Asia' as Region },
+  { flag: '🇹🇼', name: 'Taiwan',      deployed: '600+',   sectors: 'Engineering, IT, Manufacturing',   region: 'Asia' as Region },
 ];
 
 const clientCategories = [
@@ -193,16 +192,16 @@ export default function OurExperiencePage() {
             </div>
           </Reveal>
 
-          <Reveal animation="fade-up" delay={120}>
-            <div className={styles.clientsGrid}>
-              {filteredClients.map((client) => (
-                <div key={client.name} className={styles.clientChip}>
+          <div className={styles.marqueeWrapper}>
+            <div className={styles.marqueeTrack}>
+              {[...filteredClients, ...filteredClients, ...filteredClients].map((client, i) => (
+                <div key={i} className={styles.marqueeCard}>
                   <i className="fa-regular fa-building" aria-hidden="true" />
                   <span>{client.name}</span>
                 </div>
               ))}
             </div>
-          </Reveal>
+          </div>
         </div>
       </section>
 
