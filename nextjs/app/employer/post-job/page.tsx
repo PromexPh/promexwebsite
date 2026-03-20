@@ -14,7 +14,7 @@ interface JobForm {
   industry: string;
   salary: string;
   job_type: string;
-  experience: string;
+  experience_required: string;
   description: string;
   requirements: string;
   responsibilities: string;
@@ -32,7 +32,7 @@ function PostJobInner() {
 
   const [form, setForm] = useState<JobForm>({
     title: '', company: '', country: '', industry: '',
-    salary: '', job_type: '', experience: '', description: '',
+    salary: '', job_type: '', experience_required: '', description: '',
     requirements: '', responsibilities: '', benefits: '',
   });
 
@@ -73,7 +73,7 @@ function PostJobInner() {
         industry: form.industry,
         salary: form.salary,
         job_type: form.job_type,
-        experience: form.experience,
+        experience_required: form.experience_required,
         description: form.description,
         requirements: [...parseLines(form.requirements), ...parseLines(form.responsibilities)],
         benefits: parseLines(form.benefits),
@@ -105,7 +105,7 @@ function PostJobInner() {
           <p>Your job listing is now live. Candidates can start applying immediately.</p>
           <div className={styles.successActions}>
             <a href="/employer/dashboard" className={styles.successBtn}>Go to Dashboard</a>
-            <button type="button" className={styles.successBtnOutline} onClick={() => { setSubmitted(false); setStep(1); setForm({ title: '', company: form.company, country: '', industry: '', salary: '', job_type: '', experience: '', description: '', requirements: '', responsibilities: '', benefits: '' }); }}>
+            <button type="button" className={styles.successBtnOutline} onClick={() => { setSubmitted(false); setStep(1); setForm({ title: '', company: form.company, country: '', industry: '', salary: '', job_type: '', experience_required: '', description: '', requirements: '', responsibilities: '', benefits: '' }); }}>
               Post Another Job
             </button>
           </div>
@@ -114,7 +114,7 @@ function PostJobInner() {
     );
   }
 
-  const step1Valid = form.title && form.company && form.country && form.industry && form.salary && form.job_type && form.experience;
+  const step1Valid = form.title && form.company && form.country && form.industry && form.salary && form.job_type && form.experience_required;
   const step2Valid = form.description.length >= 50;
 
   return (
@@ -192,7 +192,7 @@ function PostJobInner() {
                 </div>
                 <div className={styles.formGroup}>
                   <label>Experience Required <span className={styles.req}>*</span></label>
-                  <select value={form.experience} onChange={(e) => update('experience', e.target.value)} required>
+                  <select value={form.experience_required} onChange={(e) => update('experience_required', e.target.value)} required>
                     <option value="">Select experience</option>
                     <option>No experience required</option>
                     <option>1+ years</option>
@@ -240,13 +240,13 @@ function PostJobInner() {
                       <h3 className={styles.previewTitle}>{form.title}</h3>
                       <div className={styles.previewCompany}><i className="fa-solid fa-building" /> {form.company}</div>
                     </div>
-                    <div className={styles.previewSalary}>{form.salary}<span>/mo</span></div>
+                    <div className={styles.previewSalary}>₱{form.salary}<span>/mo</span></div>
                   </div>
                   <div className={styles.previewMeta}>
                     <span><i className="fa-solid fa-location-dot" /> {form.country}</span>
                     <span><i className="fa-solid fa-briefcase" /> {form.industry}</span>
                     <span><i className="fa-solid fa-clock" /> {form.job_type}</span>
-                    <span><i className="fa-solid fa-user-graduate" /> {form.experience}</span>
+                    <span><i className="fa-solid fa-user-graduate" /> {form.experience_required}</span>
                   </div>
                   <p className={styles.previewDescription}>{form.description}</p>
                   {form.requirements && (

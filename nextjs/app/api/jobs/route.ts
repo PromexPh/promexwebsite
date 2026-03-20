@@ -77,17 +77,19 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  let body: Partial<Job> & { posted_by_admin?: boolean };
+  let body: Partial<Job> & { posted_by_admin?: boolean; experience_required?: string };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   }
 
-  const required: (keyof Job)[] = ['title', 'company', 'country', 'industry', 'salary', 'job_type', 'experience', 'description'];
-  for (const field of required) {
-    if (!body[field]) return NextResponse.json({ error: `Missing required field: ${field}` }, { status: 400 });
+  const requiredFields = ['title', 'company', 'country', 'industry', 'salary', 'job_type', 'description'];
+  for (const field of requiredFields) {
+    if (!(body as Record<string, unknown>)[field]) return NextResponse.json({ error: `Missing required field: ${field}` }, { status: 400 });
   }
+  const experienceValue = body.experience_required ?? body.experience;
+  if (!experienceValue) return NextResponse.json({ error: 'Missing required field: experience_required' }, { status: 400 });
 
   // Admin post: always active
   if (isAdminRequest(req)) {
@@ -96,7 +98,7 @@ export async function POST(req: NextRequest) {
       .insert({
         employer_id: null,
         title: body.title, company: body.company, country: body.country, industry: body.industry,
-        salary: body.salary, job_type: body.job_type, experience: body.experience,
+        salary: body.salary, job_type: body.job_type, experience_required: experienceValue,
         description: body.description, requirements: body.requirements ?? [], benefits: body.benefits ?? [],
         status: 'active', posted_by_admin: true,
         urgent: body.urgent ?? false, slots_available: body.slots_available ?? 0,
@@ -125,7 +127,7 @@ export async function POST(req: NextRequest) {
     .insert({
       employer_id: user.id,
       title: body.title, company: body.company, country: body.country, industry: body.industry,
-      salary: body.salary, job_type: body.job_type, experience: body.experience,
+      salary: body.salary, job_type: body.job_type, experience_required: experienceValue,
       description: body.description, requirements: body.requirements ?? [], benefits: body.benefits ?? [],
       status: jobStatus,
       urgent: body.urgent ?? false, slots_available: body.slots_available ?? 0,
