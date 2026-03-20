@@ -5,10 +5,10 @@ import Reveal from '@/components/ui/Reveal';
 import styles from './Stats.module.css';
 
 const statsData = [
-  { icon: 'fa-solid fa-trophy',    value: 28,   suffix: '+', label: 'Years of Experience', sub: 'Est. 1996'          },
-  { icon: 'fa-solid fa-globe',     value: 500,  suffix: '+', label: 'Clients Worldwide',   sub: 'Global Network'     },
-  { icon: 'fa-solid fa-users',     value: 5000, suffix: '+', label: 'Candidates Deployed', sub: 'Successfully Placed' },
-  { icon: 'fa-solid fa-briefcase', value: 10000, suffix: '+', label: 'Job Orders Fulfilled', sub: 'Across Industries'  },
+  { icon: 'fa-solid fa-trophy',    value: 30,    suffix: '+', label: 'Years of Experience', sub: 'Est. 1996'          },
+  { icon: 'fa-solid fa-users',     value: 50000, suffix: '+', label: 'Workers Deployed',    sub: 'Globally Placed'    },
+  { icon: 'fa-solid fa-handshake', value: 500,   suffix: '+', label: 'Employer Partners',   sub: 'Worldwide'          },
+  { icon: 'fa-solid fa-globe',     value: 30,    suffix: '+', label: 'Countries',           sub: 'Global Reach'       },
 ];
 
 function StatCard({ stat, index }: { stat: typeof statsData[0]; index: number }) {

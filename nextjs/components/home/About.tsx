@@ -13,7 +13,7 @@ const badges = [
 ];
 
 function FloatStat() {
-  const { ref, display } = useCountUp({ target: 28, suffix: '+', duration: 2000 });
+  const { ref, display } = useCountUp({ target: 30, suffix: '+', duration: 2000 });
   return (
     <div className={styles.floatStat}>
       <span
@@ -51,7 +51,7 @@ export default function About() {
           <Reveal animation="fade-up" delay={260}>
             <p className={styles.aboutBody}>
               Founded in 1996, Promex Company has been at the forefront of overseas recruitment in the
-              Philippines for over 28 years. As a Department of Migrant Workers (DMW) accredited agency,
+              Philippines for nearly 30 years. As a Department of Migrant Workers (DMW) accredited agency,
               we specialize in connecting highly skilled Filipino professionals with reputable employers
               across the Middle East, Europe, and Asia.
             </p>

@@ -18,7 +18,7 @@ const allCountries = [
   { flag: '🇰🇼', name: 'Kuwait',        deployed: '5,000+',  sectors: 'Healthcare, Retail, Manufacturing', region: 'Middle East' as Region },
   { flag: '🇧🇭', name: 'Bahrain',       deployed: '3,000+',  sectors: 'Hospitality, Finance, IT',        region: 'Middle East' as Region },
   { flag: '🇴🇲', name: 'Oman',          deployed: '4,000+',  sectors: 'Engineering, Healthcare, Construction', region: 'Middle East' as Region },
-  { flag: '🇬🇧', name: 'United Kingdom', deployed: '2,500+', sectors: 'Healthcare, IT, Finance',         region: 'Europe' as Region },
+  { flag: '🇬🇧', name: 'United Kingdom', deployed: '6,000+', sectors: 'Healthcare, IT, Finance',         region: 'Europe' as Region },
   { flag: '🇩🇪', name: 'Germany',       deployed: '1,800+',  sectors: 'Engineering, Manufacturing, IT', region: 'Europe' as Region },
   { flag: '🇳🇱', name: 'Netherlands',   deployed: '1,200+',  sectors: 'Healthcare, Logistics, IT',      region: 'Europe' as Region },
   { flag: '🇮🇹', name: 'Italy',         deployed: '900+',    sectors: 'Hospitality, Healthcare',        region: 'Europe' as Region },
@@ -115,7 +115,7 @@ export default function OurExperiencePage() {
         badge="Global Footprint"
         heading="Our"
         accentText="Experience"
-        subText="With over 28 years of operation, Promex Company has built a powerful global network spanning the Middle East, Europe, and Asia — deploying over 50,000 Filipino professionals worldwide."
+        subText="With nearly 30 years of operation, Promex has built a powerful global network spanning the Middle East, Europe, and Asia — deploying over 50,000 Filipino professionals worldwide."
         bgImage="https://images.unsplash.com/photo-1529400971008-f566de0e6dfc?w=1600&q=80&auto=format&fit=crop"
         waveFill="var(--color-bg)"
       />

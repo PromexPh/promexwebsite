@@ -6,9 +6,9 @@ import Reveal from '@/components/ui/Reveal';
 import styles from './Hero.module.css';
 
 const stats = [
-  { value: '28+',   label: 'Years in Business' },
-  { value: '500+',  label: 'Global Clients'    },
-  { value: '5,000+',label: 'Deployed'          },
+  { value: '30+',     label: 'Years in Business' },
+  { value: '50,000+', label: 'Workers Deployed'  },
+  { value: '500+',    label: 'Employer Partners' },
 ];
 
 export default function Hero() {
