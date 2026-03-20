@@ -33,7 +33,7 @@ function PostJobInner() {
   const [userEmail, setUserEmail] = useState('');
   const [token, setToken] = useState('');
   const [error, setError] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const [submittedJob, setSubmittedJob] = useState<{ title: string; job_reference?: string; status: string } | null>(null);
 
   const [form, setForm] = useState<JobForm>({
     title: '', company: '', country: '', industry: '',
@@ -97,7 +97,7 @@ function PostJobInner() {
     setLoading(false);
 
     if (!res.ok) { setError(data.error || 'Failed to post job'); return; }
-    setSubmitted(true);
+    setSubmittedJob({ title: data.job?.title ?? form.title, job_reference: data.job?.job_reference, status: data.isDraft ? 'draft' : 'active' });
   }
 
   if (authLoading) {
@@ -151,16 +151,29 @@ function PostJobInner() {
     );
   }
 
-  if (submitted) {
+  if (submittedJob) {
+    const isDraft = submittedJob.status === 'draft';
     return (
       <div className={styles.successPage}>
         <div className={styles.successCard}>
           <div className={styles.successIcon}><i className="fa-solid fa-check" aria-hidden="true" /></div>
           <h2>Job Posted Successfully!</h2>
-          <p>Your job listing is now live. Candidates can start applying immediately.</p>
+          <div className={styles.successJobMeta}>
+            <span className={styles.successJobTitle}>{submittedJob.title}</span>
+            {submittedJob.job_reference && (
+              <span className={styles.successJobRef}>Ref: {submittedJob.job_reference}</span>
+            )}
+          </div>
+          <span className={isDraft ? styles.successBadgeDraft : styles.successBadgeActive}>
+            {isDraft ? '⏳ Draft – Pending Review' : '● Active'}
+          </span>
+          <div className={styles.successInfoBox}>
+            <i className="fa-solid fa-circle-info" aria-hidden="true" />
+            <span>You can edit this job anytime from your dashboard. Applications will appear in your Applicants tab as candidates apply.</span>
+          </div>
           <div className={styles.successActions}>
-            <a href="/employer/dashboard" className={styles.successBtn}>Go to Dashboard</a>
-            <button type="button" className={styles.successBtnOutline} onClick={() => { setSubmitted(false); setStep(1); setForm({ title: '', company: form.company, country: '', industry: '', salary_min: '', salary_max: '', job_type: '', experience_required: '', description: '', requirements: '', responsibilities: '', benefits: '', slots_available: '', is_urgent: false }); }}>
+            <a href="/employer/dashboard" className={styles.successBtn}>View My Dashboard →</a>
+            <button type="button" className={styles.successBtnOutline} onClick={() => { setSubmittedJob(null); setStep(1); setForm({ title: '', company: form.company, country: '', industry: '', salary_min: '', salary_max: '', job_type: '', experience_required: '', description: '', requirements: '', responsibilities: '', benefits: '', slots_available: '', is_urgent: false }); }}>
               Post Another Job
             </button>
           </div>

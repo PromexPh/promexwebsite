@@ -273,6 +273,74 @@
   color: var(--color-primary);
 }
 
+.successJobMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.successJobTitle {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-dark-text);
+}
+
+.successJobRef {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--color-secondary-text);
+}
+
+.successJobRef::before { content: '· '; }
+
+.successBadgeActive {
+  display: inline-block;
+  padding: 4px 12px;
+  background: rgba(16,185,129,0.1);
+  border: 1px solid rgba(16,185,129,0.3);
+  border-radius: 99px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: #15803d;
+}
+
+.successBadgeDraft {
+  display: inline-block;
+  padding: 4px 12px;
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.3);
+  border-radius: 99px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: #b45309;
+}
+
+.successInfoBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(79,163,199,0.06);
+  border: 1px solid rgba(79,163,199,0.2);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  text-align: left;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--color-secondary-text);
+  line-height: 1.6;
+}
+
+.successInfoBox i {
+  color: var(--color-primary);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
 /* ─── Page Layout ─── */
 .postJobSection {
   padding: 60px 0 96px;

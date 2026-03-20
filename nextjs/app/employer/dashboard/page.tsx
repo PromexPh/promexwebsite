@@ -86,6 +86,7 @@ function EmployerDashboardInner() {
   const [token, setToken]                 = useState('');
   const [activeTab, setActiveTab]         = useState<Tab>('overview');
   const [updatingApp, setUpdatingApp]     = useState<string | null>(null);
+  const [confirmCloseJobId, setConfirmCloseJobId] = useState<string | null>(null);
 
   // Company profile form state
   const [profileForm, setProfileForm] = useState({
@@ -124,7 +125,7 @@ function EmployerDashboardInner() {
       const { data: jobsData } = await supabase
         .from('jobs')
         .select('*')
-        .eq('employer_id', userId)
+        .eq('employer_id', e.id)
         .order('created_at', { ascending: false });
       setJobs((jobsData as Job[]) ?? []);
 
@@ -152,8 +153,8 @@ function EmployerDashboardInner() {
     setUpdatingApp(null);
   }
 
-  async function toggleJobStatus(job: Job) {
-    const newStatus = job.status === 'active' ? 'paused' : 'active';
+  async function setJobStatus(job: Job, newStatus: string) {
+    setConfirmCloseJobId(null);
     const res = await fetch(`/api/jobs/${job.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -393,13 +394,27 @@ function EmployerDashboardInner() {
                           <button type="button" className={styles.viewAppsBtn} onClick={() => selectJob(job)}>
                             <i className="fa-solid fa-users" aria-hidden="true" /> {jobApps.length} Applicant{jobApps.length !== 1 ? 's' : ''}
                           </button>
-                          {job.status !== 'draft' && (
-                            <button type="button" className={styles.toggleStatusBtn} onClick={() => toggleJobStatus(job)}>
-                              {job.status === 'active'
-                                ? <><i className="fa-solid fa-pause" aria-hidden="true" /> Pause</>
-                                : <><i className="fa-solid fa-play" aria-hidden="true" /> Activate</>}
+                          {job.status === 'active' && confirmCloseJobId === job.id ? (
+                            <div className={styles.closeConfirm}>
+                              <span>Close this job posting?</span>
+                              <div className={styles.closeConfirmBtns}>
+                                <button type="button" className={styles.closeConfirmYes} onClick={() => setJobStatus(job, 'closed')}>Close</button>
+                                <button type="button" className={styles.closeConfirmNo} onClick={() => setConfirmCloseJobId(null)}>Cancel</button>
+                              </div>
+                            </div>
+                          ) : job.status === 'active' ? (
+                            <button type="button" className={styles.toggleStatusBtnDanger} onClick={() => setConfirmCloseJobId(job.id)}>
+                              <i className="fa-solid fa-xmark" aria-hidden="true" /> Close Job
                             </button>
-                          )}
+                          ) : job.status === 'closed' ? (
+                            <button type="button" className={styles.toggleStatusBtnGreen} onClick={() => setJobStatus(job, 'active')}>
+                              <i className="fa-solid fa-rotate-left" aria-hidden="true" /> Reopen Job
+                            </button>
+                          ) : job.status === 'draft' ? (
+                            <button type="button" className={styles.toggleStatusBtn} onClick={() => setJobStatus(job, 'active')}>
+                              <i className="fa-solid fa-paper-plane" aria-hidden="true" /> Submit for Review
+                            </button>
+                          ) : null}
                         </div>
                       </div>
                       <div className={styles.jobPipelineRow}>
