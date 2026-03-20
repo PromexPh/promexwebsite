@@ -963,3 +963,395 @@
   .verifyBanner { padding: 12px 16px; }
   .dashNameRow { flex-direction: column; align-items: flex-start; gap: 4px; }
 }
+
+/* ─── Stat card as button ─── */
+.statCard {
+  cursor: pointer;
+  border: none;
+  text-align: center;
+}
+.statCard:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  transition: all 0.2s ease;
+}
+
+/* ─── Job title row ─── */
+.jobTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.jobRefBadge {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  color: var(--color-primary);
+  background: rgba(79,163,199,0.1);
+  border: 1px solid rgba(79,163,199,0.25);
+  border-radius: 99px;
+  padding: 2px 8px;
+}
+
+/* ─── Edit job button ─── */
+.editJobBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  background: transparent;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-secondary-text);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.editJobBtn:hover {
+  border-color: var(--portal-gold);
+  color: var(--portal-gold);
+}
+
+/* ─── Recent applications in overview ─── */
+.recentAppsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 40px;
+}
+
+.recentAppRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease;
+}
+.recentAppRow:hover { box-shadow: var(--shadow-sm); }
+
+.recentAppAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-purple));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.recentAppInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.recentAppName {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--color-dark-text);
+}
+
+.recentAppJob {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--color-secondary-text);
+}
+
+.recentAppMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.recentAppDate {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--color-secondary-text);
+}
+
+.recentAppStatus {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+/* ─── Applicant Panel ─── */
+.panelOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 200;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.applicantPanel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 420px;
+  max-width: 100vw;
+  background: var(--color-card);
+  border-left: 1px solid var(--color-border);
+  z-index: 201;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 40px rgba(0,0,0,0.12);
+  animation: slideInRight 0.25s cubic-bezier(0.16,1,0.3,1);
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+.panelHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.panelAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-purple));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.panelHeaderInfo { flex: 1; min-width: 0; }
+
+.panelName {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-dark-text);
+  margin: 0 0 6px;
+}
+
+.panelMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--color-secondary-text);
+}
+
+.panelMeta span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.panelClose {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: var(--color-secondary-text);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+.panelClose:hover { background: var(--color-border); color: var(--color-dark-text); }
+
+.panelBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panelDetails {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.panelDetailItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.panelDetailLabel {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.7rem;
+  color: var(--color-secondary-text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.panelDetailItem span:last-child {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--color-dark-text);
+}
+
+.panelSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.panelSectionTitle {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--color-dark-text);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.skillTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skillTag {
+  padding: 3px 10px;
+  background: rgba(79,163,199,0.1);
+  border: 1px solid rgba(79,163,199,0.25);
+  border-radius: 99px;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--color-primary);
+}
+
+.coverLetterBox {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--color-secondary-text);
+  line-height: 1.7;
+  max-height: 180px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+.downloadCvBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--portal-navy);
+  color: var(--portal-gold);
+  border-radius: var(--radius-md);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.88rem;
+  text-decoration: none;
+  transition: background 0.2s ease;
+  align-self: flex-start;
+}
+.downloadCvBtn:hover { background: var(--portal-navy-2); }
+
+.statusBtnGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.statusBtn {
+  padding: 8px 12px;
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--color-secondary-text);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+.statusBtn:hover:not(:disabled) {
+  border-color: #4FA3C7;
+  color: #4FA3C7;
+}
+.statusBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.statusBtnActive {
+  background: #4FA3C7;
+  border-color: #4FA3C7;
+  color: #ffffff;
+}
+.statusBtnActive:hover:not(:disabled) {
+  background: #3C8DB1;
+  border-color: #3C8DB1;
+  color: #ffffff;
+}
+
+.panelUpdating {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--color-secondary-text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.notesArea {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--color-dark-text);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+.notesArea:focus { border-color: var(--portal-gold); }
