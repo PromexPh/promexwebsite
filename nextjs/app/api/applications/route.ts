@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin, getUserFromToken } from '@/lib/supabase-admin';
 import type { Application, ApplicationStatus } from '@/lib/types';
+import { sendApplicationConfirmation, sendNewApplicationAlert, sendStatusUpdate } from '@/lib/email';
 
 async function getRole(userId: string): Promise<'candidate' | 'employer' | null> {
   const [{ data: c }, { data: e }] = await Promise.all([
@@ -119,6 +120,35 @@ export async function POST(req: NextRequest) {
 
   console.log(`APPLICATION SUBMITTED: candidate applied for job`);
 
+  // Fire-and-forget email notifications
+  const job = (data as unknown as { job: { title: string; company: string; country: string } }).job;
+  const { data: candidateProfile } = await supabaseAdmin
+    .from('candidates')
+    .select('full_name, email')
+    .eq('id', candidate.id)
+    .single();
+
+  if (candidateProfile && job) {
+    const cand = candidateProfile as { full_name: string; email: string };
+    void Promise.all([
+      sendApplicationConfirmation({
+        candidateEmail: cand.email,
+        candidateName: cand.full_name,
+        jobTitle: job.title,
+        company: job.company,
+        country: job.country,
+      }),
+      sendNewApplicationAlert({
+        candidateName: cand.full_name,
+        candidateEmail: cand.email,
+        jobTitle: job.title,
+        company: job.company,
+        jobId: body.job_id,
+        applicationId: (data as unknown as { id: string }).id,
+      }),
+    ]);
+  }
+
   return NextResponse.json({ application: data as Application }, { status: 201 });
 }
 
@@ -180,13 +210,14 @@ export async function PATCH(req: NextRequest) {
   // Employer update path
   const { data: app } = await supabaseAdmin
     .from('applications')
-    .select('job_id, job:jobs(employer_id)')
+    .select('job_id, candidate_id, job:jobs(employer_id, title, company)')
     .eq('id', body.application_id)
     .single();
 
   if (!app) return NextResponse.json({ error: 'Application not found' }, { status: 404 });
 
-  const employerId = (app.job as unknown as { employer_id: string })?.employer_id;
+  const jobData = app.job as unknown as { employer_id: string; title: string; company: string };
+  const employerId = jobData?.employer_id;
   if (employerId !== user.id) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const { data, error } = await supabaseAdmin
@@ -197,5 +228,24 @@ export async function PATCH(req: NextRequest) {
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Fire-and-forget status update email
+  const { data: candProfile } = await supabaseAdmin
+    .from('candidates')
+    .select('full_name, email')
+    .eq('id', (app as unknown as { candidate_id: string }).candidate_id)
+    .single();
+
+  if (candProfile && jobData) {
+    const cp = candProfile as { full_name: string; email: string };
+    void sendStatusUpdate({
+      candidateEmail: cp.email,
+      candidateName: cp.full_name,
+      jobTitle: jobData.title,
+      company: jobData.company,
+      newStatus: body.status,
+    });
+  }
+
   return NextResponse.json({ application: data as Application });
 }

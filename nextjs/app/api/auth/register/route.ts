@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import type { Role } from '@/lib/types';
+import { sendNewEmployerAlert } from '@/lib/email';
 
 // Run in Supabase Dashboard → SQL Editor:
 // ALTER TABLE public.candidates ADD COLUMN IF NOT EXISTS linkedin_url text;
@@ -115,6 +116,17 @@ export async function POST(req: NextRequest) {
   if (insertError) {
     await supabaseAdmin.auth.admin.deleteUser(userId);
     return NextResponse.json({ error: insertError.message }, { status: 500 });
+  }
+
+  if (role === 'employer') {
+    void sendNewEmployerAlert({
+      companyName: body.company_name ?? full_name,
+      contactPerson: body.contact_person ?? full_name,
+      email,
+      phone: body.phone,
+      country: body.country,
+      industry: body.industry,
+    });
   }
 
   return NextResponse.json(
