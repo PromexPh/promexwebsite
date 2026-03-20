@@ -177,7 +177,7 @@ function PostJobInner() {
                 <div className={styles.formRow}>
                   <div className={styles.formGroup}>
                     <label>Salary Range <span className={styles.req}>*</span></label>
-                    <input value={form.salary} onChange={(e) => update('salary', e.target.value)} placeholder="e.g. $2,500 - $3,200" required />
+                    <input value={form.salary} onChange={(e) => update('salary', e.target.value)} placeholder="e.g. ₱25,000 - ₱35,000" required />
                   </div>
                   <div className={styles.formGroup}>
                     <label>Job Type <span className={styles.req}>*</span></label>

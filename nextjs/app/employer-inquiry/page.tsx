@@ -253,8 +253,8 @@ export default function EmployerInquiryPage() {
                   </div>
                   <div className={styles.formRow}>
                     <div className={styles.formGroup}>
-                      <label htmlFor="salaryRange">Salary Range (Monthly USD) <span className={styles.req}>*</span></label>
-                      <input id="salaryRange" type="text" required placeholder="e.g., $2,000 - $3,000" value={form.salaryRange} onChange={(e) => set('salaryRange', e.target.value)} />
+                      <label htmlFor="salaryRange">Salary Range (Monthly PHP) <span className={styles.req}>*</span></label>
+                      <input id="salaryRange" type="text" required placeholder="e.g., ₱20,000 - ₱35,000" value={form.salaryRange} onChange={(e) => set('salaryRange', e.target.value)} />
                     </div>
                     <div className={styles.formGroup}>
                       <label htmlFor="accommodationProvided">Accommodation Provided? <span className={styles.req}>*</span></label>
