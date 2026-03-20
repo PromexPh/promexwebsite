@@ -352,6 +352,11 @@
   box-shadow: 0 0 0 3px rgba(200, 168, 75, 0.12);
 }
 
+/* Higher specificity to beat .formGroup input (0,1,1) */
+.salaryInputRow .salaryInputWrap input {
+  padding-left: 32px;
+}
+
 .salaryDash {
   font-size: 14px;
   color: gray;
