@@ -19,13 +19,13 @@
 
 /* ─── Pending Verification Screen ─── */
 .pendingContainer {
-  min-height: 80vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 60px 24px;
+  padding: 120px 24px 60px;
   max-width: 560px;
   margin: 0 auto;
 }
