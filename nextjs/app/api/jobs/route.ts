@@ -115,18 +115,20 @@ export async function POST(req: NextRequest) {
 
   const { data: employer } = await supabaseAdmin
     .from('employers')
-    .select('user_id, is_verified')
+    .select('id, is_verified')
     .eq('user_id', user.id)
     .single();
 
-  if (!employer) return NextResponse.json({ error: 'Only employers can post jobs' }, { status: 403 });
+  if (!employer) return NextResponse.json({ error: 'Employer profile not found' }, { status: 404 });
+
+  console.log('Posting job for employer:', employer.id, 'user:', user.id, 'verified:', employer.is_verified);
 
   const jobStatus = employer.is_verified ? 'active' : 'draft';
 
   const { data, error } = await supabaseAdmin
     .from('jobs')
     .insert({
-      employer_id: user.id,
+      employer_id: employer.id,
       title: body.title, company: body.company, country: body.country, industry: body.industry,
       job_type: body.job_type, experience_required: experienceValue,
       salary_min: body.salary_min ?? 0, salary_max: body.salary_max ?? 0, salary_currency: body.salary_currency ?? 'PHP',
