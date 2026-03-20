@@ -29,6 +29,8 @@ function PostJobInner() {
   const [step, setStep] = useState<Step>(1);
   const [loading, setLoading] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
+  const [isVerified, setIsVerified] = useState<boolean | null>(null);
+  const [userEmail, setUserEmail] = useState('');
   const [token, setToken] = useState('');
   const [error, setError] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -44,9 +46,12 @@ function PostJobInner() {
     supabase.auth.getSession().then(({ data }) => {
       if (!data.session) { router.push('/employer/register'); return; }
       setToken(data.session.access_token);
-      supabase.from('employers').select('company_name').eq('user_id', data.session.user.id).single().then(({ data: emp }) => {
+      setUserEmail(data.session.user.email ?? '');
+      supabase.from('employers').select('company_name, is_verified').eq('user_id', data.session.user.id).single().then(({ data: emp }) => {
         if (!emp) { router.push('/employer/register'); return; }
-        if (emp?.company_name) setForm((f) => ({ ...f, company: (emp as { company_name?: string }).company_name! }));
+        const e = emp as { company_name?: string; is_verified?: boolean };
+        if (e.company_name) setForm((f) => ({ ...f, company: e.company_name! }));
+        setIsVerified(e.is_verified === true);
         setAuthLoading(false);
       });
     });
@@ -100,6 +105,51 @@ function PostJobInner() {
       <div className={styles.loadingPage}>
         <i className="fa-solid fa-spinner fa-spin" aria-hidden="true" />
         <p>Loading…</p>
+      </div>
+    );
+  }
+
+  if (isVerified === false) {
+    return (
+      <div className={styles.pendingContainer}>
+        <div className={styles.pendingIcon}>⏳</div>
+        <h1 className={styles.pendingTitle}>Account Pending Verification</h1>
+        <p className={styles.pendingText}>
+          Your employer account is currently being reviewed by the Promex team.
+          This usually takes 1–2 business days.
+        </p>
+        {userEmail && (
+          <p className={styles.pendingText}>
+            Once approved, you&apos;ll receive a confirmation email at <strong>{userEmail}</strong> and
+            can start posting jobs immediately.
+          </p>
+        )}
+        <div className={styles.pendingSteps}>
+          <div className={styles.pendingStep}>
+            <span className={styles.stepDone}>✓</span>
+            <span>Account registered</span>
+          </div>
+          <div className={styles.pendingStep}>
+            <span className={styles.stepPending}>⏳</span>
+            <span>Promex verification (1–2 business days)</span>
+          </div>
+          <div className={styles.pendingStep}>
+            <span className={styles.stepLocked}>○</span>
+            <span>Post jobs &amp; receive applications</span>
+          </div>
+        </div>
+        <div className={styles.pendingActions}>
+          <a href="/employer/dashboard" className={styles.pendingBtnPrimary}>
+            Go to Dashboard
+          </a>
+          <a href="/employer-inquiry" className={styles.pendingBtnSecondary}>
+            Submit a Hiring Inquiry instead
+          </a>
+        </div>
+        <p className={styles.pendingNote}>
+          Questions? Email us at{' '}
+          <a href="mailto:inquiries@promexph.com">inquiries@promexph.com</a>
+        </p>
       </div>
     );
   }
