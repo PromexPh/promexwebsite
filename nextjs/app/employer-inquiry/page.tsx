@@ -27,10 +27,12 @@ const initialForm = {
   contractDuration: '', accommodationProvided: '', additionalRequirements: '', message: '',
 };
 
+interface SuccessData { companyName: string; email: string; ref: string; }
+
 export default function EmployerInquiryPage() {
   const [form, setForm] = useState(initialForm);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [successData, setSuccessData] = useState<SuccessData | null>(null);
   const [submitError, setSubmitError] = useState('');
 
   function set(field: keyof typeof initialForm, value: string) {
@@ -48,7 +50,11 @@ export default function EmployerInquiryPage() {
         body: JSON.stringify(form),
       });
       if (res.ok) {
-        setSubmitSuccess(true);
+        setSuccessData({
+          companyName: form.companyName,
+          email: form.email,
+          ref: `INQ-${String(Date.now()).slice(-6)}`,
+        });
         setForm(initialForm);
       } else {
         const d = await res.json();
@@ -59,6 +65,41 @@ export default function EmployerInquiryPage() {
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  if (successData) {
+    return (
+      <>
+        <PageHero
+          badge="For Employers"
+          heading="Request"
+          accentText="Top Talent Today"
+          subText="Connect with skilled Filipino professionals ready to join your team."
+          bgImage="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1600&q=80&auto=format&fit=crop"
+          waveFill="var(--color-bg)"
+        />
+        <section className={styles.formSection}>
+          <div className="container">
+            <div className={styles.successScreen}>
+              <div className={styles.successCheck}>
+                <i className="fa-solid fa-circle-check" aria-hidden="true" />
+              </div>
+              <h2 className={styles.successTitle}>Inquiry Received!</h2>
+              <p className={styles.successMsg}>
+                Thank you, <strong>{successData.companyName}</strong>. Our team will contact you at <strong>{successData.email}</strong> within 24 hours.
+              </p>
+              <div className={styles.successRef}>
+                <i className="fa-solid fa-hashtag" aria-hidden="true" />
+                Reference: <strong>{successData.ref}</strong>
+              </div>
+              <a href="/jobs" className={styles.successBtn}>
+                <i className="fa-solid fa-briefcase" aria-hidden="true" /> Browse our available talent
+              </a>
+            </div>
+          </div>
+        </section>
+      </>
+    );
   }
 
   return (
@@ -74,18 +115,6 @@ export default function EmployerInquiryPage() {
 
       <section className={styles.formSection}>
         <div className="container">
-
-          {submitSuccess && (
-            <Reveal animation="fade-up">
-              <div className={styles.alertSuccess}>
-                <i className="fa-solid fa-circle-check" aria-hidden="true" />
-                <div>
-                  <h3>Inquiry Submitted Successfully!</h3>
-                  <p>Thank you for your interest. Our corporate recruitment team will review your requirements and contact you within 24 hours.</p>
-                </div>
-              </div>
-            </Reveal>
-          )}
 
           {submitError && (
             <Reveal animation="fade-up">
