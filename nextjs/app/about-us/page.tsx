@@ -1,4 +1,4 @@
-import { Shield, Heart, Star, Eye } from 'lucide-react';
+import { Shield, Heart, Star, Eye, ExternalLink } from 'lucide-react';
 import PageHero from '@/components/ui/PageHero';
 import Reveal from '@/components/ui/Reveal';
 import Button from '@/components/ui/Button';
@@ -15,11 +15,12 @@ const milestones = [
 ];
 
 const certifications = [
-  { name: 'DMW Licensed Recruitment Agency', issuer: 'Department of Migrant Workers', year: '1996 - Present', description: 'Official government license to operate as a private recruitment and placement agency in the Philippines.', iconImage: '/images/icons/01.svg' },
-  { name: 'ISO 9001:2015 Certified', issuer: 'International Organization for Standardization', year: '2018', description: 'International quality management standard certification for consistent and reliable recruitment services.', iconImage: '/images/icons/02.svg' },
-  { name: 'POEA Accreditation', issuer: 'Philippine Overseas Employment Administration', year: '1996 - Present', description: 'Accredited to recruit and deploy Filipino workers for overseas employment opportunities.', iconImage: '/images/icons/03.svg' },
-  { name: 'Circle Test Assessment Center', issuer: 'TESDA Registered', year: '2012', description: 'Government-registered training and assessment center for trade testing and skills certification.', iconImage: '/images/icons/04.svg' },
-  { name: 'OWWA Partner Agency', issuer: 'Overseas Workers Welfare Administration', year: '1996 - Present', description: 'Official partner ensuring overseas Filipino workers receive proper welfare support and protection.', iconImage: '/images/icons/05.svg' },
+  { name: 'DMW Licensed Recruitment Agency', issuer: 'Department of Migrant Workers', year: '1996 - Present', description: 'Official government license to operate as a private recruitment and placement agency in the Philippines.', iconImage: '/images/icons/01.svg', badge: null, link: null },
+  { name: 'ISO 9001:2015 Certified', issuer: 'International Organization for Standardization', year: '2018', description: 'International quality management standard certification for consistent and reliable recruitment services.', iconImage: '/images/icons/02.svg', badge: null, link: null },
+  { name: 'POEA Accreditation', issuer: 'Philippine Overseas Employment Administration', year: '1996 - Present', description: 'Accredited to recruit and deploy Filipino workers for overseas employment opportunities.', iconImage: '/images/icons/03.svg', badge: null, link: null },
+  { name: 'Circle Test Assessment Center', issuer: 'TESDA Registered', year: '2012', description: 'Government-registered training and assessment center for trade testing and skills certification.', iconImage: '/images/icons/04.svg', badge: null, link: null },
+  { name: 'OWWA Partner Agency', issuer: 'Overseas Workers Welfare Administration', year: '1996 - Present', description: 'Official partner ensuring overseas Filipino workers receive proper welfare support and protection.', iconImage: '/images/icons/05.svg', badge: null, link: null },
+  { name: 'DMW Whitelisted Agency', issuer: 'Department of Migrant Workers', year: 'Verified', description: 'Officially whitelisted by the DMW, confirming Promex meets all legal and ethical standards for overseas recruitment. Verifiable at dmw.gov.ph.', iconImage: '/images/icons/01.svg', badge: 'Cleared', link: 'https://dmw.gov.ph' },
 ];
 
 const values = [
@@ -192,9 +193,19 @@ export default function AboutUsPage() {
                     <Image src={cert.iconImage} alt={`${cert.name} icon`} width={48} height={48} />
                   </div>
                   <div className={styles.certContent}>
-                    <h3 className={styles.certName}>{cert.name}</h3>
+                    <div className={styles.certNameRow}>
+                      <h3 className={styles.certName}>{cert.name}</h3>
+                      {cert.badge && (
+                        <span className={styles.certBadgeCleared}>{cert.badge}</span>
+                      )}
+                    </div>
                     <p className={styles.certIssuer}>{cert.issuer} · {cert.year}</p>
                     <p className={styles.certDescription}>{cert.description}</p>
+                    {cert.link && (
+                      <a href={cert.link} target="_blank" rel="noopener noreferrer" className={styles.certLink}>
+                        <ExternalLink size={14} /> Verify on dmw.gov.ph
+                      </a>
+                    )}
                   </div>
                 </div>
               </Reveal>

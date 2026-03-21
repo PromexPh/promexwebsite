@@ -319,7 +319,7 @@
 
 .certificationsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 28px;
 }
 
@@ -378,6 +378,45 @@
   line-height: 1.6;
   color: var(--color-secondary-text);
   margin: 4px 0 0;
+}
+
+.certNameRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.certBadgeCleared {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  background: #16a34a;
+  color: #ffffff;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+}
+
+.certLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--color-primary);
+  text-decoration: none;
+  margin-top: 6px;
+  transition: opacity 0.2s ease;
+}
+
+.certLink:hover {
+  opacity: 0.75;
+  text-decoration: underline;
 }
 
 /* ---- In the News ---- */
@@ -539,6 +578,10 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .certificationsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .whoWeAreGrid {
     grid-template-columns: 1fr;
     gap: 32px;
@@ -565,6 +608,10 @@
   .certificationsSection,
   .newsSection {
     padding: 64px 0;
+  }
+
+  .certificationsGrid {
+    grid-template-columns: 1fr;
   }
 
   .aboutCta {
