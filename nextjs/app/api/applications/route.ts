@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin, getUserFromToken } from '@/lib/supabase-admin';
 import type { Application, ApplicationStatus } from '@/lib/types';
-import { sendApplicationConfirmation, sendNewApplicationAlert, sendStatusUpdate } from '@/lib/email';
+import { sendApplicationConfirmation, sendNewApplicationAlert, sendStatusUpdate, sendApplicationWithdrawal } from '@/lib/email';
 
 async function getRole(userId: string): Promise<'candidate' | 'employer' | null> {
   const [{ data: c }, { data: e }] = await Promise.all([
@@ -124,27 +124,30 @@ export async function POST(req: NextRequest) {
   const job = (data as unknown as { job: { title: string; company: string; country: string } }).job;
   const { data: candidateProfile } = await supabaseAdmin
     .from('candidates')
-    .select('full_name, email')
+    .select('full_name, email, phone')
     .eq('id', candidate.id)
     .single();
 
   if (candidateProfile && job) {
-    const cand = candidateProfile as { full_name: string; email: string };
+    const cand = candidateProfile as { full_name: string; email: string; phone?: string };
+    const appId = (data as unknown as { id: string }).id;
     void Promise.all([
       sendApplicationConfirmation({
         candidateEmail: cand.email,
-        candidateName: cand.full_name,
-        jobTitle: job.title,
-        company: job.company,
-        country: job.country,
+        candidateName:  cand.full_name,
+        jobTitle:       job.title,
+        company:        job.company,
+        country:        job.country,
+        applicationId:  appId,
       }),
       sendNewApplicationAlert({
-        candidateName: cand.full_name,
+        candidateName:  cand.full_name,
         candidateEmail: cand.email,
-        jobTitle: job.title,
-        company: job.company,
-        jobId: body.job_id,
-        applicationId: (data as unknown as { id: string }).id,
+        candidatePhone: cand.phone,
+        jobTitle:       job.title,
+        company:        job.company,
+        jobId:          body.job_id,
+        applicationId:  appId,
       }),
     ]);
   }
@@ -185,7 +188,7 @@ export async function PATCH(req: NextRequest) {
     }
     const { data: app } = await supabaseAdmin
       .from('applications')
-      .select('id, status')
+      .select('id, status, job:jobs(title)')
       .eq('id', body.application_id)
       .eq('candidate_id', candidateRow.id)
       .single();
@@ -204,19 +207,37 @@ export async function PATCH(req: NextRequest) {
       .single();
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+    // Send withdrawal emails (admin notification + candidate confirmation)
+    const jobTitle = (app as unknown as { job: { title: string } | null }).job?.title ?? 'Unknown Position';
+    const { data: withdrawCand } = await supabaseAdmin
+      .from('candidates')
+      .select('full_name, email')
+      .eq('id', candidateRow.id)
+      .single();
+    if (withdrawCand) {
+      const wc = withdrawCand as { full_name: string; email: string };
+      void sendApplicationWithdrawal({
+        candidateName:  wc.full_name,
+        candidateEmail: wc.email,
+        jobTitle,
+        applicationId:  body.application_id,
+      });
+    }
+
     return NextResponse.json({ application: data as Application });
   }
 
   // Employer update path
   const { data: app } = await supabaseAdmin
     .from('applications')
-    .select('job_id, candidate_id, job:jobs(employer_id, title, company)')
+    .select('job_id, candidate_id, job:jobs(employer_id, title, company, country)')
     .eq('id', body.application_id)
     .single();
 
   if (!app) return NextResponse.json({ error: 'Application not found' }, { status: 404 });
 
-  const jobData = app.job as unknown as { employer_id: string; title: string; company: string };
+  const jobData = app.job as unknown as { employer_id: string; title: string; company: string; country: string };
   const employerId = jobData?.employer_id;
   if (employerId !== user.id) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -240,10 +261,11 @@ export async function PATCH(req: NextRequest) {
     const cp = candProfile as { full_name: string; email: string };
     void sendStatusUpdate({
       candidateEmail: cp.email,
-      candidateName: cp.full_name,
-      jobTitle: jobData.title,
-      company: jobData.company,
-      newStatus: body.status,
+      candidateName:  cp.full_name,
+      jobTitle:       jobData.title,
+      company:        jobData.company,
+      country:        jobData.country,
+      newStatus:      body.status,
     });
   }
 

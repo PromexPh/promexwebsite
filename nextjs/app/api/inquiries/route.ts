@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { sendInquiryAlert } from '@/lib/email';
+import { sendInquiryAlert, sendInquiryConfirmation } from '@/lib/email';
 
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
@@ -48,18 +48,28 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   void sendInquiryAlert({
-    companyName: String(body.companyName),
-    contactPerson: String(body.contactPerson),
-    email: String(body.email),
-    phone: String(body.phone),
-    country: String(body.country),
+    companyName:     String(body.companyName),
+    contactPerson:   String(body.contactPerson),
+    email:           String(body.email),
+    phone:           String(body.phone),
+    country:         String(body.country),
     positionsNeeded: String(body.positionsNeeded),
     numberOfWorkers: body.numberOfWorkers ? parseInt(String(body.numberOfWorkers), 10) || null : null,
-    urgency: String(body.urgency),
-    industry: body.industry ? String(body.industry) : undefined,
-    employmentType: body.employmentType ? String(body.employmentType) : undefined,
-    salaryRange: body.salaryRange ? String(body.salaryRange) : undefined,
-    message: messageParts.join('\n\n') || undefined,
+    urgency:         String(body.urgency),
+    industry:        body.industry       ? String(body.industry)       : undefined,
+    employmentType:  body.employmentType ? String(body.employmentType) : undefined,
+    salaryRange:     body.salaryRange    ? String(body.salaryRange)    : undefined,
+    message:         messageParts.join('\n\n') || undefined,
+  });
+
+  void sendInquiryConfirmation({
+    email:           String(body.email),
+    companyName:     String(body.companyName),
+    contactPerson:   String(body.contactPerson),
+    positionsNeeded: String(body.positionsNeeded),
+    numberOfWorkers: body.numberOfWorkers ? parseInt(String(body.numberOfWorkers), 10) || null : null,
+    urgency:         String(body.urgency),
+    country:         String(body.country),
   });
 
   return NextResponse.json({ inquiry: data }, { status: 201 });

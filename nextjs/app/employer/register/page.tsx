@@ -212,6 +212,12 @@ function EmployerRegisterInner() {
             { onConflict: 'user_id' }
           );
           if (dbError) { setError(dbError.message); setLoading(false); return; }
+          // Fire-and-forget welcome email for new OAuth employer
+          void fetch('/api/auth/welcome', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+            body: JSON.stringify({ role: 'employer' }),
+          });
           setRegEmail(form.email);
           setRegistered(true);
         } else {

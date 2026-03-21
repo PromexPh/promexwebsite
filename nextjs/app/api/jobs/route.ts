@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin, getUserFromToken } from '@/lib/supabase-admin';
 import { isAdminRequest } from '@/lib/admin-auth';
 import type { Job } from '@/lib/types';
+import { sendJobPostingLive } from '@/lib/email';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
@@ -115,7 +116,7 @@ export async function POST(req: NextRequest) {
 
   const { data: employer } = await supabaseAdmin
     .from('employers')
-    .select('id, is_verified')
+    .select('id, is_verified, email, company_name, contact_person')
     .eq('user_id', user.id)
     .single();
 
@@ -139,5 +140,22 @@ export async function POST(req: NextRequest) {
     .select().single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Send job-live notification only for active (verified employer) postings
+  if (jobStatus === 'active') {
+    const emp = employer as unknown as { email?: string; company_name?: string; contact_person?: string };
+    if (emp.email) {
+      void sendJobPostingLive({
+        employerEmail: emp.email,
+        companyName:   emp.company_name ?? body.company ?? '',
+        contactPerson: emp.contact_person ?? '',
+        jobTitle:      body.title ?? '',
+        jobId:         (data as unknown as { id: string }).id,
+        country:       body.country ?? '',
+        industry:      body.industry ?? '',
+      });
+    }
+  }
+
   return NextResponse.json({ job: data, isDraft: jobStatus === 'draft' }, { status: 201 });
 }
