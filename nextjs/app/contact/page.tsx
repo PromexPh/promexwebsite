@@ -101,21 +101,16 @@ export default function ContactPage() {
           <Reveal animation="fade-up">
             <div className={styles.contactInfoGrid}>
               <div className={styles.mapPlaceholder}>
-                <div className={styles.mapInner}>
-                  <i className="fa-solid fa-location-dot" aria-hidden="true" />
-                  <p className={styles.mapAddress}>
-                    Suite A, 2/F Vision Building,<br />
-                    162 Pasig Blvd, Pasig, 1800 Metro Manila
-                  </p>
-                  <a
-                    href="https://maps.google.com/?q=Vision+Building+162+Pasig+Blvd+Pasig+Metro+Manila+Philippines"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.mapLinkBtn}
-                  >
-                    View on Google Maps
-                  </a>
-                </div>
+                <iframe
+                  src="https://www.google.com/maps?q=Vision+Building,+162+Pasig+Blvd,+Pasig,+Metro+Manila&output=embed"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Promex Company office location"
+                />
               </div>
 
               <div className={styles.contactDetails}>
@@ -126,7 +121,11 @@ export default function ContactPage() {
                     <div className={styles.contactDetailIcon}><i className="fa-solid fa-location-dot" aria-hidden="true" /></div>
                     <div>
                       <p className={styles.contactDetailLabel}>OFFICE ADDRESS</p>
-                      <p className={styles.contactDetailValue}>Suite A, Second Floor, Vision Building, 162 Pasig Blvd, Pasig, 1800 Metro Manila, Philippines</p>
+                      <p className={styles.contactDetailValue}>
+                        <a href="https://maps.google.com/maps?cid=0x3397c93a2fbaed95:0x6b0c659848c94dde" target="_blank" rel="noopener noreferrer" className={styles.addressLink}>
+                          Suite A, Second Floor, Vision Building, 162 Pasig Blvd, Pasig, 1800 Metro Manila, Philippines
+                        </a>
+                      </p>
                     </div>
                   </li>
                   <li>
@@ -140,7 +139,7 @@ export default function ContactPage() {
                     <div className={styles.contactDetailIcon}><i className="fa-regular fa-envelope" aria-hidden="true" /></div>
                     <div>
                       <p className={styles.contactDetailLabel}>EMAIL ADDRESS</p>
-                      <p className={styles.contactDetailValue}>connect@promexph.com</p>
+                      <p className={styles.contactDetailValue}><a href="mailto:connect@promexph.com" className={styles.emailLink}>connect@promexph.com</a></p>
                     </div>
                   </li>
                   <li>

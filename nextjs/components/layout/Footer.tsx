@@ -25,9 +25,10 @@ const contactItems: { icon: string; text: string; link?: string }[] = [
   {
     icon: 'fa-solid fa-location-dot',
     text: 'Suite A, 2/F Vision Building,\n162 Pasig Blvd, Pasig, 1800 Metro Manila',
+    link: 'https://maps.google.com/maps?cid=0x3397c93a2fbaed95:0x6b0c659848c94dde',
   },
   { icon: 'fa-solid fa-phone',    text: '+63 2 7746 4689'            },
-  { icon: 'fa-solid fa-envelope', text: 'connect@promexph.com'     },
+  { icon: 'fa-solid fa-envelope', text: 'connect@promexph.com', link: 'mailto:connect@promexph.com' },
   { icon: 'fa-solid fa-id-badge', text: 'License No. 149-LB-051316-R', link: 'https://dmw.gov.ph' },
 ];
 
@@ -108,7 +109,9 @@ export default function Footer() {
                   <span className={styles.contactText}>
                     {item.link ? (
                       <a href={item.link} target="_blank" rel="noopener noreferrer" className={styles.contactLink}>
-                        {item.text}
+                        {item.text.split('\n').map((line, i, arr) => (
+                          <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
+                        ))}
                       </a>
                     ) : (
                       item.text.split('\n').map((line, i, arr) => (

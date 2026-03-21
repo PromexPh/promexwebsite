@@ -101,7 +101,7 @@ const sections = [
         <p>If you have any questions about this Privacy Policy or wish to exercise your data rights, please contact us:</p>
         <ul>
           <li><strong>Email:</strong> <a href="mailto:connect@promexph.com">connect@promexph.com</a></li>
-          <li><strong>Address:</strong> Suite A, 2/F Vision Building, 162 Pasig Blvd, Pasig City, Philippines</li>
+          <li><strong>Address:</strong> <a href="https://maps.google.com/maps?cid=0x3397c93a2fbaed95:0x6b0c659848c94dde" target="_blank" rel="noopener noreferrer">Suite A, 2/F Vision Building, 162 Pasig Blvd, Pasig City, Philippines</a></li>
         </ul>
       </>
     ),

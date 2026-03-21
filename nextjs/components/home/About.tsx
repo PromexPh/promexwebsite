@@ -91,8 +91,8 @@ export default function About() {
         <Reveal animation="fade-left" delay={200} className={styles.aboutVisual}>
           <div className={styles.aboutImgWrap}>
             <Image
-              src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=700&q=80&auto=format&fit=crop"
-              alt="Promex recruitment consultation"
+              src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&q=80"
+              alt="Professional recruitment team at Promex Inc."
               width={700}
               height={440}
               className={styles.aboutImg}
