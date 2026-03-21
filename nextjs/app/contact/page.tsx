@@ -1,49 +1,10 @@
 'use client';
 
-import { useState, ChangeEvent } from 'react';
 import PageHero from '@/components/ui/PageHero';
 import Reveal from '@/components/ui/Reveal';
 import styles from './page.module.css';
 
-
-const vacancies = [
-  { category: 'Healthcare',    title: 'Registered Nurse',         location: 'Saudi Arabia', slots: 50,  urgent: true  },
-  { category: 'Engineering',   title: 'Civil Engineer',            location: 'UAE',          slots: 20,  urgent: false },
-  { category: 'Hospitality',   title: 'Head Chef',                 location: 'Qatar',        slots: 10,  urgent: true  },
-  { category: 'Manufacturing', title: 'Machine Operator',          location: 'South Korea',  slots: 30,  urgent: false },
-  { category: 'Healthcare',    title: 'Caregiver',                 location: 'Germany',      slots: 40,  urgent: true  },
-  { category: 'IT',            title: 'Software Developer',        location: 'Singapore',    slots: 15,  urgent: false },
-  { category: 'Engineering',   title: 'Welder (ASME)',             location: 'Kuwait',       slots: 25,  urgent: true  },
-  { category: 'Hospitality',   title: 'Housekeeping Supervisor',   location: 'UK',           slots: 12,  urgent: false },
-];
-
-const desiredPositions = [
-  'Registered Nurse', 'Caregiver', 'Civil Engineer', 'Welder (ASME)',
-  'Machine Operator', 'Head Chef', 'Housekeeping Supervisor', 'Software Developer', 'Other',
-];
-
-const educationLevels = [
-  'High School Diploma', 'Vocational / Technical Certificate', 'Associate Degree',
-  "Bachelor's Degree", "Master's Degree", 'Doctorate / PhD',
-];
-
-const categoryClassMap: Record<string, string> = {
-  Healthcare:    'catHealthcare',
-  Engineering:   'catEngineering',
-  Hospitality:   'catHospitality',
-  Manufacturing: 'catManufacturing',
-  IT:            'catIt',
-};
-
 export default function ContactPage() {
-  const [selectedFile, setSelectedFile] = useState<string | null>(null);
-
-  function onFileSelected(e: ChangeEvent<HTMLInputElement>) {
-    if (e.target.files?.[0]) {
-      setSelectedFile(e.target.files[0].name);
-    }
-  }
-
   return (
     <>
       <PageHero
@@ -129,123 +90,6 @@ export default function ContactPage() {
                   </button>
                 </form>
               </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* For Job Seekers */}
-      <section id="apply" className={styles.seekersSection}>
-        <div className="container">
-          <Reveal animation="fade-up">
-            <div className={styles.sectionHeader}>
-              <span className={`${styles.sectionBadge} ${styles.sectionBadgeGreen}`}>FOR JOB SEEKERS</span>
-              <h2 className={styles.sectionTitle}>Seeking International Employment?</h2>
-              <p className={styles.sectionSub}>
-                Browse our open vacancies and apply online. Our recruitment team will review your application and contact you for next steps.
-              </p>
-            </div>
-          </Reveal>
-
-          <Reveal animation="fade-up">
-            <h3 className={styles.subsectionTitle}>Open Vacancies</h3>
-            <div className={styles.vacanciesGrid}>
-              {vacancies.map((job) => (
-                <div key={job.title} className={styles.vacancyCard}>
-                  <div className={styles.vacancyTop}>
-                    <span className={`${styles.vacancyCategory} ${styles[categoryClassMap[job.category]]}`}>
-                      {job.category}
-                    </span>
-                    {job.urgent && <span className={styles.vacancyUrgent}>Urgent</span>}
-                  </div>
-                  <h4 className={styles.vacancyTitle}>{job.title}</h4>
-                  <p className={styles.vacancyLocation}>
-                    <i className="fa-solid fa-location-dot" aria-hidden="true" /> {job.location}
-                  </p>
-                  <p className={styles.vacancySlots}>{job.slots} slots available</p>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-
-          <Reveal animation="fade-up">
-            <div className={styles.appFormCard}>
-              <h3 className={styles.appFormTitle}>Job Application Form</h3>
-              <form className={styles.appForm} onSubmit={(e) => e.preventDefault()}>
-                <div className={`${styles.formRow} ${styles.formRow3}`}>
-                  <div className={styles.formGroup}>
-                    <label>Full Name <span className={styles.req}>*</span></label>
-                    <input type="text" placeholder="Your full name" />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Email Address <span className={styles.req}>*</span></label>
-                    <input type="email" placeholder="your@email.com" />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Phone Number <span className={styles.req}>*</span></label>
-                    <input type="tel" placeholder="+63 9xx xxx xxxx" />
-                  </div>
-                </div>
-                <div className={`${styles.formRow} ${styles.formRow3}`}>
-                  <div className={styles.formGroup}>
-                    <label>Date of Birth <span className={styles.req}>*</span></label>
-                    <input type="date" />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Nationality <span className={styles.req}>*</span></label>
-                    <input type="text" placeholder="e.g. Filipino" />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Current Location <span className={styles.req}>*</span></label>
-                    <input type="text" placeholder="e.g. Metro Manila" />
-                  </div>
-                </div>
-                <div className={`${styles.formRow} ${styles.formRow3}`}>
-                  <div className={styles.formGroup}>
-                    <label>Desired Position <span className={styles.req}>*</span></label>
-                    <select defaultValue="">
-                      <option value="" disabled>Select a position...</option>
-                      {desiredPositions.map((p) => <option key={p}>{p}</option>)}
-                    </select>
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Years of Experience <span className={styles.req}>*</span></label>
-                    <input type="number" placeholder="0" min={0} />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Highest Education <span className={styles.req}>*</span></label>
-                    <select defaultValue="">
-                      <option value="" disabled>Select education level...</option>
-                      {educationLevels.map((l) => <option key={l}>{l}</option>)}
-                    </select>
-                  </div>
-                </div>
-                <div className={`${styles.formGroup} ${styles.formGroupFull}`}>
-                  <label>Resume / CV Upload <span className={styles.req}>*</span></label>
-                  <label className={styles.fileUploadArea} htmlFor="resumeUpload">
-                    {selectedFile ? (
-                      <>
-                        <i className="fa-regular fa-file-lines" aria-hidden="true" />
-                        <span className={styles.uploadFilename}>{selectedFile}</span>
-                      </>
-                    ) : (
-                      <>
-                        <i className="fa-solid fa-arrow-up-from-bracket" aria-hidden="true" />
-                        <span className={styles.uploadLabel}>Click to upload or drag and drop</span>
-                        <span className={styles.uploadHint}>PDF, DOCX, up to 5MB</span>
-                      </>
-                    )}
-                  </label>
-                  <input id="resumeUpload" type="file" accept=".pdf,.docx" onChange={onFileSelected} hidden />
-                </div>
-                <div className={`${styles.formGroup} ${styles.formGroupFull}`}>
-                  <label>Cover Letter</label>
-                  <textarea rows={4} placeholder="Tell us about yourself, your experience, and why you want to work abroad..." />
-                </div>
-                <button type="submit" className={`${styles.submitBtn} ${styles.submitBtnGreen}`}>
-                  <i className="fa-regular fa-paper-plane" aria-hidden="true" /> Submit Application
-                </button>
-              </form>
             </div>
           </Reveal>
         </div>
