@@ -1,20 +1,9 @@
 import Image from 'next/image';
-import { TrendingUp } from 'lucide-react';
 import Reveal from '@/components/ui/Reveal';
 import Button from '@/components/ui/Button';
 import styles from './Industries.module.css';
 
-type Industry = {
-  icon: string;
-  title: string;
-  roles: string;
-  color: string;
-  image?: string;
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  LucideIcon?: React.ElementType<any>;
-};
-
-const industries: Industry[] = [
+const industries = [
   { icon: 'fa-solid fa-heart-pulse', title: 'Healthcare',    roles: 'Nurses, Caregivers, Medical Technologists',      color: 'primary', image: '/images/industries_icons/healthcare.png'  },
   { icon: 'fa-solid fa-wrench',      title: 'Engineering',   roles: 'Engineers, Welders, Electricians, Mechanics',   color: 'accent',  image: '/images/industries_icons/Engineering.png'  },
   { icon: 'fa-solid fa-utensils',    title: 'Hospitality',   roles: 'Chefs, Hotel Management, F&B Servers',          color: 'magenta', image: '/images/industries_icons/hospatility.png'  },
@@ -22,8 +11,8 @@ const industries: Industry[] = [
   { icon: 'fa-solid fa-desktop',     title: 'IT & Telecom',  roles: 'Software Developers, Network Engineers',        color: 'accent',  image: '/images/industries_icons/it.png'           },
   { icon: 'fa-solid fa-leaf',        title: 'Agriculture',   roles: 'Farm Workers, Fisheries, Horticulturists',      color: 'magenta', image: '/images/industries_icons/agriculters.png'  },
   { icon: 'fa-solid fa-bag-shopping',title: 'Retail & Service', roles: 'Sales Associates, Call Center Agents',      color: 'purple',  image: '/images/industries_icons/retail.png'       },
-  { icon: 'fa-solid fa-coins',       title: 'Finance & Accounting', roles: 'Accountants, Financial Analysts, Auditors, Tax Specialists', color: 'primary', LucideIcon: TrendingUp },
-];
+  { icon: 'fa-solid fa-coins',       title: 'Finance & Accounting', roles: 'Accountants, Financial Analysts, Auditors, Tax Specialists', color: 'primary', emoji: '💰' },
+] as const;
 
 export default function Industries() {
   return (
@@ -47,11 +36,11 @@ export default function Industries() {
             <Reveal key={industry.title} animation="fade-up" delay={60 * (i % 4)}>
               <div className={styles.industryCard}>
                 <div className={`${styles.industryIconWrap} ${styles[`industryIconWrap--${industry.color}`]}`}>
-                  {industry.LucideIcon ? (
-                    <industry.LucideIcon size={36} />
+                  {'emoji' in industry ? (
+                    <span className={styles.industryEmoji} aria-hidden="true">{industry.emoji}</span>
                   ) : (
                     <Image
-                      src={industry.image!}
+                      src={industry.image}
                       alt={`${industry.title} icon`}
                       width={57}
                       height={57}

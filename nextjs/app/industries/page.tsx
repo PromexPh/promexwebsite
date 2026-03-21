@@ -71,7 +71,8 @@ const industries = [
     name: 'Finance & Accounting',
     tagline: 'Trusted numbers behind global business',
     description: 'Promex connects international employers with highly trained Filipino finance professionals who bring precision, integrity, and global accounting standards to their roles. Our candidates are proficient in international financial reporting and compliance frameworks.',
-    image: '/images/industries_images/finance.jpg',
+    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80',
+    imageAlt: 'Finance and accounting professionals',
     badge: undefined,
     applyUrl: '/jobs?industry=Finance',
     roles: ['Certified Public Accountants (CPA)', 'Financial Analysts & Controllers', 'Internal & External Auditors', 'Tax Specialists & Compliance Officers', 'Bookkeepers & Accounting Clerks', 'Treasury & Investment Analysts'],
@@ -99,7 +100,7 @@ export default function IndustriesPage() {
                 <div className={styles.indImagePanel}>
                   <Image
                     src={ind.image}
-                    alt={ind.name}
+                    alt={'imageAlt' in ind ? (ind as { imageAlt: string }).imageAlt : ind.name}
                     fill
                     className={styles.indImage}
                     sizes="(max-width: 900px) 100vw, 45vw"
