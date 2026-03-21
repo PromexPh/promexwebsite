@@ -232,6 +232,7 @@ function EmployerRegisterInner() {
               industry:       form.industry,
               country:        form.country,
               phone:          form.phone || null,
+              signup_method:  oauthProvider || 'email',
             });
             dbError = error;
           }

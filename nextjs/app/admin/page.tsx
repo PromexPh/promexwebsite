@@ -7,6 +7,12 @@ import styles from './page.module.css';
 
 const ADMIN_KEY = 'promex_admin_session';
 
+function formatProvider(method?: string) {
+  if (method === 'google') return '🔵 Google';
+  if (method === 'linkedin_oidc' || method === 'linkedin') return '🔷 LinkedIn';
+  return '✉️ Email';
+}
+
 function adminHeaders() {
   return {
     'Content-Type': 'application/json',
@@ -198,9 +204,11 @@ function JobsTab() {
 // Employers tab
 // ─────────────────────────────────────────────────────────────────────────────
 function EmployersTab() {
-  const [employers, setEmployers] = useState<any[]>([]);
-  const [loading, setLoading]     = useState(true);
-  const [filter, setFilter]       = useState('');
+  const [employers, setEmployers]   = useState<any[]>([]);
+  const [loading, setLoading]       = useState(true);
+  const [filter, setFilter]         = useState('');
+  const [syncing, setSyncing]       = useState(false);
+  const [syncMsg, setSyncMsg]       = useState('');
 
   async function load() {
     setLoading(true);
@@ -223,6 +231,17 @@ function EmployersTab() {
     load();
   }
 
+  async function syncUsers() {
+    if (!confirm('Sync all OAuth users without a profile record? This creates stub records for missing profiles.')) return;
+    setSyncing(true);
+    setSyncMsg('');
+    const res = await fetch('/api/admin/sync-users', { method: 'POST', headers: adminHeaders() });
+    const d = await res.json();
+    setSyncMsg(d.error ? `Error: ${d.error}` : `Synced ${d.synced} of ${d.total} users.${d.errors?.length ? ` Errors: ${d.errors.join('; ')}` : ''}`);
+    setSyncing(false);
+    load();
+  }
+
   const filtered = employers.filter((e) =>
     !filter || e.company_name?.toLowerCase().includes(filter.toLowerCase()) || e.email?.toLowerCase().includes(filter.toLowerCase())
   );
@@ -231,20 +250,25 @@ function EmployersTab() {
     <div>
       <div className={styles.tabHeader}>
         <input className={styles.searchInput} placeholder="Search employers…" value={filter} onChange={(e) => setFilter(e.target.value)} />
+        <button className={styles.addBtn} onClick={syncUsers} disabled={syncing}>
+          <i className="fa-solid fa-rotate" /> {syncing ? 'Syncing…' : 'Sync OAuth Users'}
+        </button>
       </div>
+      {syncMsg && <p style={{ fontSize: '0.875rem', color: '#374151', marginBottom: 12 }}>{syncMsg}</p>}
       {loading ? <div className={styles.tableLoading}><i className="fa-solid fa-spinner fa-spin" /> Loading…</div> : (
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>Company</th><th>Contact</th><th>Email</th><th>Industry</th><th>Country</th><th>Verified</th><th>Registered</th><th>Actions</th>
+              <th>Company</th><th>Contact</th><th>Email</th><th>Signup</th><th>Industry</th><th>Country</th><th>Verified</th><th>Registered</th><th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filtered.map((emp) => (
               <tr key={emp.id}>
-                <td><strong>{emp.company_name}</strong></td>
+                <td><strong>{emp.company_name || <span style={{ color: '#9ca3af' }}>—</span>}</strong></td>
                 <td>{emp.contact_person}</td>
                 <td>{emp.email}</td>
+                <td>{formatProvider(emp.signup_method)}</td>
                 <td>{emp.industry}</td>
                 <td>{emp.country}</td>
                 <td>
@@ -299,7 +323,7 @@ function CandidatesTab() {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>Name</th><th>Email</th><th>Phone</th><th>Country</th><th>Position</th><th>Applications</th><th>Registered</th>
+              <th>Name</th><th>Email</th><th>Signup</th><th>Phone</th><th>Country</th><th>Position</th><th>Applications</th><th>Registered</th>
             </tr>
           </thead>
           <tbody>
@@ -307,6 +331,7 @@ function CandidatesTab() {
               <tr key={c.id}>
                 <td><strong>{c.full_name}</strong></td>
                 <td>{c.email}</td>
+                <td>{formatProvider(c.signup_method)}</td>
                 <td>{c.phone}</td>
                 <td>{c.country}</td>
                 <td>{c.desired_position}</td>

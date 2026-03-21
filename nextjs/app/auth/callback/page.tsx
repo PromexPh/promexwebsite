@@ -28,12 +28,36 @@ function AuthCallbackInner() {
         if (role === 'employer') {
           const { data: existingEmployer } = await supabase
             .from('employers')
+            .select('id, company_name')
+            .eq('user_id', s.user.id)
+            .single();
+          if (!existingEmployer) {
+            const metadata = s.user.user_metadata;
+            await supabase.from('employers').insert({
+              user_id:        s.user.id,
+              contact_person: metadata?.full_name || metadata?.name || '',
+              email:          s.user.email,
+              signup_method:  s.user.app_metadata?.provider || 'email',
+              created_at:     new Date().toISOString(),
+            });
+          }
+          router.replace(existingEmployer?.company_name ? '/employer/dashboard' : '/employer/register?oauth=true');
+        } else {
+          const { data: existingProfile } = await supabase
+            .from('candidates')
             .select('id')
             .eq('user_id', s.user.id)
             .single();
-          router.replace(existingEmployer ? '/employer/dashboard' : '/employer/register?oauth=true');
-        } else {
-          // Candidate dashboard auto-creates the row on load via upsert
+          if (!existingProfile) {
+            const metadata = s.user.user_metadata;
+            await supabase.from('candidates').insert({
+              user_id:       s.user.id,
+              full_name:     metadata?.full_name || metadata?.name || '',
+              email:         s.user.email,
+              signup_method: s.user.app_metadata?.provider || 'email',
+              created_at:    new Date().toISOString(),
+            });
+          }
           router.replace('/candidate/dashboard');
         }
       }

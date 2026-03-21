@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
   let insertError: { message: string } | null = null;
 
   if (role === 'candidate') {
-    const row: Record<string, unknown> = { user_id: userId, full_name, email };
+    const row: Record<string, unknown> = { user_id: userId, full_name, email, signup_method: 'email' };
     if (body.phone) row.phone = body.phone;
     if (body.nationality) row.nationality = body.nationality;
     if (body.current_location) row.current_location = body.current_location;
@@ -104,6 +104,7 @@ export async function POST(req: NextRequest) {
       contact_person: body.contact_person ?? full_name,
       email,
       is_verified: false,
+      signup_method: 'email',
     };
     if (body.phone) row.phone = body.phone;
     if (body.country) row.country = body.country;
