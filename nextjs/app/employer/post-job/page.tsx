@@ -179,7 +179,7 @@ function PostJobInner() {
         </div>
         <p className={styles.pendingNote}>
           Questions? Email us at{' '}
-          <a href="mailto:inquiries@promexph.com">inquiries@promexph.com</a>
+          <a href="mailto:connect@promexph.com">connect@promexph.com</a>
         </p>
       </div>
     );
