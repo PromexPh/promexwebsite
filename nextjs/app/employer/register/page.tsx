@@ -151,7 +151,7 @@ function EmployerRegisterInner() {
   async function handleGoogleLogin() {
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/employer/dashboard` },
+      options: { redirectTo: `${window.location.origin}/auth/callback?role=employer` },
     });
     if (oauthError) setError(oauthError.message);
   }
@@ -160,7 +160,7 @@ function EmployerRegisterInner() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'linkedin_oidc',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/callback?role=employer`,
         scopes: 'openid profile email',
       },
     });

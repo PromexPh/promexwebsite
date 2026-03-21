@@ -455,6 +455,8 @@ function CandidateDashboardInner() {
     async function load() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { router.push('/candidate/register'); return; }
+      const metaRole = session.user.user_metadata?.role as string | undefined;
+      if (metaRole === 'employer') { router.push('/employer/dashboard'); return; }
       const userId = session.user.id;
 
       const { data: cand } = await supabase.from('candidates').select('*').eq('user_id', userId).single();
@@ -611,7 +613,7 @@ function CandidateDashboardInner() {
 
   async function signOut() {
     await supabase.auth.signOut();
-    router.push('/candidate/register');
+    router.push('/');
   }
 
   if (loading) {

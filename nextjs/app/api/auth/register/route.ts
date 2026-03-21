@@ -73,6 +73,7 @@ export async function POST(req: NextRequest) {
     email,
     password,
     email_confirm: true,
+    user_metadata: { role, full_name },
   });
 
   if (authError) {

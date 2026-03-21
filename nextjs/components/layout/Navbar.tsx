@@ -64,7 +64,8 @@ export default function Navbar() {
   }, []);
 
   // ── Auth ─────────────────────────────────────────────────────────────────────
-  async function loadUserRole(userId: string) {
+  async function loadUserRole(s: Session) {
+    const userId = s.user.id;
     const [{ data: cand }, { data: emp }] = await Promise.all([
       supabase.from('candidates').select('full_name').eq('user_id', userId).single(),
       supabase.from('employers').select('company_name').eq('user_id', userId).single(),
@@ -76,16 +77,21 @@ export default function Navbar() {
       setUserRole('employer');
       setDisplayName((emp as { company_name?: string }).company_name ?? '');
     } else {
-      setUserRole(null);
-      setDisplayName('');
+      // Fall back to user_metadata for OAuth users not yet in DB
+      const metaRole = (s.user.user_metadata?.role as UserRole) ?? null;
+      const metaName = (s.user.user_metadata?.full_name as string | undefined)
+        ?? s.user.email
+        ?? '';
+      setUserRole(metaRole);
+      setDisplayName(metaName);
     }
   }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session: s } }) => {
       setSession(s);
-      if (s?.user.id) {
-        loadUserRole(s.user.id).finally(() => setAuthLoaded(true));
+      if (s) {
+        loadUserRole(s).finally(() => setAuthLoaded(true));
       } else {
         setAuthLoaded(true);
       }
@@ -93,8 +99,8 @@ export default function Navbar() {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
       setSession(s);
-      if (s?.user.id) {
-        loadUserRole(s.user.id);
+      if (s) {
+        loadUserRole(s);
       } else {
         setUserRole(null);
         setDisplayName('');

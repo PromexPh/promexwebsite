@@ -125,6 +125,8 @@ function EmployerDashboardInner() {
     async function load() {
       const { data: sessionData } = await supabase.auth.getSession();
       if (!sessionData.session) { router.push('/employer/register'); return; }
+      const metaRole = sessionData.session.user.user_metadata?.role as string | undefined;
+      if (metaRole === 'candidate') { router.push('/candidate/dashboard'); return; }
       const t = sessionData.session.access_token;
       setToken(t);
       const userId = sessionData.session.user.id;
@@ -215,7 +217,7 @@ function EmployerDashboardInner() {
 
   async function signOut() {
     await supabase.auth.signOut();
-    router.push('/employer/register');
+    router.push('/');
   }
 
   if (loading) {

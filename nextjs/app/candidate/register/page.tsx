@@ -121,7 +121,10 @@ function CandidateRegisterInner() {
   }
 
   async function handleGoogleLogin() {
-    const { error: e } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${window.location.origin}/candidate/dashboard` } });
+    const { error: e } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: `${window.location.origin}/auth/callback?role=candidate` },
+    });
     if (e) setError(e.message);
   }
 
@@ -129,7 +132,7 @@ function CandidateRegisterInner() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'linkedin_oidc',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/callback?role=candidate`,
         scopes: 'openid profile email',
       },
     });
