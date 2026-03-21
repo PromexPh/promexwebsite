@@ -50,7 +50,7 @@ export default function EmployerInquiryPage() {
   const [submitError, setSubmitError] = useState('');
   const [phoneTouched, setPhoneTouched] = useState(false);
 
-  const phoneError = phoneTouched ? validatePhone(form.phone) : '';
+  const phoneError = phoneTouched && form.phone.trim() ? validatePhone(form.phone) : '';
 
   function set(field: keyof typeof initialForm, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -208,9 +208,9 @@ export default function EmployerInquiryPage() {
                       <input id="email" type="email" required placeholder="john.smith@company.com" value={form.email} onChange={(e) => set('email', e.target.value)} />
                     </div>
                     <div className={styles.formGroup}>
-                      <label htmlFor="phone">Phone Number <span className={styles.req}>*</span></label>
+                      <label htmlFor="phone">Phone Number</label>
                       <input
-                        id="phone" type="tel" required placeholder="+971 50 123 4567"
+                        id="phone" type="tel" placeholder="+971 50 123 4567"
                         value={form.phone}
                         onChange={(e) => set('phone', filterPhone(e.target.value))}
                         onKeyDown={handlePhoneKey}

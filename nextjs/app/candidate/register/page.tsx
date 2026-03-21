@@ -101,7 +101,7 @@ function CandidateRegisterInner() {
   const emailError   = touched.email            ? validateEmail(form.email)                                                              : '';
   const pwErrors     = touched.password && mode === 'register'        ? validatePasswordRules(form.password)                            : [];
   const confirmError = touched.confirm_password && mode === 'register' ? (form.confirm_password !== form.password ? 'Passwords do not match' : '') : '';
-  const phoneError   = touched.phone   && mode === 'register'         ? validatePhone(form.phone)                                       : '';
+  const phoneError   = touched.phone   && mode === 'register' && form.phone.trim() ? validatePhone(form.phone) : '';
   const strength     = getStrength(form.password);
 
   // Disable submit until all valid
@@ -110,7 +110,7 @@ function CandidateRegisterInner() {
     !validateEmail(form.email) &&
     validatePasswordRules(form.password).length === 0 &&
     form.confirm_password === form.password &&
-    !validatePhone(form.phone) &&
+    (!form.phone.trim() || !validatePhone(form.phone)) &&
     agreed;
 
   const loginValid = !!form.email && !!form.password;
@@ -281,17 +281,18 @@ function CandidateRegisterInner() {
 
             {mode === 'register' && (
               <div className={styles.formGroup}>
-                <label htmlFor="phone">Phone Number <span className={styles.req}>*</span></label>
+                <label htmlFor="phone">Phone Number</label>
                 <input
                   id="phone" type="tel" value={form.phone}
                   onChange={(e) => update('phone', filterPhone(e.target.value))}
                   onKeyDown={handlePhoneKey}
                   onBlur={() => touch('phone')}
-                  placeholder="+63 912 345 6789" required
+                  placeholder="+63 912 345 6789"
                   aria-invalid={phoneError ? true : undefined}
                   aria-describedby={phoneError ? 'err-phone' : undefined}
                 />
                 {phoneError && <p id="err-phone" className={styles.fieldError}>{phoneError}</p>}
+                {!phoneError && <p className={styles.fieldHint}>Optional — you can add this later in your profile</p>}
               </div>
             )}
 

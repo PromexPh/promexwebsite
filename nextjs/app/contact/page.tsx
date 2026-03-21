@@ -1,5 +1,4 @@
-'use client';
-
+import { Building2, UserCheck, CheckCircle } from 'lucide-react';
 import PageHero from '@/components/ui/PageHero';
 import Reveal from '@/components/ui/Reveal';
 import styles from './page.module.css';
@@ -15,85 +14,6 @@ export default function ContactPage() {
         bgImage="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1600&q=80&auto=format&fit=crop"
         waveFill="var(--color-bg)"
       />
-
-      {/* For Employers */}
-      <section id="employers" className={styles.employersSection}>
-        <div className="container">
-          <Reveal animation="fade-up">
-            <div className={styles.employersGrid}>
-              <div className={styles.employersInfo}>
-                <span className={`${styles.sectionBadge} ${styles.sectionBadgeBlue}`}>FOR EMPLOYERS</span>
-                <h2 className={styles.employersTitle}>Looking for Skilled Professionals?</h2>
-                <p className={styles.employersDesc}>
-                  Tell us about your manpower requirements and we&apos;ll match you with the most qualified Filipino professionals. Our team will respond within 24–48 business hours.
-                </p>
-                <ul className={styles.employersChecklist}>
-                  <li><i className="fa-regular fa-circle-check" aria-hidden="true" /> Customized recruitment solutions</li>
-                  <li><i className="fa-regular fa-circle-check" aria-hidden="true" /> Pre-screened &amp; trade-tested candidates</li>
-                  <li><i className="fa-regular fa-circle-check" aria-hidden="true" /> Full documentation support</li>
-                  <li><i className="fa-regular fa-circle-check" aria-hidden="true" /> Post-deployment follow-through</li>
-                </ul>
-              </div>
-
-              <div className={styles.employersFormCard}>
-                <form className={styles.employersForm} onSubmit={(e) => e.preventDefault()}>
-                  <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                      <label>Company Name <span className={styles.req}>*</span></label>
-                      <input type="text" placeholder="e.g. Gulf Medical University" />
-                    </div>
-                    <div className={styles.formGroup}>
-                      <label>Contact Person <span className={styles.req}>*</span></label>
-                      <input type="text" placeholder="Full name" />
-                    </div>
-                  </div>
-                  <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                      <label>Email Address <span className={styles.req}>*</span></label>
-                      <input type="email" placeholder="company@email.com" />
-                    </div>
-                    <div className={styles.formGroup}>
-                      <label>Phone Number <span className={styles.req}>*</span></label>
-                      <input type="tel" placeholder="+971 xx xxx xxxx" />
-                    </div>
-                  </div>
-                  <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                      <label>Country <span className={styles.req}>*</span></label>
-                      <input type="text" placeholder="e.g. United Arab Emirates" />
-                    </div>
-                    <div className={styles.formGroup}>
-                      <label>Industry <span className={styles.req}>*</span></label>
-                      <input type="text" placeholder="e.g. Healthcare" />
-                    </div>
-                  </div>
-                  <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                      <label>Number of Workers Needed <span className={styles.req}>*</span></label>
-                      <input type="number" placeholder="e.g. 20" />
-                    </div>
-                    <div className={styles.formGroup}>
-                      <label>Job Title / Position <span className={styles.req}>*</span></label>
-                      <input type="text" placeholder="e.g. Registered Nurse" />
-                    </div>
-                  </div>
-                  <div className={`${styles.formGroup} ${styles.formGroupFull}`}>
-                    <label>Job Description</label>
-                    <textarea rows={4} placeholder="Describe the roles, responsibilities, and requirements..." />
-                  </div>
-                  <div className={`${styles.formGroup} ${styles.formGroupFull}`}>
-                    <label>Preferred Start Date <span className={styles.req}>*</span></label>
-                    <input type="date" />
-                  </div>
-                  <button type="submit" className={`${styles.submitBtn} ${styles.submitBtnBlue}`}>
-                    <i className="fa-regular fa-paper-plane" aria-hidden="true" /> Submit Employer Inquiry
-                  </button>
-                </form>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
 
       {/* Contact Info */}
       <section className={styles.contactInfoSection}>
@@ -157,6 +77,73 @@ export default function ContactPage() {
                   <a href="/instagram" className={styles.socialBtn}><i className="fa-brands fa-instagram" aria-hidden="true" /> Instagram</a>
                 </div>
               </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Audience Split */}
+      <section className={styles.audienceSection}>
+        <div className="container">
+          <Reveal animation="fade-up">
+            <div className={styles.audienceGrid}>
+
+              {/* Employer Card */}
+              <div className={`${styles.audienceCard} ${styles.audienceCardBlue}`}>
+                <div className={styles.audienceIconWrap} style={{ background: 'rgba(79,163,199,0.12)', color: '#4FA3C7' }}>
+                  <Building2 size={28} />
+                </div>
+                <h3 className={styles.audienceCardTitle}>Looking to Hire?</h3>
+                <p className={styles.audienceCardDesc}>
+                  Submit a detailed hiring inquiry and our corporate recruitment team will match you with the most qualified Filipino professionals within 24–48 hours.
+                </p>
+                <ul className={styles.audienceChecklist}>
+                  {['Customized recruitment solutions', 'Pre-screened & trade-tested candidates', 'Full documentation support', 'Post-deployment follow-through'].map((item) => (
+                    <li key={item}>
+                      <CheckCircle size={16} className={styles.checkIcon} />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <a href="/employer-inquiry" className={`${styles.audiencePrimaryBtn} ${styles.audiencePrimaryBtnBlue}`}>
+                  Submit Hiring Inquiry →
+                </a>
+                <div className={styles.audienceDivider}><span>or</span></div>
+                <div className={styles.audienceSecondaryBtns}>
+                  <a href="/employer/register?mode=login" className={`${styles.audienceOutlineBtn} ${styles.audienceOutlineBtnBlue}`}>Sign In as Employer</a>
+                  <a href="/employer/register" className={`${styles.audienceOutlineBtn} ${styles.audienceOutlineBtnBlue}`}>Register as Employer</a>
+                </div>
+                <p className={styles.audienceHelper}>
+                  Already registered? Sign in to post jobs and manage applications directly from your dashboard.
+                </p>
+              </div>
+
+              {/* Candidate Card */}
+              <div className={`${styles.audienceCard} ${styles.audienceCardGreen}`}>
+                <div className={styles.audienceIconWrap} style={{ background: 'rgba(5,150,105,0.12)', color: '#059669' }}>
+                  <UserCheck size={28} />
+                </div>
+                <h3 className={styles.audienceCardTitle}>Looking for Work Abroad?</h3>
+                <p className={styles.audienceCardDesc}>
+                  Create your free Promex account to browse overseas job opportunities and apply directly. Joining is free — no placement fees, ever.
+                </p>
+                <ul className={styles.audienceChecklist}>
+                  {['Browse 30+ countries of job opportunities', 'Apply with one profile', 'Track your applications in real time', 'Zero placement fees — guaranteed'].map((item) => (
+                    <li key={item}>
+                      <CheckCircle size={16} className={styles.checkIcon} />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <a href="/candidate/register" className={`${styles.audiencePrimaryBtn} ${styles.audiencePrimaryBtnGreen}`}>
+                  Create Free Account →
+                </a>
+                <div className={styles.audienceDivider}><span>or</span></div>
+                <a href="/candidate/register?mode=login" className={`${styles.audienceOutlineBtn} ${styles.audienceOutlineBtnGreen} ${styles.audienceOutlineBtnFull}`}>
+                  Sign In to Your Account
+                </a>
+              </div>
+
             </div>
           </Reveal>
         </div>

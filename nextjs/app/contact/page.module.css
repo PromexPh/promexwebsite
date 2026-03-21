@@ -647,30 +647,206 @@
   background: rgba(79, 163, 199, 0.05);
 }
 
+/* ---- Audience Split ---- */
+.audienceSection {
+  padding: 80px 0 96px;
+  background: var(--color-bg);
+}
+
+.audienceGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: stretch;
+}
+
+.audienceCard {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+  padding: 36px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.audienceCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.11);
+}
+
+.audienceCardBlue { border-top: 4px solid #4FA3C7; }
+.audienceCardGreen { border-top: 4px solid #059669; }
+
+.audienceIconWrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.audienceCardTitle {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.35rem;
+  color: var(--color-dark-text);
+  margin: 0;
+}
+
+.audienceCardDesc {
+  font-family: var(--font-body);
+  font-size: 0.93rem;
+  line-height: 1.7;
+  color: var(--color-secondary-text);
+  margin: 0;
+}
+
+.audienceChecklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.audienceChecklist li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-dark-text);
+}
+
+.checkIcon {
+  color: #059669;
+  flex-shrink: 0;
+}
+
+.audiencePrimaryBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: #ffffff;
+  text-decoration: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.audiencePrimaryBtn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+}
+
+.audiencePrimaryBtnBlue {
+  background: linear-gradient(135deg, #4FA3C7 0%, #6A2C91 100%);
+}
+
+.audiencePrimaryBtnGreen {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+}
+
+.audienceDivider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #9ca3af;
+  font-size: 0.8rem;
+  font-family: var(--font-body);
+}
+
+.audienceDivider::before,
+.audienceDivider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+.audienceSecondaryBtns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.audienceOutlineBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.audienceOutlineBtnBlue {
+  border: 1.5px solid #4FA3C7;
+  color: #4FA3C7;
+  background: transparent;
+}
+
+.audienceOutlineBtnBlue:hover {
+  background: rgba(79, 163, 199, 0.08);
+}
+
+.audienceOutlineBtnGreen {
+  border: 1.5px solid #059669;
+  color: #059669;
+  background: transparent;
+}
+
+.audienceOutlineBtnGreen:hover {
+  background: rgba(5, 150, 105, 0.08);
+}
+
+.audienceOutlineBtnFull {
+  grid-column: 1 / -1;
+}
+
+.audienceHelper {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: #9ca3af;
+  margin: 0;
+  line-height: 1.5;
+}
+
 /* ---- Responsive ---- */
 @media (max-width: 1024px) {
-  .employersGrid,
   .contactInfoGrid {
     grid-template-columns: 1fr;
     gap: 40px;
   }
 }
 
-@media (max-width: 768px) {
-  .processSection,
-  .employersSection,
-  .seekersSection,
-  .contactInfoSection {
-    padding: 64px 0;
-  }
-
-  .formRow,
-  .formRow3 {
+@media (max-width: 860px) {
+  .audienceGrid {
     grid-template-columns: 1fr;
   }
+}
 
-  .timelineItem {
-    grid-template-columns: 40px 20px 1fr;
-    gap: 0 12px;
+@media (max-width: 768px) {
+  .contactInfoSection,
+  .audienceSection {
+    padding: 64px 0;
   }
 }

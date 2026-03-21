@@ -125,7 +125,7 @@ function EmployerRegisterInner() {
   const emailError    = touched.email           ? validateEmail(form.email)                : '';
   const pwErrors      = touched.password && mode === 'register'         ? validatePasswordRules(form.password)                                        : [];
   const confirmError  = touched.confirm_password && mode === 'register' ? (form.confirm_password !== form.password ? 'Passwords do not match' : '')   : '';
-  const phoneError    = touched.phone    && mode === 'register'         ? validatePhone(form.phone)                                                    : '';
+  const phoneError    = touched.phone    && mode === 'register' && form.phone.trim() ? validatePhone(form.phone) : '';
   const industryError = touched.industry && mode === 'register'         ? (!form.industry ? 'Please select an industry' : '')                         : '';
   const countryError  = touched.country  && mode === 'register'         ? (!form.country  ? 'Please select a country'   : '')                         : '';
   const strength      = getStrength(form.password);
@@ -136,7 +136,7 @@ function EmployerRegisterInner() {
     !validateEmail(form.email) &&
     validatePasswordRules(form.password).length === 0 &&
     form.confirm_password === form.password &&
-    !validatePhone(form.phone) &&
+    (!form.phone.trim() || !validatePhone(form.phone)) &&
     !!form.industry &&
     !!form.country &&
     agreed;
@@ -429,17 +429,18 @@ function EmployerRegisterInner() {
 
             {mode === 'register' && (
               <div className={styles.formGroup}>
-                <label htmlFor="phone">Phone Number <span className={styles.req}>*</span></label>
+                <label htmlFor="phone">Phone Number</label>
                 <input
                   id="phone" type="tel" value={form.phone}
                   onChange={(e) => update('phone', filterPhone(e.target.value))}
                   onKeyDown={handlePhoneKey}
                   onBlur={() => touch('phone')}
-                  placeholder="+971 50 123 4567" required
+                  placeholder="+971 50 123 4567"
                   aria-invalid={phoneError ? true : undefined}
                   aria-describedby={phoneError ? 'err-phone' : undefined}
                 />
                 {phoneError && <p id="err-phone" className={styles.fieldError}>{phoneError}</p>}
+                {!phoneError && <p className={styles.fieldHint}>Optional — you can add this later in your profile</p>}
               </div>
             )}
 
