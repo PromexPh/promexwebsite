@@ -16,7 +16,7 @@ ${opts.preheader ? `<div style="display:none;max-height:0;overflow:hidden;color:
   <!-- Header -->
   <tr><td style="background:linear-gradient(135deg,#4FA3C7 0%,#7C3AED 100%);padding:28px 36px;border-radius:12px 12px 0 0;">
     <table width="100%" cellpadding="0" cellspacing="0"><tr>
-      <td><img src="https://promexph.com/images/logo-white.png" alt="Promex Inc." height="38" style="display:block;"/></td>
+      <td><img src="https://www.promexph.com/images/logo.png" alt="Promex Inc." width="150" height="38" style="display:block;"/></td>
       <td align="right" style="color:rgba(255,255,255,0.8);font-size:12px;vertical-align:middle;font-style:italic;">Overseas Recruitment Partner</td>
     </tr></table>
   </td></tr>
