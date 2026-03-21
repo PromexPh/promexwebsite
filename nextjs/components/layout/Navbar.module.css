@@ -342,16 +342,27 @@
   background: none;
   border: none;
   cursor: pointer;
+  /* padding creates a larger tap target without affecting line layout */
   padding: 0;
   margin-left: auto;
+  /* ensures button itself never blends into bg */
+  position: relative;
+  z-index: 10;
 }
 
 .hamburger span {
   display: block;
+  width: 100%;
   height: 2px;
-  background: #1a1a2e;
+  /* high-contrast dark colour — always visible on white navbar */
+  background: #111827;
   border-radius: 2px;
   transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Hover: lines turn brand blue */
+.hamburger:hover span {
+  background: #4FA3C7;
 }
 
 .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
