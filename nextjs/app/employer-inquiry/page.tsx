@@ -2,6 +2,19 @@
 
 import { useState } from 'react';
 import { Send } from 'lucide-react';
+
+function validatePhone(phone: string): string {
+  if (!phone.trim()) return 'Please enter a valid phone number';
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length < 7 || digits.length > 15) return 'Please enter a valid phone number';
+  return '';
+}
+
+function filterPhone(v: string): string { return v.replace(/[^\d+\s()\-]/g, ''); }
+
+function handlePhoneKey(e: React.KeyboardEvent<HTMLInputElement>) {
+  if (e.key.length === 1 && !/[\d+\s()\-]/.test(e.key)) e.preventDefault();
+}
 import PageHero from '@/components/ui/PageHero';
 import Reveal from '@/components/ui/Reveal';
 import styles from './page.module.css';
@@ -35,6 +48,9 @@ export default function EmployerInquiryPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successData, setSuccessData] = useState<SuccessData | null>(null);
   const [submitError, setSubmitError] = useState('');
+  const [phoneTouched, setPhoneTouched] = useState(false);
+
+  const phoneError = phoneTouched ? validatePhone(form.phone) : '';
 
   function set(field: keyof typeof initialForm, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -193,7 +209,16 @@ export default function EmployerInquiryPage() {
                     </div>
                     <div className={styles.formGroup}>
                       <label htmlFor="phone">Phone Number <span className={styles.req}>*</span></label>
-                      <input id="phone" type="tel" required placeholder="+971 50 123 4567" value={form.phone} onChange={(e) => set('phone', e.target.value)} />
+                      <input
+                        id="phone" type="tel" required placeholder="+971 50 123 4567"
+                        value={form.phone}
+                        onChange={(e) => set('phone', filterPhone(e.target.value))}
+                        onKeyDown={handlePhoneKey}
+                        onBlur={() => setPhoneTouched(true)}
+                        aria-invalid={phoneError ? true : undefined}
+                        aria-describedby={phoneError ? 'err-phone' : undefined}
+                      />
+                      {phoneError && <p id="err-phone" className={styles.fieldError}>{phoneError}</p>}
                     </div>
                   </div>
                 </div>

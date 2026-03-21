@@ -360,3 +360,76 @@
   text-decoration: underline;
 }
 
+/* ---- Validation UI ---- */
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputWrap input {
+  width: 100%;
+  padding-right: 44px;
+}
+
+.eyeBtn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  transition: color 0.2s ease;
+}
+
+.eyeBtn:hover { color: #4FA3C7; }
+
+.fieldError {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: #dc2626;
+  margin: 0;
+}
+
+.fieldErrors {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: #dc2626;
+  margin: 0;
+  padding-left: 16px;
+}
+
+.fieldErrors li { margin: 2px 0; }
+
+.strengthWrap { margin-top: 4px; }
+
+.strengthBar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.strengthSegment {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  transition: background 0.3s ease;
+}
+
+.strengthLabel {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  min-width: 46px;
+  text-align: right;
+}
+
+.formGroup input[aria-invalid="true"],
+.formGroup select[aria-invalid="true"] {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}

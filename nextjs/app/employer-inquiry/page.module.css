@@ -392,3 +392,17 @@
 .consentLabel a:hover {
   text-decoration: underline;
 }
+
+/* ---- Validation UI ---- */
+.fieldError {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: #dc2626;
+  margin: 0;
+}
+
+.formGroup input[aria-invalid="true"],
+.formGroup select[aria-invalid="true"] {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}

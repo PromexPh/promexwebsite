@@ -1,10 +1,11 @@
 'use client';
 
-// TODO: Enable Google and LinkedIn providers in Supabase Dashboard → Authentication → Providers
+// TODO: Enable Google provider in Supabase Dashboard → Authentication → Providers
 // Then add NEXT_PUBLIC_SITE_URL to .env.local and Vercel env vars
 
-import { useState, FormEvent, Suspense } from 'react';
+import { useState, FormEvent, Suspense, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import styles from './page.module.css';
 
@@ -13,16 +14,94 @@ const COUNTRIES  = ['Saudi Arabia', 'UAE', 'Qatar', 'Kuwait', 'Bahrain', 'Oman',
 
 type Mode = 'register' | 'login';
 
+// ── Validation helpers ─────────────────────────────────────────────────────
+
+const EMAIL_TYPOS: Record<string, string> = {
+  'gmial.com': 'gmail.com', 'gmal.com': 'gmail.com', 'gamil.com': 'gmail.com',
+  'yaho.com': 'yahoo.com',  'yahooo.com': 'yahoo.com',
+  'hotmal.com': 'hotmail.com', 'hotmial.com': 'hotmail.com',
+  'outlok.com': 'outlook.com',
+};
+
+function validateEmail(email: string): string {
+  if (!email.trim()) return 'Please enter a valid email address';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return 'Please enter a valid email address';
+  const domain = email.split('@')[1]?.toLowerCase();
+  if (domain && EMAIL_TYPOS[domain]) return `Did you mean @${EMAIL_TYPOS[domain]}?`;
+  return '';
+}
+
+function validatePasswordRules(password: string): string[] {
+  const errs: string[] = [];
+  if (password.length < 8)            errs.push('Password must be at least 8 characters');
+  if (!/[A-Z]/.test(password))        errs.push('Must include at least one uppercase letter');
+  if (!/[0-9]/.test(password))        errs.push('Must include at least one number');
+  if (!/[!@#$%^&*-]/.test(password)) errs.push('Must include at least one special character (!@#$%^&*-)');
+  return errs;
+}
+
+function getStrength(pw: string): { score: number; label: string; color: string } {
+  if (!pw) return { score: 0, label: '', color: '#e5e7eb' };
+  let s = 0;
+  if (pw.length >= 8)            s++;
+  if (/[A-Z]/.test(pw))         s++;
+  if (/[0-9]/.test(pw))         s++;
+  if (/[!@#$%^&*-]/.test(pw))  s++;
+  const map = [
+    { label: 'Weak',   color: '#ef4444' },
+    { label: 'Weak',   color: '#ef4444' },
+    { label: 'Fair',   color: '#f97316' },
+    { label: 'Good',   color: '#eab308' },
+    { label: 'Strong', color: '#22c55e' },
+  ];
+  return { score: s, ...map[s] };
+}
+
+function validatePhone(phone: string): string {
+  if (!phone.trim()) return 'Please enter a valid phone number';
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length < 7 || digits.length > 15) return 'Please enter a valid phone number';
+  return '';
+}
+
+function validateName(name: string): string {
+  const t = name.trim();
+  if (t.length < 2) return 'Please enter your full name (letters only)';
+  if (t.length > 100) return 'Name must be less than 100 characters';
+  if (!/^[a-zA-Z\s\-']+$/.test(t)) return 'Please enter your full name (letters only)';
+  return '';
+}
+
+function validateCompanyName(name: string): string {
+  const t = name.trim();
+  if (t.length < 2) return 'Please enter your company name';
+  if (t.length > 150) return 'Company name must be less than 150 characters';
+  return '';
+}
+
+function filterPhone(v: string): string { return v.replace(/[^\d+\s()\-]/g, ''); }
+
+function handlePhoneKey(e: React.KeyboardEvent<HTMLInputElement>) {
+  if (e.key.length === 1 && !/[\d+\s()\-]/.test(e.key)) e.preventDefault();
+}
+
+// ── Component ─────────────────────────────────────────────────────────────
+
 function EmployerRegisterInner() {
   const router       = useRouter();
   const searchParams = useSearchParams();
+  const formRef      = useRef<HTMLFormElement>(null);
+
   const [mode, setMode]             = useState<Mode>(searchParams.get('mode') === 'login' ? 'login' : 'register');
   const [loading, setLoading]       = useState(false);
   const [error, setError]           = useState('');
   const [registered, setRegistered] = useState(false);
   const [regEmail, setRegEmail]     = useState('');
+  const [agreed,  setAgreed]        = useState(false);
+  const [showPw,  setShowPw]        = useState(false);
+  const [showCPw, setShowCPw]       = useState(false);
+  const [touched, setTouched]       = useState<Record<string, boolean>>({});
 
-  const [agreed, setAgreed] = useState(false);
   const [form, setForm] = useState({
     company_name: '',
     contact_person: '',
@@ -31,11 +110,42 @@ function EmployerRegisterInner() {
     confirm_password: '',
     industry: '',
     country: '',
+    phone: '',
   });
 
-  function update(field: string, value: string) {
-    setForm((f) => ({ ...f, [field]: value }));
-    setError('');
+  function update(field: string, value: string) { setForm((f) => ({ ...f, [field]: value })); setError(''); }
+  function touch(field: string)                  { setTouched((t) => ({ ...t, [field]: true })); }
+  function touchAll() {
+    setTouched({ company_name: true, contact_person: true, email: true, password: true, confirm_password: true, industry: true, country: true, phone: true });
+  }
+
+  // Computed errors (shown only after field is touched)
+  const companyError  = touched.company_name    ? validateCompanyName(form.company_name)  : '';
+  const contactError  = touched.contact_person  ? validateName(form.contact_person)        : '';
+  const emailError    = touched.email           ? validateEmail(form.email)                : '';
+  const pwErrors      = touched.password && mode === 'register'         ? validatePasswordRules(form.password)                                        : [];
+  const confirmError  = touched.confirm_password && mode === 'register' ? (form.confirm_password !== form.password ? 'Passwords do not match' : '')   : '';
+  const phoneError    = touched.phone    && mode === 'register'         ? validatePhone(form.phone)                                                    : '';
+  const industryError = touched.industry && mode === 'register'         ? (!form.industry ? 'Please select an industry' : '')                         : '';
+  const countryError  = touched.country  && mode === 'register'         ? (!form.country  ? 'Please select a country'   : '')                         : '';
+  const strength      = getStrength(form.password);
+
+  const regValid =
+    !validateCompanyName(form.company_name) &&
+    !validateName(form.contact_person) &&
+    !validateEmail(form.email) &&
+    validatePasswordRules(form.password).length === 0 &&
+    form.confirm_password === form.password &&
+    !validatePhone(form.phone) &&
+    !!form.industry &&
+    !!form.country &&
+    agreed;
+
+  const loginValid = !!form.email && !!form.password;
+
+  function focusFirst() {
+    const el = formRef.current?.querySelector('[aria-invalid="true"]') as HTMLElement | null;
+    if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(() => el.focus(), 100); }
   }
 
   async function handleGoogleLogin() {
@@ -48,17 +158,11 @@ function EmployerRegisterInner() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (mode === 'register') { touchAll(); if (!regValid) { setTimeout(focusFirst, 50); return; } }
     setLoading(true);
     setError('');
-
     try {
       if (mode === 'register') {
-        if (form.password !== form.confirm_password) {
-          setError('Passwords do not match.');
-          setLoading(false);
-          return;
-        }
-
         const res = await fetch('/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -71,6 +175,7 @@ function EmployerRegisterInner() {
             contact_person: form.contact_person,
             country:        form.country,
             industry:       form.industry,
+            phone:          form.phone || undefined,
           }),
         });
         const data = await res.json();
@@ -92,6 +197,8 @@ function EmployerRegisterInner() {
       setLoading(false);
     }
   }
+
+  function switchMode(m: Mode) { setMode(m); setError(''); setTouched({}); setAgreed(false); }
 
   // ── Success screen ─────────────────────────────────────────────────────────
   if (registered) {
@@ -144,10 +251,10 @@ function EmployerRegisterInner() {
 
           {/* Toggle */}
           <div className={styles.authToggle}>
-            <button type="button" className={`${styles.toggleBtn} ${mode === 'register' ? styles.toggleBtnActive : ''}`} onClick={() => { setMode('register'); setError(''); }}>
+            <button type="button" className={`${styles.toggleBtn} ${mode === 'register' ? styles.toggleBtnActive : ''}`} onClick={() => switchMode('register')}>
               Register Company
             </button>
-            <button type="button" className={`${styles.toggleBtn} ${mode === 'login' ? styles.toggleBtnActive : ''}`} onClick={() => { setMode('login'); setError(''); }}>
+            <button type="button" className={`${styles.toggleBtn} ${mode === 'login' ? styles.toggleBtnActive : ''}`} onClick={() => switchMode('login')}>
               Sign In
             </button>
           </div>
@@ -173,52 +280,149 @@ function EmployerRegisterInner() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className={styles.authForm}>
+          <form ref={formRef} onSubmit={handleSubmit} className={styles.authForm} noValidate>
             {mode === 'register' && (
               <>
                 <div className={styles.formRow}>
                   <div className={styles.formGroup}>
-                    <label>Company Name <span className={styles.req}>*</span></label>
-                    <input value={form.company_name} onChange={(e) => update('company_name', e.target.value)} placeholder="Acme Corp International" required />
+                    <label htmlFor="company_name">Company Name <span className={styles.req}>*</span></label>
+                    <input
+                      id="company_name" value={form.company_name}
+                      onChange={(e) => update('company_name', e.target.value)}
+                      onBlur={(e) => { touch('company_name'); update('company_name', e.target.value.trim()); }}
+                      placeholder="Acme Corp International" required
+                      aria-invalid={companyError ? true : undefined}
+                      aria-describedby={companyError ? 'err-company' : undefined}
+                    />
+                    {companyError && <p id="err-company" className={styles.fieldError}>{companyError}</p>}
                   </div>
                   <div className={styles.formGroup}>
-                    <label>Contact Person <span className={styles.req}>*</span></label>
-                    <input value={form.contact_person} onChange={(e) => update('contact_person', e.target.value)} placeholder="John Smith" required />
+                    <label htmlFor="contact_person">Contact Person <span className={styles.req}>*</span></label>
+                    <input
+                      id="contact_person" value={form.contact_person}
+                      onChange={(e) => update('contact_person', e.target.value.replace(/[^a-zA-Z\s\-']/g, ''))}
+                      onBlur={(e) => { touch('contact_person'); update('contact_person', e.target.value.trim()); }}
+                      placeholder="John Smith" required
+                      aria-invalid={contactError ? true : undefined}
+                      aria-describedby={contactError ? 'err-contact' : undefined}
+                    />
+                    {contactError && <p id="err-contact" className={styles.fieldError}>{contactError}</p>}
                   </div>
                 </div>
                 <div className={styles.formRow}>
                   <div className={styles.formGroup}>
-                    <label>Industry <span className={styles.req}>*</span></label>
-                    <select value={form.industry} onChange={(e) => update('industry', e.target.value)} required>
+                    <label htmlFor="industry">Industry <span className={styles.req}>*</span></label>
+                    <select
+                      id="industry" value={form.industry}
+                      onChange={(e) => update('industry', e.target.value)}
+                      onBlur={() => touch('industry')}
+                      required
+                      aria-invalid={industryError ? true : undefined}
+                      aria-describedby={industryError ? 'err-industry' : undefined}
+                    >
                       <option value="">Select industry</option>
                       {INDUSTRIES.map((i) => <option key={i}>{i}</option>)}
                     </select>
+                    {industryError && <p id="err-industry" className={styles.fieldError}>{industryError}</p>}
                   </div>
                   <div className={styles.formGroup}>
-                    <label>Country <span className={styles.req}>*</span></label>
-                    <select value={form.country} onChange={(e) => update('country', e.target.value)} required>
+                    <label htmlFor="country">Country <span className={styles.req}>*</span></label>
+                    <select
+                      id="country" value={form.country}
+                      onChange={(e) => update('country', e.target.value)}
+                      onBlur={() => touch('country')}
+                      required
+                      aria-invalid={countryError ? true : undefined}
+                      aria-describedby={countryError ? 'err-country' : undefined}
+                    >
                       <option value="">Select country</option>
                       {COUNTRIES.map((c) => <option key={c}>{c}</option>)}
                     </select>
+                    {countryError && <p id="err-country" className={styles.fieldError}>{countryError}</p>}
                   </div>
                 </div>
               </>
             )}
 
             <div className={styles.formGroup}>
-              <label>Email Address <span className={styles.req}>*</span></label>
-              <input type="email" value={form.email} onChange={(e) => update('email', e.target.value)} placeholder="hr@company.com" required />
+              <label htmlFor="email">Email Address <span className={styles.req}>*</span></label>
+              <input
+                id="email" type="email" value={form.email}
+                onChange={(e) => update('email', e.target.value)}
+                onBlur={() => touch('email')}
+                placeholder="hr@company.com" required
+                aria-invalid={emailError ? true : undefined}
+                aria-describedby={emailError ? 'err-email' : undefined}
+              />
+              {emailError && <p id="err-email" className={styles.fieldError}>{emailError}</p>}
             </div>
 
             <div className={styles.formGroup}>
-              <label>Password <span className={styles.req}>*</span></label>
-              <input type="password" value={form.password} onChange={(e) => update('password', e.target.value)} placeholder={mode === 'register' ? 'At least 8 characters' : 'Your password'} required minLength={mode === 'register' ? 8 : 1} />
+              <label htmlFor="password">Password <span className={styles.req}>*</span></label>
+              <div className={styles.inputWrap}>
+                <input
+                  id="password" type={showPw ? 'text' : 'password'} value={form.password}
+                  onChange={(e) => update('password', e.target.value)}
+                  onBlur={() => touch('password')}
+                  placeholder={mode === 'register' ? 'At least 8 characters' : 'Your password'}
+                  required minLength={mode === 'register' ? 8 : 1}
+                  aria-invalid={pwErrors.length > 0 ? true : undefined}
+                  aria-describedby={pwErrors.length > 0 ? 'err-pw' : undefined}
+                />
+                <button type="button" className={styles.eyeBtn} onClick={() => setShowPw((v) => !v)} aria-label={showPw ? 'Hide password' : 'Show password'}>
+                  {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+              {mode === 'register' && form.password && (
+                <div className={styles.strengthWrap}>
+                  <div className={styles.strengthBar}>
+                    {[1,2,3,4].map((i) => (
+                      <div key={i} className={styles.strengthSegment} style={{ background: i <= strength.score ? strength.color : '#e5e7eb' }} />
+                    ))}
+                    <span className={styles.strengthLabel} style={{ color: strength.score > 0 ? strength.color : '#9ca3af' }}>{strength.label}</span>
+                  </div>
+                </div>
+              )}
+              {pwErrors.length > 0 && (
+                <ul id="err-pw" className={styles.fieldErrors}>
+                  {pwErrors.map((err) => <li key={err}>{err}</li>)}
+                </ul>
+              )}
             </div>
 
             {mode === 'register' && (
               <div className={styles.formGroup}>
-                <label>Confirm Password <span className={styles.req}>*</span></label>
-                <input type="password" value={form.confirm_password} onChange={(e) => update('confirm_password', e.target.value)} placeholder="Repeat password" required minLength={8} />
+                <label htmlFor="confirm_password">Confirm Password <span className={styles.req}>*</span></label>
+                <div className={styles.inputWrap}>
+                  <input
+                    id="confirm_password" type={showCPw ? 'text' : 'password'} value={form.confirm_password}
+                    onChange={(e) => update('confirm_password', e.target.value)}
+                    onBlur={() => touch('confirm_password')}
+                    placeholder="Repeat password" required minLength={8}
+                    aria-invalid={confirmError ? true : undefined}
+                    aria-describedby={confirmError ? 'err-cpw' : undefined}
+                  />
+                  <button type="button" className={styles.eyeBtn} onClick={() => setShowCPw((v) => !v)} aria-label={showCPw ? 'Hide password' : 'Show password'}>
+                    {showCPw ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                {confirmError && <p id="err-cpw" className={styles.fieldError}>{confirmError}</p>}
+              </div>
+            )}
+
+            {mode === 'register' && (
+              <div className={styles.formGroup}>
+                <label htmlFor="phone">Phone Number <span className={styles.req}>*</span></label>
+                <input
+                  id="phone" type="tel" value={form.phone}
+                  onChange={(e) => update('phone', filterPhone(e.target.value))}
+                  onKeyDown={handlePhoneKey}
+                  onBlur={() => touch('phone')}
+                  placeholder="+971 50 123 4567" required
+                  aria-invalid={phoneError ? true : undefined}
+                  aria-describedby={phoneError ? 'err-phone' : undefined}
+                />
+                {phoneError && <p id="err-phone" className={styles.fieldError}>{phoneError}</p>}
               </div>
             )}
 
@@ -241,7 +445,7 @@ function EmployerRegisterInner() {
               </label>
             )}
 
-            <button type="submit" className={styles.authSubmitBtn} disabled={loading || (mode === 'register' && !agreed)}>
+            <button type="submit" className={styles.authSubmitBtn} disabled={loading || (mode === 'register' ? !regValid : !loginValid)}>
               {loading
                 ? <><i className="fa-solid fa-spinner fa-spin" aria-hidden="true" /> Please wait…</>
                 : mode === 'register'
@@ -253,7 +457,7 @@ function EmployerRegisterInner() {
 
           <p className={styles.authSwitch}>
             {mode === 'register' ? 'Already registered?' : "Don't have an account?"}{' '}
-            <button type="button" onClick={() => { setMode(mode === 'register' ? 'login' : 'register'); setError(''); }}>
+            <button type="button" onClick={() => switchMode(mode === 'register' ? 'login' : 'register')}>
               {mode === 'register' ? 'Sign in' : 'Register'}
             </button>
           </p>
