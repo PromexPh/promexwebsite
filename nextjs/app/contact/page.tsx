@@ -5,34 +5,6 @@ import PageHero from '@/components/ui/PageHero';
 import Reveal from '@/components/ui/Reveal';
 import styles from './page.module.css';
 
-const processSteps = [
-  {
-    icon: 'fa-briefcase',
-    title: 'Client Consultation & Job Order Verification',
-    description: 'We meet with employers to understand their exact manpower requirements, verify the legitimacy of job orders, and align on terms.',
-  },
-  {
-    icon: 'fa-user-check',
-    title: 'Talent Sourcing & Screening',
-    description: 'Our recruitment team sources qualified candidates from our extensive database and through active job fairs, partner schools, and referral networks.',
-  },
-  {
-    icon: 'fa-clipboard-check',
-    title: 'Skills Assessment & Training',
-    description: 'Shortlisted candidates undergo rigorous trade testing, language assessment, and pre-departure orientation to ensure they are fully prepared. Our in-house trade testing and housekeeping training programs are conducted at our certified training facility.',
-    link: { text: 'Circle Test Training and Assessment Center', url: 'https://circletesttvi.gnomio.com/my/' },
-  },
-  {
-    icon: 'fa-file-lines',
-    title: 'Documentation & Visa Processing',
-    description: 'We handle all documentation — employment contracts, medical exams, authentication, visa applications, and OWWA/DMW processing.',
-  },
-  {
-    icon: 'fa-plane-departure',
-    title: 'Deployment & Post-Deployment Support',
-    description: 'We arrange flights, coordinate with employers on arrival, and provide ongoing post-deployment support to ensure smooth integration.',
-  },
-];
 
 const vacancies = [
   { category: 'Healthcare',    title: 'Registered Nurse',         location: 'Saudi Arabia', slots: 50,  urgent: true  },
@@ -82,49 +54,6 @@ export default function ContactPage() {
         bgImage="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1600&q=80&auto=format&fit=crop"
         waveFill="var(--color-bg)"
       />
-
-      {/* Recruitment Process */}
-      <section className={styles.processSection}>
-        <div className="container">
-          <Reveal animation="fade-up">
-            <div className={styles.sectionHeader}>
-              <span className={styles.sectionBadge}>HOW IT WORKS</span>
-              <h2 className={styles.sectionTitle}>Our Recruitment Process</h2>
-              <p className={styles.sectionSub}>
-                A transparent, end-to-end recruitment process designed for both employers and job seekers.
-              </p>
-            </div>
-          </Reveal>
-
-          <div className={styles.timeline}>
-            {processSteps.map((step, i) => (
-              <Reveal key={step.title} animation="fade-up" delay={i * 100}>
-                <div className={styles.timelineItem}>
-                  <div className={styles.timelineNumber}>{i + 1}</div>
-                  <div className={`${styles.timelineLine} ${i === processSteps.length - 1 ? styles.timelineLineLast : ''}`} />
-                  <div className={styles.timelineCard}>
-                    <div className={styles.timelineIconWrap}>
-                      <i className={`fa-solid ${step.icon}`} aria-hidden="true" />
-                    </div>
-                    <div className={styles.timelineBody}>
-                      <h3 className={styles.timelineCardTitle}>{step.title}</h3>
-                      <p className={styles.timelineCardDesc}>{step.description}</p>
-                      {step.link && (
-                        <div className={styles.timelineLink}>
-                          <i className="fa-solid fa-arrow-up-right-from-square" aria-hidden="true" />
-                          <a href={step.link.url} target="_blank" rel="noopener noreferrer">
-                            {step.link.text}
-                          </a>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* For Employers */}
       <section id="employers" className={styles.employersSection}>

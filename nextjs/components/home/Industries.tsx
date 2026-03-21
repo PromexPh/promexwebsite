@@ -11,6 +11,7 @@ const industries = [
   { icon: 'fa-solid fa-desktop',     title: 'IT & Telecom',  roles: 'Software Developers, Network Engineers',        color: 'accent',  image: '/images/industries_icons/it.png'           },
   { icon: 'fa-solid fa-leaf',        title: 'Agriculture',   roles: 'Farm Workers, Fisheries, Horticulturists',      color: 'magenta', image: '/images/industries_icons/agriculters.png'  },
   { icon: 'fa-solid fa-bag-shopping',title: 'Retail & Service', roles: 'Sales Associates, Call Center Agents',      color: 'purple',  image: '/images/industries_icons/retail.png'       },
+  { icon: 'fa-solid fa-coins',       title: 'Finance & Accounting', roles: 'Accountants, Financial Analysts, Auditors, Tax Specialists', color: 'primary', image: '/images/industries_icons/finance.png' },
 ];
 
 export default function Industries() {

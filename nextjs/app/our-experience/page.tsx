@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import PageHero from '@/components/ui/PageHero';
 import Reveal from '@/components/ui/Reveal';
 import Button from '@/components/ui/Button';
@@ -76,29 +75,32 @@ const testimonials = [
   {
     category: 'Healthcare',
     rating: 5,
-    quote: '"Promex Company has been our preferred recruitment partner for over 10 years. Their nurses are highly skilled, professionally trained, and perfectly matched to our clinical environment."',
-    name: 'Sarah Al-Rashidi',
+    quote: '"We have partnered with Promex for over 8 years to staff our nursing teams. Their candidates consistently meet our clinical standards and arrive fully prepared with the right documentation and certifications. The process is seamless from selection to deployment."',
+    name: 'R.A.',
     title: 'HR Director',
-    company: 'Gulf Medical University, UAE',
-    avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
+    company: 'NHS Trust, United Kingdom',
+    initials: 'RA',
+    avatarColor: '#4FA3C7',
   },
   {
-    category: 'Manufacturing',
+    category: 'Engineering',
     rating: 5,
-    quote: '"The technical workers sourced through Promex have consistently exceeded our expectations. Their screening process ensures only the most qualified candidates reach our facilities."',
-    name: 'David Chen',
-    title: 'Operations Manager',
-    company: 'Samsung C&T, South Korea',
-    avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+    quote: '"Promex delivered 45 skilled engineers and site workers for our project in Saudi Arabia within our tight timeline. Every candidate was trade-tested and DMW-cleared. We have since made them our exclusive recruitment partner in the Philippines."',
+    name: 'M.K.',
+    title: 'Operations Director',
+    company: 'Infrastructure Company, Saudi Arabia',
+    initials: 'MK',
+    avatarColor: '#7C3AED',
   },
   {
     category: 'Hospitality',
     rating: 5,
-    quote: '"Our hospitality team would not be the same without the talented professionals Promex has placed with us. Genuine care for both employer and employee makes them stand out."',
-    name: 'Fatima Al-Mansoori',
+    quote: '"The quality of candidates Promex provides is exceptional. Our housekeeping and F&B staff have become some of our most valued team members. What sets them apart is their genuine care for both the employer and the worker throughout the process."',
+    name: 'F.M.',
     title: 'General Manager',
-    company: 'InterContinental Hotels, Qatar',
-    avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
+    company: '5-Star Hotel Group, UAE',
+    initials: 'FM',
+    avatarColor: '#059669',
   },
 ];
 
@@ -228,13 +230,13 @@ export default function OurExperiencePage() {
                   </div>
                   <p className={styles.reviewQuote}>{t.quote}</p>
                   <div className={styles.reviewAuthor}>
-                    <Image
-                      src={t.avatar}
-                      alt={t.name}
-                      width={48}
-                      height={48}
+                    <div
                       className={styles.reviewAvatar}
-                    />
+                      style={{ background: t.avatarColor }}
+                      aria-hidden="true"
+                    >
+                      {t.initials}
+                    </div>
                     <div className={styles.reviewAuthorInfo}>
                       <span className={styles.reviewName}>{t.name}</span>
                       <span className={styles.reviewTitle}>{t.title}</span>

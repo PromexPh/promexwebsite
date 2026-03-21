@@ -1,10 +1,51 @@
 import Image from 'next/image';
+import { ShieldCheck } from 'lucide-react';
 import PageHero from '@/components/ui/PageHero';
 import Reveal from '@/components/ui/Reveal';
 import Button from '@/components/ui/Button';
 import styles from './page.module.css';
 
-const employerReasons = [
+const processSteps = [
+  {
+    icon: 'fa-briefcase',
+    title: 'Client Consultation & Job Order Verification',
+    description: 'We meet with employers to understand their exact manpower requirements, verify the legitimacy of job orders, and align on terms.',
+    link: undefined,
+  },
+  {
+    icon: 'fa-user-check',
+    title: 'Talent Sourcing & Screening',
+    description: 'Our recruitment team sources qualified candidates from our extensive database and through active job fairs, partner schools, and referral networks.',
+    link: undefined,
+  },
+  {
+    icon: 'fa-clipboard-check',
+    title: 'Skills Assessment & Training',
+    description: 'Shortlisted candidates undergo rigorous trade testing, language assessment, and pre-departure orientation to ensure they are fully prepared. Our in-house trade testing and housekeeping training programs are conducted at our certified training facility.',
+    link: { text: 'Circle Test Training and Assessment Center', url: 'https://circletesttvi.gnomio.com/my/' },
+  },
+  {
+    icon: 'fa-file-lines',
+    title: 'Documentation & Visa Processing',
+    description: 'We handle all documentation — employment contracts, medical exams, authentication, visa applications, and OWWA/DMW processing.',
+    link: undefined,
+  },
+  {
+    icon: 'fa-plane-departure',
+    title: 'Deployment & Post-Deployment Support',
+    description: 'We arrange flights, coordinate with employers on arrival, and provide ongoing post-deployment support to ensure smooth integration.',
+    link: undefined,
+  },
+];
+
+type Reason = {
+  icon?: string;
+  LucideIcon?: React.ElementType<{ size?: number | string; color?: string }>;
+  title: string;
+  description: string;
+};
+
+const employerReasons: Reason[] = [
   {
     icon: 'fa-solid fa-certificate',
     title: 'Licensed and compliant recruitment agency in the Philippines',
@@ -34,6 +75,12 @@ const employerReasons = [
     title: 'Industry expertise in hospitality, healthcare, retail, engineering',
     description:
       'Specialized knowledge and proven track record across multiple industries, delivering candidates who are ready to excel in their roles.',
+  },
+  {
+    LucideIcon: ShieldCheck,
+    title: 'Zero Placement Fee',
+    description:
+      'In full compliance with POEA regulations, Promex never charges placement fees to candidates for land-based employment. Your career opportunity should cost you nothing.',
   },
 ];
 
@@ -113,7 +160,10 @@ export default function WhyPromexPage() {
               <Reveal key={reason.title} animation="fade-up" delay={i * 80}>
                 <div className={styles.reasonCard}>
                   <div className={styles.reasonIconWrapper}>
-                    <i className={`${reason.icon} ${styles.reasonIcon}`} aria-hidden="true" />
+                    {reason.LucideIcon
+                      ? <reason.LucideIcon size={26} color="#ffffff" />
+                      : <i className={`${reason.icon} ${styles.reasonIcon}`} aria-hidden="true" />
+                    }
                   </div>
                   <h3 className={styles.reasonTitle}>{reason.title}</h3>
                   <p className={styles.reasonDescription}>{reason.description}</p>
@@ -175,6 +225,49 @@ export default function WhyPromexPage() {
                         className={styles.featureImage}
                         sizes="(max-width: 900px) 100vw, 50vw"
                       />
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Recruitment Process */}
+      <section className={styles.processSection}>
+        <div className="container">
+          <Reveal animation="fade-up">
+            <div className={styles.sectionHeader}>
+              <span className={styles.sectionBadge}>OUR PROCESS</span>
+              <h2 className={styles.sectionHeading}>How We Work</h2>
+              <p className={styles.sectionSub}>
+                A transparent, end-to-end recruitment process designed for both employers and job seekers.
+              </p>
+            </div>
+          </Reveal>
+
+          <div className={styles.timeline}>
+            {processSteps.map((step, i) => (
+              <Reveal key={step.title} animation="fade-up" delay={i * 100}>
+                <div className={styles.timelineItem}>
+                  <div className={styles.timelineNumber}>{i + 1}</div>
+                  <div className={`${styles.timelineLine} ${i === processSteps.length - 1 ? styles.timelineLineLast : ''}`} />
+                  <div className={styles.timelineCard}>
+                    <div className={styles.timelineIconWrap}>
+                      <i className={`fa-solid ${step.icon}`} aria-hidden="true" />
+                    </div>
+                    <div className={styles.timelineBody}>
+                      <h3 className={styles.timelineCardTitle}>{step.title}</h3>
+                      <p className={styles.timelineCardDesc}>{step.description}</p>
+                      {step.link && (
+                        <div className={styles.timelineLink}>
+                          <i className="fa-solid fa-arrow-up-right-from-square" aria-hidden="true" />
+                          <a href={step.link.url} target="_blank" rel="noopener noreferrer">
+                            {step.link.text}
+                          </a>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

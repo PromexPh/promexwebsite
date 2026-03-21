@@ -1,34 +1,36 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import Reveal from '@/components/ui/Reveal';
 import styles from './Testimonials.module.css';
 
 const testimonials = [
   {
-    quote:   '"Promex Company has been our preferred recruitment partner for over 10 years. Their nurses are highly skilled, professionally trained, and perfectly matched to our clinical environment."',
-    name:    'Sarah Al-Rashidi',
-    title:   'HR Director',
-    company: 'Gulf Medical University, UAE',
-    avatar:  'https://randomuser.me/api/portraits/women/44.jpg',
-    rating:  5,
+    quote:       '"We have partnered with Promex for over 8 years to staff our nursing teams. Their candidates consistently meet our clinical standards and arrive fully prepared with the right documentation and certifications. The process is seamless from selection to deployment."',
+    name:        'R.A.',
+    title:       'HR Director',
+    company:     'NHS Trust, United Kingdom',
+    initials:    'RA',
+    avatarColor: '#4FA3C7',
+    rating:      5,
   },
   {
-    quote:   '"We have partnered with Promex for our engineering workforce needs across three major projects. Their screening process is thorough and their candidates consistently exceed expectations."',
-    name:    'Ahmed Al-Mansouri',
-    title:   'Operations Manager',
-    company: 'Al Futtaim Group, Dubai',
-    avatar:  'https://randomuser.me/api/portraits/men/32.jpg',
-    rating:  5,
+    quote:       '"Promex delivered 45 skilled engineers and site workers for our project in Saudi Arabia within our tight timeline. Every candidate was trade-tested and DMW-cleared. We have since made them our exclusive recruitment partner in the Philippines."',
+    name:        'M.K.',
+    title:       'Operations Director',
+    company:     'Infrastructure Company, Saudi Arabia',
+    initials:    'MK',
+    avatarColor: '#7C3AED',
+    rating:      5,
   },
   {
-    quote:   '"Promex delivered exceptional hospitality staff for our hotel chain. The workers arrived well-prepared, culturally aware, and ready to contribute from day one."',
-    name:    'Maria Santos',
-    title:   'Human Resources VP',
-    company: 'Shangri-La Hotels, Singapore',
-    avatar:  'https://randomuser.me/api/portraits/women/68.jpg',
-    rating:  5,
+    quote:       '"The quality of candidates Promex provides is exceptional. Our housekeeping and F&B staff have become some of our most valued team members. What sets them apart is their genuine care for both the employer and the worker throughout the process."',
+    name:        'F.M.',
+    title:       'General Manager',
+    company:     '5-Star Hotel Group, UAE',
+    initials:    'FM',
+    avatarColor: '#059669',
+    rating:      5,
   },
 ];
 
@@ -67,13 +69,13 @@ export default function Testimonials() {
               <p className={styles.testimonialQuote}>{current.quote}</p>
 
               <div className={styles.testimonialAuthor}>
-                <Image
-                  src={current.avatar}
-                  alt={current.name}
-                  width={52}
-                  height={52}
+                <div
                   className={styles.testimonialAvatar}
-                />
+                  style={{ background: current.avatarColor }}
+                  aria-hidden="true"
+                >
+                  {current.initials}
+                </div>
                 <div className={styles.testimonialAuthorInfo}>
                   <span className={styles.testimonialName}>{current.name}</span>
                   <span className={styles.testimonialTitle}>{current.title}</span>

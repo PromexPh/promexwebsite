@@ -66,6 +66,16 @@ const industries = [
     applyUrl: '/jobs',
     roles: ['Household Service Workers (HSW)', 'Nannies & Childcare Workers', 'Elderly & Companion Caregivers', 'Private Cooks & Kitchen Help', 'Personal Drivers', 'Household Managers'],
   },
+  {
+    id: 'finance',
+    name: 'Finance & Accounting',
+    tagline: 'Trusted numbers behind global business',
+    description: 'Promex connects international employers with highly trained Filipino finance professionals who bring precision, integrity, and global accounting standards to their roles. Our candidates are proficient in international financial reporting and compliance frameworks.',
+    image: '/images/industries_images/finance.jpg',
+    badge: undefined,
+    applyUrl: '/jobs?industry=Finance',
+    roles: ['Certified Public Accountants (CPA)', 'Financial Analysts & Controllers', 'Internal & External Auditors', 'Tax Specialists & Compliance Officers', 'Bookkeepers & Accounting Clerks', 'Treasury & Investment Analysts'],
+  },
 ];
 
 export default function IndustriesPage() {
@@ -143,7 +153,7 @@ export default function IndustriesPage() {
               </p>
               <div className={styles.ctaActions}>
                 <Button label="Request Talent" href="/employer-inquiry" variant="primary" size="lg" />
-                <Button label="View Overseas Jobs" href="/jobs" variant="accent" size="lg" />
+                <Button label="Contact Us" href="/contact" variant="accent" size="lg" />
               </div>
             </div>
           </Reveal>
