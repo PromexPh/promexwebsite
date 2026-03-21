@@ -13,17 +13,17 @@ const nextConfig = {
     return [
       {
         source: '/facebook',
-        destination: 'https://www.facebook.com/promexph', // TODO: replace with real URL
+        destination: 'https://www.facebook.com/p/Promex-Philippines-100085889786889/', 
         permanent: false,
       },
       {
         source: '/linkedin',
-        destination: 'https://www.linkedin.com/company/promexph', // TODO: replace with real URL
+        destination: 'https://www.linkedin.com/company/promexph', 
         permanent: false,
       },
       {
         source: '/instagram',
-        destination: 'https://www.instagram.com/promexph', // TODO: replace with real URL
+        destination: 'https://www.instagram.com/promexphilippines/', 
         permanent: false,
       },
     ];
