@@ -116,6 +116,30 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
+.socialBtnLinkedIn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #0A66C2;
+  border: 1px solid #0A66C2;
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+}
+
+.socialBtnLinkedIn:hover {
+  background: #004182;
+  box-shadow: 0 2px 8px rgba(10, 102, 194, 0.35);
+}
+
 .divider {
   display: flex;
   align-items: center;
