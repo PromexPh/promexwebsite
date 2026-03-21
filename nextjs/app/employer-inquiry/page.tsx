@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { Send } from 'lucide-react';
 import PageHero from '@/components/ui/PageHero';
 import Reveal from '@/components/ui/Reveal';
-import Button from '@/components/ui/Button';
 import styles from './page.module.css';
 
 const industries = ['Hospitality','Healthcare','Retail','Engineering','Construction','IT & Technology','Food Service','Manufacturing','Transportation','Agriculture','Maritime','Security','Education','Other'];
@@ -13,11 +13,11 @@ const urgencyLevels = ['Immediate (within 1 month)','Short-term (1-3 months)','M
 const employmentTypes = ['Full-time Permanent','Contract (Fixed-term)','Part-time','Seasonal','Project-based'];
 
 const benefits = [
-  { icon: 'fa-solid fa-certificate',    label: 'Licensed & Compliant' },
-  { icon: 'fa-solid fa-network-wired',  label: 'Nationwide Network' },
-  { icon: 'fa-solid fa-rocket',         label: 'Fast Deployment' },
-  { icon: 'fa-solid fa-user-check',     label: 'Pre-screened Candidates' },
-  { icon: 'fa-solid fa-briefcase',      label: 'Industry Expertise' },
+  { icon: 'fa-solid fa-certificate',   title: 'Licensed & Compliant',      description: 'DMW-licensed and fully compliant with Philippine labor laws and international recruitment standards.' },
+  { icon: 'fa-solid fa-network-wired', title: 'Nationwide Network',         description: 'Access to a vast pool of skilled Filipino professionals across all regions and industries.' },
+  { icon: 'fa-solid fa-rocket',        title: 'Fast Deployment',            description: 'Streamlined processes ensure qualified candidates are ready for deployment within your required timeline.' },
+  { icon: 'fa-solid fa-user-check',    title: 'Pre-screened Candidates',    description: 'Every candidate undergoes rigorous screening, skills verification, and background checks.' },
+  { icon: 'fa-solid fa-briefcase',     title: 'Industry Expertise',         description: '30 years of specialized recruitment across healthcare, construction, hospitality, IT, and more.' },
 ];
 
 const initialForm = {
@@ -78,7 +78,7 @@ export default function EmployerInquiryPage() {
           bgImage="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1600&q=80&auto=format&fit=crop"
           waveFill="var(--color-bg)"
         />
-        <section className={styles.formSection}>
+        <section className={styles.pageSection}>
           <div className="container">
             <div className={styles.successScreen}>
               <div className={styles.successCheck}>
@@ -86,7 +86,8 @@ export default function EmployerInquiryPage() {
               </div>
               <h2 className={styles.successTitle}>Inquiry Received!</h2>
               <p className={styles.successMsg}>
-                Thank you, <strong>{successData.companyName}</strong>. Our team will contact you at <strong>{successData.email}</strong> within 24 hours.
+                Thank you, <strong>{successData.companyName}</strong>. Our team will contact you at{' '}
+                <strong>{successData.email}</strong> within 24 hours.
               </p>
               <div className={styles.successRef}>
                 <i className="fa-solid fa-hashtag" aria-hidden="true" />
@@ -113,7 +114,7 @@ export default function EmployerInquiryPage() {
         waveFill="var(--color-bg)"
       />
 
-      <section className={styles.formSection}>
+      <section className={styles.pageSection}>
         <div className="container">
 
           {submitError && (
@@ -130,7 +131,7 @@ export default function EmployerInquiryPage() {
               <form onSubmit={handleSubmit}>
 
                 {/* Company Information */}
-                <div className={styles.formSection}>
+                <div className={styles.formCard}>
                   <h2 className={styles.formSectionTitle}>
                     <i className="fa-solid fa-building" aria-hidden="true" /> Company Information
                   </h2>
@@ -170,7 +171,7 @@ export default function EmployerInquiryPage() {
                 </div>
 
                 {/* Contact Person */}
-                <div className={styles.formSection}>
+                <div className={styles.formCard}>
                   <h2 className={styles.formSectionTitle}>
                     <i className="fa-solid fa-user-tie" aria-hidden="true" /> Contact Person
                   </h2>
@@ -197,7 +198,7 @@ export default function EmployerInquiryPage() {
                 </div>
 
                 {/* Hiring Requirements */}
-                <div className={styles.formSection}>
+                <div className={styles.formCard}>
                   <h2 className={styles.formSectionTitle}>
                     <i className="fa-solid fa-users" aria-hidden="true" /> Hiring Requirements
                   </h2>
@@ -234,7 +235,7 @@ export default function EmployerInquiryPage() {
                 </div>
 
                 {/* Employment Details */}
-                <div className={styles.formSection}>
+                <div className={styles.formCard}>
                   <h2 className={styles.formSectionTitle}>
                     <i className="fa-solid fa-file-contract" aria-hidden="true" /> Employment Details
                   </h2>
@@ -268,56 +269,58 @@ export default function EmployerInquiryPage() {
                   </div>
                 </div>
 
-                {/* Additional */}
-                <div className={styles.formSection}>
+                {/* Additional Information */}
+                <div className={styles.formCard}>
                   <h2 className={styles.formSectionTitle}>
                     <i className="fa-solid fa-circle-info" aria-hidden="true" /> Additional Information
                   </h2>
                   <div className={styles.formGroup}>
-                    <label htmlFor="additionalRequirements">Additional Requirements</label>
-                    <textarea id="additionalRequirements" rows={3} placeholder="Any specific requirements, certifications, or preferences..." value={form.additionalRequirements} onChange={(e) => set('additionalRequirements', e.target.value)} />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label htmlFor="message">Message</label>
-                    <textarea id="message" rows={4} placeholder="Tell us more about your company and hiring needs..." value={form.message} onChange={(e) => set('message', e.target.value)} />
+                    <label htmlFor="message">Tell us more about your hiring needs</label>
+                    <textarea
+                      id="message"
+                      rows={5}
+                      placeholder="Include any specific requirements, certifications, preferred experience, languages, or anything else that will help us find the right candidates for you..."
+                      value={form.message}
+                      onChange={(e) => set('message', e.target.value)}
+                    />
                   </div>
                 </div>
 
                 {/* Submit */}
                 <div className={styles.formActions}>
-                  <Button
-                    label={isSubmitting ? 'Processing...' : 'Submit Inquiry'}
-                    variant="primary"
-                    size="lg"
-                    type="submit"
-                    disabled={isSubmitting}
-                    icon="fa-solid fa-paper-plane"
-                    iconPosition="right"
-                  />
-                  {isSubmitting && (
-                    <span className={styles.formLoading}>
-                      <i className="fa-solid fa-spinner fa-spin" aria-hidden="true" /> Processing your inquiry...
-                    </span>
-                  )}
+                  <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
+                    {isSubmitting
+                      ? <><i className="fa-solid fa-spinner fa-spin" aria-hidden="true" /> Processing...</>
+                      : <>Submit Inquiry <Send size={18} /></>
+                    }
+                  </button>
                 </div>
+
               </form>
             </div>
           </Reveal>
+        </div>
+      </section>
 
-          {/* Benefits callout */}
+      {/* Why Employers Choose Promex */}
+      <section className={styles.benefitsSection}>
+        <div className="container">
           <Reveal animation="fade-up">
-            <div className={styles.employerBenefits}>
-              <h3 className={styles.benefitsTitle}>Why Employers Choose Promex</h3>
-              <div className={styles.benefitsGrid}>
-                {benefits.map((b) => (
-                  <div key={b.label} className={styles.benefitItem}>
-                    <i className={b.icon} aria-hidden="true" />
-                    <p>{b.label}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <h3 className={styles.benefitsHeading}>Why Employers Choose Promex</h3>
           </Reveal>
+          <div className={styles.benefitsGrid}>
+            {benefits.map((b, i) => (
+              <Reveal key={b.title} animation="fade-up" delay={i * 80}>
+                <div className={styles.benefitCard}>
+                  <div className={styles.benefitIconWrap}>
+                    <i className={b.icon} aria-hidden="true" />
+                  </div>
+                  <h4 className={styles.benefitCardTitle}>{b.title}</h4>
+                  <p className={styles.benefitCardDesc}>{b.description}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
     </>
