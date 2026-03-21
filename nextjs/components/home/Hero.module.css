@@ -178,15 +178,38 @@
   }
 
   .heroHeading {
-    font-size: clamp(2rem, 8vw, 2.8rem);
+    font-size: clamp(1.9rem, 8vw, 2.8rem);
   }
 
+  /* Badge: allow text to wrap on very small screens */
+  .heroBadge {
+    font-size: 0.62rem;
+    letter-spacing: 1px;
+    white-space: normal;
+    text-align: left;
+  }
+
+  /* Buttons: full-width stacked */
   .heroActions {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    width: 100%;
   }
 
+  .heroBtn {
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center;
+  }
+
+  /* Stats: stack vertically */
   .heroStats {
-    gap: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .statItem {
+    width: 100%;
   }
 }

@@ -367,7 +367,7 @@ export default function ContactPage() {
                     <div className={styles.contactDetailIcon}><i className="fa-regular fa-envelope" aria-hidden="true" /></div>
                     <div>
                       <p className={styles.contactDetailLabel}>EMAIL ADDRESS</p>
-                      <p className={styles.contactDetailValue}>inquiries@promexph.com</p>
+                      <p className={styles.contactDetailValue}>connect@promexph.com</p>
                     </div>
                   </li>
                   <li>
@@ -380,10 +380,9 @@ export default function ContactPage() {
                 </ul>
                 <p className={styles.followUsLabel}>FOLLOW US</p>
                 <div className={styles.socialBtns}>
-                  <a href="#" className={styles.socialBtn}><i className="fa-brands fa-facebook-f" aria-hidden="true" /> Facebook</a>
-                  <a href="#" className={styles.socialBtn}><i className="fa-brands fa-linkedin-in" aria-hidden="true" /> LinkedIn</a>
-                  <a href="#" className={styles.socialBtn}><i className="fa-brands fa-instagram" aria-hidden="true" /> Instagram</a>
-                  <a href="#" className={styles.socialBtn}><i className="fa-brands fa-x-twitter" aria-hidden="true" /> Twitter</a>
+                  <a href="/facebook" className={styles.socialBtn}><i className="fa-brands fa-facebook-f" aria-hidden="true" /> Facebook</a>
+                  <a href="/linkedin" className={styles.socialBtn}><i className="fa-brands fa-linkedin-in" aria-hidden="true" /> LinkedIn</a>
+                  <a href="/instagram" className={styles.socialBtn}><i className="fa-brands fa-instagram" aria-hidden="true" /> Instagram</a>
                 </div>
               </div>
             </div>

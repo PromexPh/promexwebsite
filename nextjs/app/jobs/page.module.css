@@ -606,6 +606,26 @@
   .heroSearchBar {
     padding: 6px 14px;
   }
+
+  /* Job card footer: stack salary on top, actions below */
+  .jobCardFooter {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .jobFooterLeft {
+    width: 100%;
+    flex: none;
+  }
+
+  .jobCardActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .jobViewDetails {
+    white-space: normal;
+  }
 }
 
 /* ---- Skeleton ---- */
