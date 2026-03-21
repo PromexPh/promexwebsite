@@ -33,11 +33,12 @@ function AuthCallbackInner() {
             .single();
           if (!existingEmployer) {
             const metadata = s.user.user_metadata;
+            // TODO: add signup_method column to employers table:
+            // ALTER TABLE employers ADD COLUMN IF NOT EXISTS signup_method TEXT DEFAULT 'email';
             await supabase.from('employers').insert({
               user_id:        s.user.id,
               contact_person: metadata?.full_name || metadata?.name || '',
               email:          s.user.email,
-              signup_method:  s.user.app_metadata?.provider || 'email',
               created_at:     new Date().toISOString(),
             });
           }
@@ -50,12 +51,13 @@ function AuthCallbackInner() {
             .single();
           if (!existingProfile) {
             const metadata = s.user.user_metadata;
+            // TODO: add signup_method column to candidates table:
+            // ALTER TABLE candidates ADD COLUMN IF NOT EXISTS signup_method TEXT DEFAULT 'email';
             await supabase.from('candidates').insert({
-              user_id:       s.user.id,
-              full_name:     metadata?.full_name || metadata?.name || '',
-              email:         s.user.email,
-              signup_method: s.user.app_metadata?.provider || 'email',
-              created_at:    new Date().toISOString(),
+              user_id:    s.user.id,
+              full_name:  metadata?.full_name || metadata?.name || '',
+              email:      s.user.email,
+              created_at: new Date().toISOString(),
             });
           }
           router.replace('/candidate/dashboard');

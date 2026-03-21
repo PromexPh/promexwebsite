@@ -210,7 +210,7 @@ export default function EmployerInquiryPage() {
                     <div className={styles.formGroup}>
                       <label htmlFor="phone">Phone Number</label>
                       <input
-                        id="phone" type="tel" placeholder="+971 50 123 4567"
+                        id="phone" type="tel" placeholder="+[country code] xxx xxx xxxx"
                         value={form.phone}
                         onChange={(e) => set('phone', filterPhone(e.target.value))}
                         onKeyDown={handlePhoneKey}

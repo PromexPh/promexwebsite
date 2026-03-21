@@ -91,20 +91,23 @@ export async function POST(req: NextRequest) {
   let insertError: { message: string } | null = null;
 
   if (role === 'candidate') {
-    const row: Record<string, unknown> = { user_id: userId, full_name, email, signup_method: 'email' };
+    // TODO: signup_method column must be added to candidates table before re-enabling:
+    // ALTER TABLE candidates ADD COLUMN IF NOT EXISTS signup_method TEXT DEFAULT 'email';
+    const row: Record<string, unknown> = { user_id: userId, full_name, email };
     if (body.phone) row.phone = body.phone;
     if (body.nationality) row.nationality = body.nationality;
     if (body.current_location) row.current_location = body.current_location;
     const { error } = await supabaseAdmin.from('candidates').insert(row);
     insertError = error;
   } else {
+    // TODO: signup_method column must be added to employers table before re-enabling:
+    // ALTER TABLE employers ADD COLUMN IF NOT EXISTS signup_method TEXT DEFAULT 'email';
     const row: Record<string, unknown> = {
       user_id: userId,
       company_name: body.company_name ?? full_name,
       contact_person: body.contact_person ?? full_name,
       email,
       is_verified: false,
-      signup_method: 'email',
     };
     if (body.phone) row.phone = body.phone;
     if (body.country) row.country = body.country;

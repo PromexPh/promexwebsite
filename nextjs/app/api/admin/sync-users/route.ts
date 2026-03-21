@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { isAdminRequest } from '@/lib/admin-auth';
 
+// TODO: Once signup_method columns are added to the DB, include them in the inserts below:
+// ALTER TABLE candidates ADD COLUMN IF NOT EXISTS signup_method TEXT DEFAULT 'email';
+// ALTER TABLE employers  ADD COLUMN IF NOT EXISTS signup_method TEXT DEFAULT 'email';
+
 export async function POST(req: NextRequest) {
   if (!isAdminRequest(req)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -21,7 +25,6 @@ export async function POST(req: NextRequest) {
 
   for (const user of allUsers) {
     const role = (user.user_metadata?.role as string) || 'candidate';
-    const provider = (user.app_metadata?.provider as string) || 'email';
 
     if (role === 'employer') {
       const { data: existing } = await supabaseAdmin
@@ -35,7 +38,6 @@ export async function POST(req: NextRequest) {
           user_id:        user.id,
           contact_person: (user.user_metadata?.full_name || user.user_metadata?.name || '') as string,
           email:          user.email,
-          signup_method:  provider,
           created_at:     user.created_at,
         });
         if (error) errors.push(`employer ${user.email}: ${error.message}`);
@@ -50,11 +52,10 @@ export async function POST(req: NextRequest) {
 
       if (!existing) {
         const { error } = await supabaseAdmin.from('candidates').insert({
-          user_id:       user.id,
-          full_name:     (user.user_metadata?.full_name || user.user_metadata?.name || '') as string,
-          email:         user.email,
-          signup_method: provider,
-          created_at:    user.created_at,
+          user_id:    user.id,
+          full_name:  (user.user_metadata?.full_name || user.user_metadata?.name || '') as string,
+          email:      user.email,
+          created_at: user.created_at,
         });
         if (error) errors.push(`candidate ${user.email}: ${error.message}`);
         else synced++;

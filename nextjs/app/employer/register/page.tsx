@@ -232,7 +232,8 @@ function EmployerRegisterInner() {
               industry:       form.industry,
               country:        form.country,
               phone:          form.phone || null,
-              signup_method:  oauthProvider || 'email',
+              // TODO: signup_method column must be added to employers table before re-enabling:
+              // ALTER TABLE employers ADD COLUMN IF NOT EXISTS signup_method TEXT DEFAULT 'email';
             });
             dbError = error;
           }
@@ -565,7 +566,7 @@ function EmployerRegisterInner() {
                   onChange={(e) => update('phone', filterPhone(e.target.value))}
                   onKeyDown={handlePhoneKey}
                   onBlur={() => touch('phone')}
-                  placeholder="+971 50 123 4567"
+                  placeholder="+[country code] xxx xxx xxxx"
                   aria-invalid={phoneError ? true : undefined}
                   aria-describedby={phoneError ? 'err-phone' : undefined}
                 />
