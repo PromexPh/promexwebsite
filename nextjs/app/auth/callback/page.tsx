@@ -25,7 +25,17 @@ function AuthCallbackInner() {
           await supabase.auth.updateUser({ data: { role } });
         }
 
-        router.replace(role === 'employer' ? '/employer/dashboard' : '/candidate/dashboard');
+        if (role === 'employer') {
+          const { data: existingEmployer } = await supabase
+            .from('employers')
+            .select('id')
+            .eq('user_id', s.user.id)
+            .single();
+          router.replace(existingEmployer ? '/employer/dashboard' : '/employer/register?oauth=true');
+        } else {
+          // Candidate dashboard auto-creates the row on load via upsert
+          router.replace('/candidate/dashboard');
+        }
       }
 
       if (session) {

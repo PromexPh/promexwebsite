@@ -3,9 +3,9 @@
 // TODO: Enable Google provider in Supabase Dashboard → Authentication → Providers
 // Then add NEXT_PUBLIC_SITE_URL to .env.local and Vercel env vars
 
-import { useState, FormEvent, Suspense, useRef } from 'react';
+import { useState, useEffect, FormEvent, Suspense, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Lock } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import styles from './page.module.css';
 
@@ -101,6 +101,8 @@ function EmployerRegisterInner() {
   const [showPw,  setShowPw]        = useState(false);
   const [showCPw, setShowCPw]       = useState(false);
   const [touched, setTouched]       = useState<Record<string, boolean>>({});
+  const [isOAuth, setIsOAuth]       = useState(false);
+  const [oauthProvider, setOauthProvider] = useState<string>('');
 
   const [form, setForm] = useState({
     company_name: '',
@@ -113,10 +115,30 @@ function EmployerRegisterInner() {
     phone: '',
   });
 
+  // Pre-fill form when coming from OAuth (?oauth=true)
+  useEffect(() => {
+    if (searchParams.get('oauth') !== 'true') return;
+    setIsOAuth(true);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) return;
+      const meta = session.user.user_metadata ?? {};
+      const provider = session.user.app_metadata?.provider ?? 'oauth';
+      setOauthProvider(provider === 'google' ? 'Google' : provider === 'linkedin_oidc' ? 'LinkedIn' : 'OAuth');
+      setForm((f) => ({
+        ...f,
+        contact_person: (meta.full_name as string | undefined) ?? f.contact_person,
+        email: session.user.email ?? f.email,
+      }));
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function update(field: string, value: string) { setForm((f) => ({ ...f, [field]: value })); setError(''); }
   function touch(field: string)                  { setTouched((t) => ({ ...t, [field]: true })); }
   function touchAll() {
-    setTouched({ company_name: true, contact_person: true, email: true, password: true, confirm_password: true, industry: true, country: true, phone: true });
+    const base: Record<string, boolean> = { company_name: true, contact_person: true, email: true, industry: true, country: true, phone: true };
+    if (!isOAuth) { base.password = true; base.confirm_password = true; }
+    setTouched(base);
   }
 
   // Computed errors (shown only after field is touched)
@@ -134,8 +156,7 @@ function EmployerRegisterInner() {
     !validateCompanyName(form.company_name) &&
     !validateName(form.contact_person) &&
     !validateEmail(form.email) &&
-    validatePasswordRules(form.password).length === 0 &&
-    form.confirm_password === form.password &&
+    (isOAuth || (validatePasswordRules(form.password).length === 0 && form.confirm_password === form.password)) &&
     (!form.phone.trim() || !validatePhone(form.phone)) &&
     !!form.industry &&
     !!form.country &&
@@ -174,6 +195,26 @@ function EmployerRegisterInner() {
     setError('');
     try {
       if (mode === 'register') {
+        if (isOAuth) {
+          // OAuth user: already authenticated — just create the employers row
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session) { setError('Session expired. Please sign in again.'); setLoading(false); return; }
+          const { error: dbError } = await supabase.from('employers').upsert(
+            {
+              user_id:        session.user.id,
+              company_name:   form.company_name,
+              contact_person: form.contact_person,
+              email:          form.email,
+              industry:       form.industry,
+              country:        form.country,
+              phone:          form.phone || null,
+            },
+            { onConflict: 'user_id' }
+          );
+          if (dbError) { setError(dbError.message); setLoading(false); return; }
+          setRegEmail(form.email);
+          setRegistered(true);
+        } else {
         const res = await fetch('/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -195,6 +236,7 @@ function EmployerRegisterInner() {
         await supabase.auth.signInWithPassword({ email: form.email, password: form.password });
         setRegEmail(form.email);
         setRegistered(true);
+        }
       } else {
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email: form.email, password: form.password,
@@ -363,18 +405,30 @@ function EmployerRegisterInner() {
 
             <div className={styles.formGroup}>
               <label htmlFor="email">Email Address <span className={styles.req}>*</span></label>
-              <input
-                id="email" type="email" value={form.email}
-                onChange={(e) => update('email', e.target.value)}
-                onBlur={() => touch('email')}
-                placeholder="hr@company.com" required
-                aria-invalid={emailError ? true : undefined}
-                aria-describedby={emailError ? 'err-email' : undefined}
-              />
-              {emailError && <p id="err-email" className={styles.fieldError}>{emailError}</p>}
+              <div className={isOAuth ? styles.inputWrap : undefined}>
+                <input
+                  id="email" type="email" value={form.email}
+                  onChange={(e) => { if (!isOAuth) update('email', e.target.value); }}
+                  onBlur={() => touch('email')}
+                  placeholder="hr@company.com" required
+                  readOnly={isOAuth}
+                  style={isOAuth ? { paddingRight: '2.5rem', background: '#f9fafb', cursor: 'default' } : undefined}
+                  aria-invalid={emailError ? true : undefined}
+                  aria-describedby={emailError ? 'err-email' : undefined}
+                />
+                {isOAuth && (
+                  <span style={{ position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#6b7280', display: 'flex', alignItems: 'center' }} aria-hidden="true">
+                    <Lock size={15} />
+                  </span>
+                )}
+              </div>
+              {isOAuth
+                ? <p className={styles.fieldHint}>Verified via {oauthProvider} — cannot be changed here</p>
+                : emailError && <p id="err-email" className={styles.fieldError}>{emailError}</p>
+              }
             </div>
 
-            <div className={styles.formGroup}>
+            {!isOAuth && <div className={styles.formGroup}>
               <label htmlFor="password">Password <span className={styles.req}>*</span></label>
               <div className={styles.inputWrap}>
                 <input
@@ -405,9 +459,9 @@ function EmployerRegisterInner() {
                   {pwErrors.map((err) => <li key={err}>{err}</li>)}
                 </ul>
               )}
-            </div>
+            </div>}
 
-            {mode === 'register' && (
+            {mode === 'register' && !isOAuth && (
               <div className={styles.formGroup}>
                 <label htmlFor="confirm_password">Confirm Password <span className={styles.req}>*</span></label>
                 <div className={styles.inputWrap}>
