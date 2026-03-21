@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, Suspense, Fragment } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import type { Application, ApplicationStatus, CandidateProfile, Job, WorkExperience } from '@/lib/types';
 import styles from './page.module.css';
@@ -376,6 +377,7 @@ function CandidateDashboardInner() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'applications' | 'profile'>('applications');
+  const [avatarUrl, setAvatarUrl] = useState('');
 
   // Personal Info form
   const [personal, setPersonal] = useState({ full_name: '', phone: '', date_of_birth: '', nationality: '', current_location: '' });
@@ -459,9 +461,40 @@ function CandidateDashboardInner() {
       if (metaRole === 'employer') { router.push('/employer/dashboard'); return; }
       const userId = session.user.id;
 
+      // Capture OAuth avatar (Google provides avatar_url in user_metadata)
+      const oauthAvatar = session.user.user_metadata?.avatar_url as string | undefined;
+      if (oauthAvatar) setAvatarUrl(oauthAvatar);
+
       const { data: cand } = await supabase.from('candidates').select('*').eq('user_id', userId).single();
-      if (cand) {
-        const c = cand as CandidateProfile;
+
+      let resolvedCand = cand as CandidateProfile | null;
+
+      if (!resolvedCand) {
+        // OAuth user (Google / LinkedIn) — no DB row yet.
+        // Ensure role is stamped in user_metadata.
+        const meta = session.user.user_metadata ?? {};
+        if (!meta.role) {
+          await supabase.auth.updateUser({ data: { role: 'candidate' } });
+        }
+
+        // Build a starter row from OAuth metadata and upsert it.
+        const fullName = (meta.full_name as string | undefined) || (meta.name as string | undefined) || '';
+        const phone    = (meta.phone    as string | undefined) || '';
+        const email    = session.user.email ?? '';
+
+        const { data: inserted } = await supabase
+          .from('candidates')
+          .upsert({ user_id: userId, full_name: fullName, email, phone: phone || null }, { onConflict: 'user_id' })
+          .select()
+          .single();
+
+        resolvedCand = (inserted as CandidateProfile | null) ?? ({
+          user_id: userId, full_name: fullName, email, phone: phone || null,
+        } as unknown as CandidateProfile);
+      }
+
+      if (resolvedCand) {
+        const c = resolvedCand;
         setCandidate(c);
         setPersonal({
           full_name: c.full_name ?? '',
@@ -657,7 +690,10 @@ function CandidateDashboardInner() {
         <div className={`container ${styles.dashHeaderInner}`}>
           <div className={styles.dashHeaderLeft}>
             <div className={styles.dashAvatar}>
-              {candidate?.full_name?.charAt(0).toUpperCase() ?? 'U'}
+              {avatarUrl
+                ? <Image src={avatarUrl} alt="Profile photo" width={48} height={48} style={{ borderRadius: '50%', objectFit: 'cover' }} referrerPolicy="no-referrer" />
+                : (candidate?.full_name?.charAt(0).toUpperCase() ?? 'U')
+              }
             </div>
             <div>
               <h1 className={styles.dashWelcome}>Welcome back, {candidate?.full_name?.split(' ')[0] ?? 'there'}!</h1>
