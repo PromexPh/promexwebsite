@@ -239,8 +239,8 @@ export default function Navbar() {
             </div>
           )}
 
-          {/* 2. For Employers dropdown (always visible) */}
-          <div className={styles.dropWrap} ref={employersRef}>
+          {/* 2. For Employers dropdown (hidden for logged-in candidates) */}
+          {authLoaded && userRole !== 'candidate' && <div className={styles.dropWrap} ref={employersRef}>
             {isLoggedIn && userRole === 'employer' ? (
               /* Employer logged-in: avatar + company name */
               <button
@@ -304,7 +304,7 @@ export default function Navbar() {
                 </>
               )}
             </div>
-          </div>
+          </div>}
 
           {/* 3. View Overseas Jobs — always visible */}
           <Button label="View Overseas Jobs" href="/jobs" variant="accent" size="md" />

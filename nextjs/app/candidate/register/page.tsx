@@ -154,6 +154,15 @@ function CandidateRegisterInner() {
       } else {
         const { error: se } = await supabase.auth.signInWithPassword({ email: form.email, password: form.password });
         if (se) { setError(se.message); return; }
+        // Block employers from accessing the candidate portal
+        const { data: { session: loginSession } } = await supabase.auth.getSession();
+        const loginRole = loginSession?.user?.user_metadata?.role as string | undefined;
+        if (loginRole === 'employer') {
+          await supabase.auth.signOut();
+          setError('This email is registered as an employer account. Please use the employer sign-in instead.');
+          setLoading(false);
+          return;
+        }
       }
       router.push('/candidate/dashboard');
     } catch { setError('Something went wrong. Please try again.'); }

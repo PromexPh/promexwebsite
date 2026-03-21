@@ -174,9 +174,9 @@
 }
 
 /* Form */
-.authForm { display: flex; flex-direction: column; gap: 14px; }
+.authForm { display: flex; flex-direction: column; gap: 20px; }
 
-.formRow { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.formRow { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
 .formGroup { display: flex; flex-direction: column; gap: 6px; }
 

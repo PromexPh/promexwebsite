@@ -103,6 +103,7 @@ function EmployerRegisterInner() {
   const [touched, setTouched]       = useState<Record<string, boolean>>({});
   const [isOAuth, setIsOAuth]       = useState(false);
   const [oauthProvider, setOauthProvider] = useState<string>('');
+  const [wrongRoleSession, setWrongRoleSession] = useState<{ email: string } | null>(null);
 
   const [form, setForm] = useState({
     company_name: '',
@@ -118,9 +119,15 @@ function EmployerRegisterInner() {
   // Pre-fill form when coming from OAuth (?oauth=true)
   useEffect(() => {
     if (searchParams.get('oauth') !== 'true') return;
-    setIsOAuth(true);
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) return;
+      // If a candidate session exists, block access and show a warning
+      const role = session.user.user_metadata?.role as string | undefined;
+      if (role === 'candidate') {
+        setWrongRoleSession({ email: session.user.email ?? '' });
+        return;
+      }
+      setIsOAuth(true);
       const meta = session.user.user_metadata ?? {};
       const provider = session.user.app_metadata?.provider ?? 'oauth';
       setOauthProvider(provider === 'google' ? 'Google' : provider === 'linkedin_oidc' ? 'LinkedIn' : 'OAuth');
@@ -199,8 +206,25 @@ function EmployerRegisterInner() {
           // OAuth user: already authenticated — just create the employers row
           const { data: { session } } = await supabase.auth.getSession();
           if (!session) { setError('Session expired. Please sign in again.'); setLoading(false); return; }
-          const { error: dbError } = await supabase.from('employers').upsert(
-            {
+          // Check-then-insert-or-update to avoid ON CONFLICT constraint errors
+          const { data: existingEmp } = await supabase
+            .from('employers')
+            .select('id')
+            .eq('user_id', session.user.id)
+            .single();
+
+          let dbError: { message: string } | null = null;
+          if (existingEmp) {
+            const { error } = await supabase.from('employers').update({
+              company_name:   form.company_name,
+              contact_person: form.contact_person,
+              industry:       form.industry,
+              country:        form.country,
+              phone:          form.phone || null,
+            }).eq('user_id', session.user.id);
+            dbError = error;
+          } else {
+            const { error } = await supabase.from('employers').insert({
               user_id:        session.user.id,
               company_name:   form.company_name,
               contact_person: form.contact_person,
@@ -208,9 +232,9 @@ function EmployerRegisterInner() {
               industry:       form.industry,
               country:        form.country,
               phone:          form.phone || null,
-            },
-            { onConflict: 'user_id' }
-          );
+            });
+            dbError = error;
+          }
           if (dbError) { setError(dbError.message); setLoading(false); return; }
           // Fire-and-forget welcome email for new OAuth employer
           void fetch('/api/auth/welcome', {
@@ -248,6 +272,15 @@ function EmployerRegisterInner() {
           email: form.email, password: form.password,
         });
         if (signInError) { setError(signInError.message); setLoading(false); return; }
+        // Block candidates from accessing the employer portal
+        const { data: { session: loginSession } } = await supabase.auth.getSession();
+        const loginRole = loginSession?.user?.user_metadata?.role as string | undefined;
+        if (loginRole === 'candidate') {
+          await supabase.auth.signOut();
+          setError('This email is registered as a candidate account. Please use the candidate sign-in instead.');
+          setLoading(false);
+          return;
+        }
         router.push('/employer/dashboard');
       }
     } catch {
@@ -258,6 +291,42 @@ function EmployerRegisterInner() {
   }
 
   function switchMode(m: Mode) { setMode(m); setError(''); setTouched({}); setAgreed(false); }
+
+  // ── Wrong-role screen (candidate session detected on employer portal) ────────
+  if (wrongRoleSession) {
+    return (
+      <div className={styles.authPage}>
+        <div className={styles.authHero}>
+          <h1 className={styles.authHeroTitle}>Employer Portal</h1>
+          <p className={styles.authHeroSubtitle}>For registered hiring partners</p>
+        </div>
+        <div className={`container ${styles.authContainer}`}>
+          <div className={styles.authCard}>
+            <div className={styles.authError}>
+              <i className="fa-solid fa-circle-exclamation" aria-hidden="true" />
+              You are currently signed in as a candidate (<strong>{wrongRoleSession.email}</strong>).
+              Sign out first to access the employer portal.
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '16px' }}>
+              <button
+                type="button"
+                className={styles.authSubmitBtn}
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                  setWrongRoleSession(null);
+                }}
+              >
+                <i className="fa-solid fa-right-from-bracket" aria-hidden="true" /> Sign Out
+              </button>
+              <p className={styles.authNote} style={{ margin: 0 }}>
+                <a href="/candidate/dashboard">Go to Candidate Dashboard →</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // ── Success screen ─────────────────────────────────────────────────────────
   if (registered) {
