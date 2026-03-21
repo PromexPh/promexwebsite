@@ -31,6 +31,7 @@ interface SuccessData { companyName: string; email: string; ref: string; }
 
 export default function EmployerInquiryPage() {
   const [form, setForm] = useState(initialForm);
+  const [agreed, setAgreed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successData, setSuccessData] = useState<SuccessData | null>(null);
   const [submitError, setSubmitError] = useState('');
@@ -286,9 +287,29 @@ export default function EmployerInquiryPage() {
                   </div>
                 </div>
 
+                {/* Consent checkbox */}
+                <div className={styles.formCard}>
+                  <label className={styles.consentLabel}>
+                    <input
+                      type="checkbox"
+                      required
+                      checked={agreed}
+                      onChange={(e) => setAgreed(e.target.checked)}
+                      className={styles.consentCheck}
+                    />
+                    <span>
+                      I have read and agree to the{' '}
+                      <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
+                      {' '}and{' '}
+                      <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+                      {' '}I consent to Promex Inc. processing my company and contact data for recruitment purposes in accordance with RA 10173.
+                    </span>
+                  </label>
+                </div>
+
                 {/* Submit */}
                 <div className={styles.formActions}>
-                  <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
+                  <button type="submit" className={styles.submitBtn} disabled={isSubmitting || !agreed}>
                     {isSubmitting
                       ? <><i className="fa-solid fa-spinner fa-spin" aria-hidden="true" /> Processing...</>
                       : <>Submit Inquiry <Send size={18} /></>

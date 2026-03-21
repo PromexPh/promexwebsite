@@ -3,7 +3,7 @@
    ============================================= */
 
 .footer {
-  background: #16202A;
+  background: #0F172A;
   color: #B0BEC5;
   font-family: var(--font-body);
 }
@@ -190,7 +190,7 @@
 .footerBottom {
   border-top: 1px solid rgba(255, 255, 255, 0.07);
   padding: 18px 0;
-  background: #111A22;
+  background: #080F1E;
 }
 
 .footerBottomInner {
@@ -211,6 +211,26 @@
 .footerBadges {
   font-size: 0.82rem;
   color: #5A7A8A;
+}
+
+.legalLink {
+  color: #5A7A8A;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.legalLink:hover {
+  color: var(--color-primary);
+}
+
+.contactLink {
+  color: #8FA8B8;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.contactLink:hover {
+  color: var(--color-primary);
 }
 
 /* ── Responsive ── */

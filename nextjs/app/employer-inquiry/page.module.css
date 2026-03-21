@@ -361,3 +361,34 @@
     padding: 40px 24px;
   }
 }
+
+/* ---- Consent Checkbox ---- */
+.consentLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #6B7280;
+}
+
+.consentCheck {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  accent-color: #4FA3C7;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.consentLabel a {
+  color: #4FA3C7;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.consentLabel a:hover {
+  text-decoration: underline;
+}

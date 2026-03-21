@@ -329,3 +329,34 @@
   .formRow { grid-template-columns: 1fr; }
   .socialBtns { flex-direction: column; }
 }
+
+/* ---- Consent Checkbox ---- */
+.consentLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: #6B7280;
+}
+
+.consentCheck {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  accent-color: #4FA3C7;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.consentLabel a {
+  color: #4FA3C7;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.consentLabel a:hover {
+  text-decoration: underline;
+}
+

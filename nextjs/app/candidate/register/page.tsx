@@ -15,6 +15,7 @@ function CandidateRegisterInner() {
   const [mode, setMode] = useState<Mode>('register');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [agreed, setAgreed] = useState(false);
   const [form, setForm] = useState({
     full_name: '',
     email: '',
@@ -220,7 +221,26 @@ function CandidateRegisterInner() {
               </>
             )}
 
-            <button type="submit" className={styles.authSubmitBtn} disabled={loading}>
+            {mode === 'register' && (
+              <label className={styles.consentLabel}>
+                <input
+                  type="checkbox"
+                  required
+                  checked={agreed}
+                  onChange={(e) => setAgreed(e.target.checked)}
+                  className={styles.consentCheck}
+                />
+                <span>
+                  I have read and agree to the{' '}
+                  <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
+                  {' '}and{' '}
+                  <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+                  {' '}I consent to Promex Inc. processing my personal data for overseas employment placement purposes in accordance with RA 10173.
+                </span>
+              </label>
+            )}
+
+            <button type="submit" className={styles.authSubmitBtn} disabled={loading || (mode === 'register' && !agreed)}>
               {loading
                 ? <><i className="fa-solid fa-spinner fa-spin" aria-hidden="true" /> Please wait…</>
                 : mode === 'register'

@@ -16,20 +16,19 @@ const quickLinks = [
 ];
 
 const socialLinks = [
-  { icon: 'fa-brands fa-facebook-f',  url: '#', label: 'Facebook'  },
-  { icon: 'fa-brands fa-linkedin-in', url: '#', label: 'LinkedIn'  },
-  { icon: 'fa-brands fa-instagram',   url: '#', label: 'Instagram' },
-  { icon: 'fa-brands fa-x-twitter',   url: '#', label: 'Twitter'   },
+  { icon: 'fa-brands fa-facebook-f',  url: '/facebook',  label: 'Facebook'  },
+  { icon: 'fa-brands fa-linkedin-in', url: '/linkedin',  label: 'LinkedIn'  },
+  { icon: 'fa-brands fa-instagram',   url: '/instagram', label: 'Instagram' },
 ];
 
-const contactItems = [
+const contactItems: { icon: string; text: string; link?: string }[] = [
   {
     icon: 'fa-solid fa-location-dot',
     text: 'Suite A, 2/F Vision Building,\n162 Pasig Blvd, Pasig, 1800 Metro Manila',
   },
   { icon: 'fa-solid fa-phone',    text: '+63 2 7746 4689'            },
-  { icon: 'fa-solid fa-envelope', text: 'inquiries@promexph.com'     },
-  { icon: 'fa-solid fa-id-badge', text: 'License No. 149-LB-051316-R' },
+  { icon: 'fa-solid fa-envelope', text: 'connect@promexph.com'     },
+  { icon: 'fa-solid fa-id-badge', text: 'License No. 149-LB-051316-R', link: 'https://dmw.gov.ph' },
 ];
 
 const currentYear = new Date().getFullYear();
@@ -107,12 +106,18 @@ export default function Footer() {
                     <i className={item.icon} aria-hidden="true" />
                   </span>
                   <span className={styles.contactText}>
-                    {item.text.split('\n').map((line, i, arr) => (
-                      <span key={i}>
-                        {line}
-                        {i < arr.length - 1 && <br />}
-                      </span>
-                    ))}
+                    {item.link ? (
+                      <a href={item.link} target="_blank" rel="noopener noreferrer" className={styles.contactLink}>
+                        {item.text}
+                      </a>
+                    ) : (
+                      item.text.split('\n').map((line, i, arr) => (
+                        <span key={i}>
+                          {line}
+                          {i < arr.length - 1 && <br />}
+                        </span>
+                      ))
+                    )}
                   </span>
                 </li>
               ))}
@@ -153,6 +158,10 @@ export default function Footer() {
         <div className={`${styles.footerContainer} ${styles.footerBottomInner}`}>
           <p className={styles.copyright}>
             &copy; {currentYear} Promex Company. All rights reserved.
+            {' '}&middot;{' '}
+            <Link href="/privacy-policy" className={styles.legalLink}>Privacy Policy</Link>
+            {' '}&middot;{' '}
+            <Link href="/terms-and-conditions" className={styles.legalLink}>Terms &amp; Conditions</Link>
           </p>
           <p className={styles.footerBadges}>
             Established 1996 &middot; DMW Accredited &middot; Overseas Recruitment Agency
