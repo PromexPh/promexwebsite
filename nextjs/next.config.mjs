@@ -26,13 +26,20 @@ const nextConfig = {
         destination: 'https://www.instagram.com/promexphilippines/', 
         permanent: false,
       },
+      // Old landing page URLs
+      { source: '/domestic', destination: '/en/domestic', permanent: true },
+      { source: '/domestic/', destination: '/en/domestic', permanent: true },
+      { source: '/domestic/tl', destination: '/tl/domestic', permanent: true },
+      { source: '/domestic/tl/', destination: '/tl/domestic', permanent: true },
     ];
   },
   async rewrites() {
     return [
-      // Standalone landing page served as a static file, outside the app layout
-      { source: '/domestic', destination: '/domestic/index.html' },
-      { source: '/domestic/', destination: '/domestic/index.html' },
+      // Standalone landing pages served as static files, outside the app layout
+      { source: '/en/domestic', destination: '/en/domestic/index.html' },
+      { source: '/en/domestic/', destination: '/en/domestic/index.html' },
+      { source: '/tl/domestic', destination: '/tl/domestic/index.html' },
+      { source: '/tl/domestic/', destination: '/tl/domestic/index.html' },
     ];
   },
 };
