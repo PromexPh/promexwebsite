@@ -8,6 +8,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { isCronRequest } from '@/lib/cron-auth';
 import { sendJobPostingExpiring } from '@/lib/email';
 
 type JobRow = {
@@ -22,8 +23,7 @@ type JobRow = {
 };
 
 export async function GET(req: NextRequest) {
-  const secret = req.headers.get('x-cron-secret');
-  if (secret !== process.env.CRON_SECRET) {
+  if (!isCronRequest(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

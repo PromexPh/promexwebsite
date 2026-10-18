@@ -4,10 +4,12 @@
 // { "crons": [{ "path": "/api/cron/profile-reminders", "schedule": "0 10 * * *" }] }
 //
 // Set CRON_SECRET in environment variables and pass it as:
-// x-cron-secret header from Vercel Cron or your scheduler.
+// Authorization: Bearer <CRON_SECRET> (what Vercel Cron sends) or an
+// x-cron-secret header from your scheduler.
 
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { isCronRequest } from '@/lib/cron-auth';
 import { sendProfileCompletionReminder } from '@/lib/email';
 
 type CandidateRow = {
@@ -51,8 +53,7 @@ function getMissingFields(p: CandidateRow): string[] {
 }
 
 export async function GET(req: NextRequest) {
-  const secret = req.headers.get('x-cron-secret');
-  if (secret !== process.env.CRON_SECRET) {
+  if (!isCronRequest(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
