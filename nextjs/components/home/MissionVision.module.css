@@ -1,0 +1,119 @@
+/* =============================================
+   MISSION & VISION SECTION
+   ============================================= */
+
+.mvSection {
+  padding: 96px 0;
+  background: #ffffff;
+}
+
+.mvHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 14px;
+  margin-bottom: 56px;
+}
+
+.sectionBadge {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  background: rgba(79, 163, 199, 0.1);
+  border: 1px solid rgba(79, 163, 199, 0.25);
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+}
+
+.mvHeading {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  color: var(--color-dark-text);
+  margin: 0;
+}
+
+/* Two-column grid */
+.mvGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+
+/* Card */
+.mvCard {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 40px 36px 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: var(--shadow-sm);
+  border-top: 3px solid transparent;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.mvCard:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+
+/* stylelint-disable selector-class-pattern */
+.mvCard--primary { border-top-color: var(--color-primary); }
+.mvCard--accent  { border-top-color: var(--color-accent);  }
+
+/* Icon */
+.mvIconWrap {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+.mvIconWrap--primary {
+  background: rgba(79, 163, 199, 0.12);
+  color: var(--color-primary);
+}
+
+.mvIconWrap--accent {
+  background: rgba(140, 198, 63, 0.12);
+  color: var(--color-accent-dark);
+}
+
+/* Card title */
+.mvCardTitle {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--color-dark-text);
+  margin: 0;
+}
+
+/* Card body */
+.mvCardBody {
+  font-family: var(--font-body);
+  font-size: 0.925rem;
+  color: var(--color-secondary-text);
+  line-height: 1.78;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mvGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .mvSection {
+    padding: 64px 0;
+  }
+}

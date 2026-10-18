@@ -1,0 +1,590 @@
+/* =============================================
+   NAVBAR COMPONENT
+   ============================================= */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: #ffffff;
+  border-bottom: 1px solid var(--color-border);
+  transition: box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.scrolled {
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.10);
+}
+
+/* ---- Container ---- */
+.navContainer {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 80px;
+}
+
+/* ---- Logo ---- */
+.navLogo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.navLogoImg {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* ---- Nav Links ---- */
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+  flex: 1;
+  justify-content: center;
+}
+
+.navLink {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--color-dark-text);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  transition: color 0.2s ease, background 0.2s ease;
+  position: relative;
+  white-space: nowrap;
+  text-decoration: none;
+  display: block;
+}
+
+.navLink:hover {
+  color: var(--color-primary);
+  background: rgba(79, 163, 199, 0.07);
+}
+
+.active {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background: var(--color-primary);
+  border-radius: 2px;
+}
+
+/* ---- Right actions row ---- */
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* ── Shared dropdown wrapper ── */
+.dropWrap {
+  position: relative;
+}
+
+/* ── Candidates button (logged out) ── */
+.candidatesBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  background: transparent;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #374151;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.candidatesBtn:hover {
+  border-color: #4FA3C7;
+  color: #4FA3C7;
+}
+
+/* ── Employers button ── */
+.employersBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  background: transparent;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #374151;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.employersBtn:hover {
+  border-color: #4FA3C7;
+  color: #4FA3C7;
+}
+
+/* ── Avatar + name button (logged-in) ── */
+.avatarDropBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 4px 4px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 99px;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.avatarDropBtn:hover {
+  border-color: #4FA3C7;
+  box-shadow: 0 0 0 3px rgba(79, 163, 199, 0.12);
+}
+
+.avatarCircle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #4FA3C7;
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+.avatarName {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.84rem;
+  color: #374151;
+  white-space: nowrap;
+}
+
+/* ── Shared chevron for both dropdowns ── */
+.dropCaret {
+  font-size: 0.65rem;
+  color: #9ca3af;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.dropCaretOpen {
+  transform: rotate(180deg);
+}
+
+/* ── Unified dropdown panel ── */
+.dropdownPanel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background: #ffffff;
+  border: 1px solid #f3f4f6;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 6px;
+  z-index: 200;
+  /* Hidden */
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.dropdownPanelOpen {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ── Dropdown items ── */
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 0.87rem;
+  color: #374151;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.dropdownItem:hover {
+  background: #f9fafb;
+  color: var(--color-primary);
+}
+
+.dropdownItem i {
+  width: 16px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.dropdownItem:hover i {
+  color: var(--color-primary);
+}
+
+/* Items with subtitle */
+.dropdownItemWithSub {
+  align-items: flex-start;
+  white-space: normal;
+}
+
+.dropdownItemLabel {
+  display: block;
+  font-weight: 600;
+  font-size: 0.87rem;
+  color: inherit;
+}
+
+.dropdownItemSub {
+  display: block;
+  font-size: 0.74rem;
+  font-weight: 400;
+  color: #9ca3af;
+  margin-top: 1px;
+}
+
+.dropdownItemWithSub:hover .dropdownItemSub {
+  color: rgba(79, 163, 199, 0.8);
+}
+
+/* Divider */
+.dropdownDivider {
+  height: 1px;
+  background: #f3f4f6;
+  margin: 4px 6px;
+}
+
+/* Sign out button */
+.dropdownSignOut {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 0.87rem;
+  color: #ef4444;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.dropdownSignOut:hover {
+  background: rgba(239, 68, 68, 0.07);
+}
+
+.dropdownSignOut i {
+  width: 16px;
+  text-align: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+/* Trust note at bottom of candidates dropdown */
+.dropdownTrustNote {
+  padding: 8px 12px 4px;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: #9ca3af;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* ---- Hamburger ---- */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 26px;
+  height: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  /* padding creates a larger tap target without affecting line layout */
+  padding: 0;
+  margin-left: auto;
+  /* ensures button itself never blends into bg */
+  position: relative;
+  z-index: 10;
+}
+
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  /* high-contrast dark colour — always visible on white navbar */
+  background: #111827;
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Hover: lines turn brand blue */
+.hamburger:hover span {
+  background: #4FA3C7;
+}
+
+.hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+/* ---- Mobile Menu ---- */
+.mobileMenu {
+  display: none;
+  flex-direction: column;
+  background: #ffffff;
+  padding: 0 24px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.3s ease;
+}
+
+.mobileOpen {
+  border-top: 1px solid var(--color-border);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 16px 24px 28px;
+}
+
+.mobileNavLinks {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 16px;
+}
+
+.mobileNavLinks .navLink {
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  border-radius: var(--radius-sm);
+}
+
+.mobileActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Mobile: section box (candidates / employers) ── */
+.mobileSectionBox {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 1px solid #f3f4f6;
+  border-radius: 10px;
+  padding: 12px;
+  background: #fafafa;
+}
+
+.mobileSectionLabel {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.72rem;
+  color: var(--color-secondary-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 6px 2px;
+}
+
+/* Full-width outline button (Sign In) */
+.mobileOutlineBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: #374151;
+  text-decoration: none;
+  text-align: center;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.mobileOutlineBtn:hover {
+  border-color: #4FA3C7;
+  color: #4FA3C7;
+}
+
+/* Full-width solid button (Create Account) */
+.mobileSolidBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background: #4FA3C7;
+  border: 1.5px solid #4FA3C7;
+  border-radius: 8px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #ffffff;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.2s ease;
+}
+
+.mobileSolidBtn:hover {
+  background: #3C8DB1;
+}
+
+/* ── Mobile: logged in ── */
+.mobileUserRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: #fafafa;
+  border: 1px solid #f3f4f6;
+  border-radius: 10px;
+}
+
+.mobileAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #4FA3C7;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.mobileUserName {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-dark-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobileDashLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #374151;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.mobileDashLink:hover {
+  background: #f9fafb;
+  color: var(--color-primary);
+}
+
+.mobileDashLink i {
+  width: 16px;
+  text-align: center;
+  color: var(--color-secondary-text);
+  font-size: 0.85rem;
+}
+
+.mobileSignOutBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  border: 1.5px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  background: transparent;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: #ef4444;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  width: 100%;
+}
+
+.mobileSignOutBtn:hover {
+  background: rgba(239, 68, 68, 0.06);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 1100px) {
+  .navLinks {
+    gap: 0;
+  }
+
+  .navLink {
+    padding: 6px 8px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navLinks,
+  .navActions {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .mobileMenu {
+    display: flex;
+  }
+}
+
+@media (max-width: 420px) {
+  .navLogoImg {
+    height: 40px;
+  }
+}

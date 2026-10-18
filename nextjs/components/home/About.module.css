@@ -1,0 +1,203 @@
+/* =============================================
+   ABOUT SECTION
+   ============================================= */
+
+.aboutSection {
+  padding: 96px 0;
+  background: var(--color-bg);
+}
+
+.aboutGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: center;
+}
+
+/* Section badge */
+.sectionBadge {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  background: rgba(79, 163, 199, 0.1);
+  border: 1px solid rgba(79, 163, 199, 0.25);
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 16px;
+}
+
+/* Heading */
+.aboutHeading {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  color: var(--color-dark-text);
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+/* Lead */
+.aboutLead {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-secondary-text);
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+
+/* Body paragraphs */
+.aboutBody {
+  font-family: var(--font-body);
+  font-size: 0.925rem;
+  color: var(--color-secondary-text);
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+
+/* Credential badges */
+.aboutBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 32px;
+  margin-top: 8px;
+}
+
+.aboutBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--color-accent-dark);
+  background: rgba(140, 198, 63, 0.08);
+  border: 1.5px solid rgba(140, 198, 63, 0.35);
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
+}
+
+.aboutBadge i {
+  font-size: 0.85rem;
+  color: var(--color-accent);
+}
+
+/* Visual / image column */
+.aboutVisual {
+  position: relative;
+}
+
+.aboutImgWrap {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: visible;
+}
+
+.aboutImg {
+  width: 100%;
+  height: 440px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  display: block;
+  box-shadow: var(--shadow-lg);
+}
+
+/* Floating badge — top right */
+.floatBadge {
+  position: absolute;
+  top: -16px;
+  right: -16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 84px;
+  height: 84px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-align: center;
+  z-index: 2;
+  box-shadow: var(--shadow-md);
+}
+
+.floatBadgeGreen {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.floatBadge i {
+  font-size: 1.4rem;
+}
+
+/* Floating stat — bottom left */
+.floatStat {
+  position: absolute;
+  bottom: -20px;
+  left: -20px;
+  background: var(--color-card);
+  border-radius: var(--radius-md);
+  padding: 16px 22px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 2;
+  min-width: 130px;
+}
+
+.floatStatValue {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 2rem;
+  color: var(--color-primary);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.floatStatLabel {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--color-secondary-text);
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .aboutGrid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .aboutVisual {
+    order: -1;
+  }
+
+  .aboutImg {
+    height: 320px;
+  }
+}
+
+@media (max-width: 480px) {
+  .aboutSection {
+    padding: 64px 0;
+  }
+
+  .floatBadge {
+    top: -10px;
+    right: -10px;
+    width: 70px;
+    height: 70px;
+  }
+
+  .floatStat {
+    bottom: -10px;
+    left: -10px;
+  }
+}

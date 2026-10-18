@@ -1,0 +1,470 @@
+/* =============================================
+   APPLY PAGE
+   ============================================= */
+
+.applySection {
+  padding: 80px 0 96px;
+  background: var(--color-bg);
+}
+
+/* ---- Alert ---- */
+.alertSuccess {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: rgba(140, 198, 63, 0.1);
+  border: 1px solid rgba(140, 198, 63, 0.4);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin-bottom: 32px;
+}
+
+.alertSuccess i {
+  font-size: 1.5rem;
+  color: var(--color-accent-dark);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.alertSuccess h3 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-dark-text);
+  margin: 0 0 4px;
+}
+
+.alertSuccess p {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--color-secondary-text);
+  margin: 0;
+}
+
+/* ---- Method Chooser ---- */
+.methodChooser {
+  text-align: center;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.methodChooserTitle {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  color: var(--color-dark-text);
+  margin: 0 0 8px;
+}
+
+.methodChooserSubtitle {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-secondary-text);
+  margin: 0 0 40px;
+}
+
+.methodCards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.methodCard {
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 36px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.methodCard:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+
+.methodCardIcon {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: #ffffff;
+}
+
+.linkedinIcon {
+  background: #0077b5;
+}
+
+.cvIcon {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-purple) 100%);
+}
+
+.manualIcon {
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+}
+
+.methodCardTitle {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--color-dark-text);
+  margin: 0;
+}
+
+.methodCardDescription {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--color-secondary-text);
+  margin: 0;
+  flex: 1;
+}
+
+.methodCardAction {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--color-primary);
+  margin-top: 4px;
+}
+
+/* ---- Form Wrapper ---- */
+.formWrapper {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 40px 44px;
+  box-shadow: var(--shadow-sm);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.linkedinWrapper {
+  max-width: 560px;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-secondary-text);
+  background: transparent;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 28px;
+}
+
+.backButton:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* ---- LinkedIn Content ---- */
+.linkedinContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+}
+
+.linkedinIconLarge {
+  width: 88px;
+  height: 88px;
+  background: #0077b5;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: #ffffff;
+}
+
+.linkedinTitle {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--color-dark-text);
+  margin: 0;
+}
+
+.linkedinDescription {
+  font-family: var(--font-body);
+  font-size: 0.93rem;
+  line-height: 1.75;
+  color: var(--color-secondary-text);
+  margin: 0;
+  max-width: 440px;
+}
+
+.linkedinBenefits {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 320px;
+}
+
+.linkedinBenefit {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-dark-text);
+}
+
+.linkedinBenefit i {
+  color: var(--color-accent-dark);
+  font-size: 1rem;
+}
+
+/* ---- CV Upload ---- */
+.cvUploadArea {
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.cvUploadArea:hover {
+  border-color: var(--color-primary);
+}
+
+.cvUploadLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 20px;
+  cursor: pointer;
+  background: var(--color-bg);
+  text-align: center;
+}
+
+.cvUploadIcon {
+  font-size: 2.5rem;
+  color: var(--color-primary);
+}
+
+.cvUploadLabel h3 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-dark-text);
+  margin: 0;
+}
+
+.cvUploadLabel p {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--color-secondary-text);
+  margin: 0;
+}
+
+.cvFileInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.cvUploaded {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: rgba(79, 163, 199, 0.05);
+}
+
+.cvFileInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cvFileInfo > i {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+}
+
+.cvFileDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cvFileDetails strong {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  color: var(--color-dark-text);
+}
+
+.cvFileDetails small {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--color-accent-dark);
+}
+
+.cvRemoveBtn {
+  background: transparent;
+  border: 1.5px solid var(--color-border);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #dc2626;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.cvRemoveBtn:hover {
+  background: rgba(220, 38, 38, 0.08);
+  border-color: #dc2626;
+}
+
+/* ---- Form Sections ---- */
+.formSectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 28px;
+}
+
+.formSectionBlock:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.formSectionTitle {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-dark-text);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.formSectionTitle i {
+  color: var(--color-primary);
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formGroup label {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--color-dark-text);
+}
+
+.req {
+  color: #dc2626;
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  font-family: var(--font-body);
+  font-size: 0.93rem;
+  color: var(--color-dark-text);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(79, 163, 199, 0.12);
+}
+
+.formGroup textarea {
+  resize: vertical;
+}
+
+/* ---- Actions ---- */
+.formActions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-top: 8px;
+}
+
+.formLoading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--color-secondary-text);
+}
+
+.formLoading i {
+  color: var(--color-primary);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .methodCards {
+    grid-template-columns: 1fr;
+  }
+
+  .formWrapper {
+    padding: 28px 24px;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+
+  .applySection {
+    padding: 56px 0 64px;
+  }
+}
