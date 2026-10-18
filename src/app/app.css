@@ -1,5 +1,0 @@
-/* App Shell */
-.page-content {
-  min-height: calc(100vh - 68px);
-  padding-top: 68px; /* offset for fixed navbar */
-}
