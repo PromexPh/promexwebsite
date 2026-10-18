@@ -28,6 +28,13 @@ const nextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      // Standalone landing page served as a static file, outside the app layout
+      { source: '/domestic', destination: '/domestic/index.html' },
+      { source: '/domestic/', destination: '/domestic/index.html' },
+    ];
+  },
 };
 
 export default nextConfig;
