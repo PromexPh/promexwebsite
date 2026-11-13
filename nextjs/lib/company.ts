@@ -14,7 +14,7 @@ export const COMPANY = {
   whatsapp: '+63 917 318 9396',
   whatsappUrl: 'https://wa.me/639173189396',
   licenceNumber: 'DMW-451-LB-09242024-R',
-  licence: 'DMW Licence No. DMW-451-LB-09242024-R',
+  licence: 'DMW License No. DMW-451-LB-09242024-R',
   licenceUrl: 'https://dmw.gov.ph',
   mapUrl:
     'https://www.google.com/maps/search/?api=1&query=Promex%20Inc%20Vision%20Building%20163%20Pasig%20Boulevard%20Pasig%20City',

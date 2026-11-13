@@ -15,7 +15,7 @@ export default function CtaBanner() {
             <h2 className={styles.ctaHeading}>Ready to Build Your Global Team?</h2>
             <p className={styles.ctaSub}>
               Whether you&apos;re an employer looking for skilled talent or a professional
-              seeking international opportunities, Promex Company is your bridge to the world.
+              seeking international opportunities, Promex is your bridge to the world.
             </p>
             <div className={styles.ctaActions}>
               <Button label="Request Talent"    href="/employer-inquiry" variant="primary" size="lg" />

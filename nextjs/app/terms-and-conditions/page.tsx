@@ -99,7 +99,7 @@ const sections = [
           <li><strong>Email:</strong> <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a></li>
           <li><strong>Phone:</strong> {COMPANY.phone}</li>
           <li><strong>Address:</strong> <a href={COMPANY.mapUrl} target="_blank" rel="noopener noreferrer">{COMPANY.address}</a></li>
-          <li><strong>Licence:</strong> <a href={COMPANY.licenceUrl} target="_blank" rel="noopener noreferrer">{COMPANY.licence}</a></li>
+          <li><strong>License:</strong> <a href={COMPANY.licenceUrl} target="_blank" rel="noopener noreferrer">{COMPANY.licence}</a></li>
         </ul>
       </>
     ),

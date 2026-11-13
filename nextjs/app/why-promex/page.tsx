@@ -89,7 +89,7 @@ const features = [
     icon: 'fa-solid fa-trophy',
     subbadge: '28+ Years of Excellence',
     title: 'Extensive Industry Experience',
-    body: 'Since 1996, Promex Company has refined its recruitment processes across countless industries. Our deep institutional knowledge and long-standing relationships with global employers ensure faster placements, better matches, and lasting partnerships.',
+    body: 'Since 1996, Promex has refined its recruitment processes across countless industries. Our deep institutional knowledge and long-standing relationships with global employers ensure faster placements, better matches, and lasting partnerships.',
     bullets: ['Proven track record since 1996', 'Deep cross-industry expertise', 'Established global partnerships'],
     image: '/images/Why promex/extensive industry.jpg',
   },
@@ -134,7 +134,7 @@ export default function WhyPromexPage() {
       <PageHero
         badge="Why Choose Us"
         heading="Why Choose"
-        accentText="Promex Company?"
+        accentText="Promex?"
         subText="We combine 28+ years of expertise with unwavering ethical standards and a global network — making us the recruitment partner of choice for employers and job seekers alike."
         bgImage="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=80&auto=format&fit=crop"
         waveFill="var(--color-bg)"

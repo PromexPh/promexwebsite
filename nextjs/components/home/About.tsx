@@ -39,7 +39,7 @@ export default function About() {
           </Reveal>
 
           <Reveal animation="fade-up" delay={100}>
-            <h2 className={styles.aboutHeading}>About Promex Company</h2>
+            <h2 className={styles.aboutHeading}>About Promex</h2>
           </Reveal>
 
           <Reveal animation="fade-up" delay={180}>
@@ -50,7 +50,7 @@ export default function About() {
 
           <Reveal animation="fade-up" delay={260}>
             <p className={styles.aboutBody}>
-              Founded in 1996, Promex Company has been at the forefront of overseas recruitment in the
+              Founded in 1996, Promex has been at the forefront of overseas recruitment in the
               Philippines for nearly 30 years. As a Department of Migrant Workers (DMW) accredited agency,
               we specialize in connecting highly skilled Filipino professionals with reputable employers
               across the Middle East, Europe, and Asia.

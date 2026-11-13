@@ -66,7 +66,7 @@ export default function ContactPage() {
                   <li>
                     <div className={`${styles.contactDetailIcon} ${styles.contactDetailIconGreen}`}><i className="fa-regular fa-id-badge" aria-hidden="true" /></div>
                     <div>
-                      <p className={styles.contactDetailLabel}>DMW LICENCE</p>
+                      <p className={styles.contactDetailLabel}>DMW LICENSE</p>
                       <p className={styles.contactDetailValue}>
                         <a href={COMPANY.licenceUrl} target="_blank" rel="noopener noreferrer" className={styles.emailLink}>{COMPANY.licence}</a>
                       </p>
