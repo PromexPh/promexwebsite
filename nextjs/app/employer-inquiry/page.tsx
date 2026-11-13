@@ -18,6 +18,7 @@ function handlePhoneKey(e: React.KeyboardEvent<HTMLInputElement>) {
 import PageHero from '@/components/ui/PageHero';
 import Reveal from '@/components/ui/Reveal';
 import styles from './page.module.css';
+import { COMPANY } from '@/lib/company';
 
 const industries = ['Hospitality','Healthcare','Retail','Engineering','Construction','IT & Technology','Food Service','Manufacturing','Transportation','Agriculture','Maritime','Security','Education','Other'];
 const companySizes = ['1-10 employees','11-50 employees','51-200 employees','201-500 employees','500+ employees'];
@@ -327,7 +328,7 @@ export default function EmployerInquiryPage() {
                       <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
                       {' '}and{' '}
                       <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
-                      {' '}I consent to Promex Inc. processing my company and contact data for recruitment purposes in accordance with RA 10173.
+                      {' '}I consent to {COMPANY.legalName} processing my company and contact data for recruitment purposes in accordance with RA 10173.
                     </span>
                   </label>
                 </div>

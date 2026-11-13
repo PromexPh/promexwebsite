@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Eye, EyeOff, Lock } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import styles from './page.module.css';
+import { COMPANY } from '@/lib/company';
 
 const INDUSTRIES = ['Hospitality', 'Healthcare', 'Engineering', 'IT & Technology', 'Construction', 'Retail', 'Finance', 'Manufacturing', 'Transportation', 'Other'];
 const COUNTRIES  = ['Saudi Arabia', 'UAE', 'Qatar', 'Kuwait', 'Bahrain', 'Oman', 'Singapore', 'Hong Kong', 'Japan', 'South Korea', 'Taiwan', 'Malaysia', 'Canada', 'United Kingdom', 'Australia', 'New Zealand', 'United States', 'Other'];
@@ -589,7 +590,7 @@ function EmployerRegisterInner() {
                   <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
                   {' '}and{' '}
                   <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
-                  {' '}I consent to Promex Inc. processing my company and contact data for recruitment purposes in accordance with RA 10173.
+                  {' '}I consent to {COMPANY.legalName} processing my company and contact data for recruitment purposes in accordance with RA 10173.
                 </span>
               </label>
             )}

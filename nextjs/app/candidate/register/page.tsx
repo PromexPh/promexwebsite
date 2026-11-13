@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import styles from './page.module.css';
+import { COMPANY } from '@/lib/company';
 
 type Mode = 'register' | 'login';
 
@@ -316,7 +317,7 @@ function CandidateRegisterInner() {
                   <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
                   {' '}and{' '}
                   <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
-                  {' '}I consent to Promex Inc. processing my personal data for overseas employment placement purposes in accordance with RA 10173.
+                  {' '}I consent to {COMPANY.legalName} processing my personal data for overseas employment placement purposes in accordance with RA 10173.
                 </span>
               </label>
             )}

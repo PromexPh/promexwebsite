@@ -1,6 +1,7 @@
 import { Building2, UserCheck, CheckCircle } from 'lucide-react';
 import PageHero from '@/components/ui/PageHero';
 import Reveal from '@/components/ui/Reveal';
+import { COMPANY } from '@/lib/company';
 import styles from './page.module.css';
 
 export default function ContactPage() {
@@ -9,7 +10,7 @@ export default function ContactPage() {
       <PageHero
         badge="Get In Touch"
         heading="Contact"
-        accentText="Promex Company"
+        accentText={COMPANY.legalName}
         subText="Whether you're looking to hire skilled Filipino professionals or seeking international employment, we're here to help you every step of the way."
         bgImage="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1600&q=80&auto=format&fit=crop"
         waveFill="var(--color-bg)"
@@ -22,14 +23,14 @@ export default function ContactPage() {
             <div className={styles.contactInfoGrid}>
               <div className={styles.mapPlaceholder}>
                 <iframe
-                  src="https://www.google.com/maps?q=Vision+Building,+162+Pasig+Blvd,+Pasig,+Metro+Manila&output=embed"
+                  src={COMPANY.mapEmbedUrl}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="Promex Company office location"
+                  title={`${COMPANY.legalName} office location`}
                 />
               </div>
 
@@ -42,8 +43,8 @@ export default function ContactPage() {
                     <div>
                       <p className={styles.contactDetailLabel}>OFFICE ADDRESS</p>
                       <p className={styles.contactDetailValue}>
-                        <a href="https://maps.google.com/maps?cid=0x3397c93a2fbaed95:0x6b0c659848c94dde" target="_blank" rel="noopener noreferrer" className={styles.addressLink}>
-                          Suite A, Second Floor, Vision Building, 162 Pasig Blvd, Pasig, 1800 Metro Manila, Philippines
+                        <a href={COMPANY.mapUrl} target="_blank" rel="noopener noreferrer" className={styles.addressLink}>
+                          {COMPANY.address}
                         </a>
                       </p>
                     </div>
@@ -52,21 +53,23 @@ export default function ContactPage() {
                     <div className={`${styles.contactDetailIcon} ${styles.contactDetailIconGreen}`}><i className="fa-solid fa-phone" aria-hidden="true" /></div>
                     <div>
                       <p className={styles.contactDetailLabel}>PHONE NUMBERS</p>
-                      <p className={styles.contactDetailValue}>+63 2 7746 4689</p>
+                      <p className={styles.contactDetailValue}>{COMPANY.phone}</p>
                     </div>
                   </li>
                   <li>
                     <div className={styles.contactDetailIcon}><i className="fa-regular fa-envelope" aria-hidden="true" /></div>
                     <div>
                       <p className={styles.contactDetailLabel}>EMAIL ADDRESS</p>
-                      <p className={styles.contactDetailValue}><a href="mailto:connect@promexph.com" className={styles.emailLink}>connect@promexph.com</a></p>
+                      <p className={styles.contactDetailValue}><a href={`mailto:${COMPANY.email}`} className={styles.emailLink}>{COMPANY.email}</a></p>
                     </div>
                   </li>
                   <li>
                     <div className={`${styles.contactDetailIcon} ${styles.contactDetailIconGreen}`}><i className="fa-regular fa-id-badge" aria-hidden="true" /></div>
                     <div>
-                      <p className={styles.contactDetailLabel}>LICENSE NUMBER</p>
-                      <p className={styles.contactDetailValue}>149-LB-051316-R</p>
+                      <p className={styles.contactDetailLabel}>DMW LICENCE</p>
+                      <p className={styles.contactDetailValue}>
+                        <a href={COMPANY.licenceUrl} target="_blank" rel="noopener noreferrer" className={styles.emailLink}>{COMPANY.licence}</a>
+                      </p>
                     </div>
                   </li>
                 </ul>

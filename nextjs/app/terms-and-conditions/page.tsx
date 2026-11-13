@@ -1,12 +1,14 @@
+import { COMPANY } from '@/lib/company';
 import styles from '../privacy-policy/page.module.css';
 
-export const metadata = { title: 'Terms & Conditions | Promex Inc.' };
+export const metadata = { title: `Terms & Conditions | ${COMPANY.legalName}` };
 
 const sections = [
   {
     title: '1. Acceptance of Terms',
     content: (
       <>
+        <p>These Terms &amp; Conditions are an agreement between you and {COMPANY.legalName} ({COMPANY.fullName}), {COMPANY.licence}, with its office at {COMPANY.address} (&ldquo;Promex&rdquo;, &ldquo;we&rdquo; or &ldquo;us&rdquo;).</p>
         <p>By accessing or using promexph.com, or by submitting any inquiry or application through our website, you agree to be bound by these Terms &amp; Conditions. If you do not agree, please do not use our website or services.</p>
       </>
     ),
@@ -15,7 +17,7 @@ const sections = [
     title: '2. Services',
     content: (
       <>
-        <p>Promex Inc. is a DMW-licensed recruitment agency (License No. 149-LB-051316-R) providing overseas employment placement services for Filipino professionals and manpower sourcing services for international employers. Our services are subject to applicable Philippine laws and regulations.</p>
+        <p>{COMPANY.legalName} is a DMW-licensed recruitment agency (<a href={COMPANY.licenceUrl} target="_blank" rel="noopener noreferrer">{COMPANY.licence}</a>) providing overseas employment placement services for Filipino professionals and manpower sourcing services for international employers. Our services are subject to applicable Philippine laws and regulations.</p>
       </>
     ),
   },
@@ -59,7 +61,7 @@ const sections = [
     title: '6. Limitation of Liability',
     content: (
       <>
-        <p>Promex Inc. acts as an intermediary recruitment agency between candidates and overseas employers. We are not liable for the actions, decisions, or conduct of employers or candidates following successful placement, beyond our specific obligations under Philippine law. We make no guarantees regarding the outcome of any application or hiring process.</p>
+        <p>{COMPANY.legalName} acts as an intermediary recruitment agency between candidates and overseas employers. We are not liable for the actions, decisions, or conduct of employers or candidates following successful placement, beyond our specific obligations under Philippine law. We make no guarantees regarding the outcome of any application or hiring process.</p>
       </>
     ),
   },
@@ -67,7 +69,7 @@ const sections = [
     title: '7. Intellectual Property',
     content: (
       <>
-        <p>All content published on promexph.com — including text, graphics, logos, and design — is owned by or licensed to Promex Inc. and is protected by Philippine and international intellectual property laws. No content may be reproduced, distributed, or used without prior written permission from Promex Inc.</p>
+        <p>All content published on promexph.com — including text, graphics, logos, and design — is owned by or licensed to {COMPANY.legalName} and is protected by Philippine and international intellectual property laws. No content may be reproduced, distributed, or used without prior written permission from {COMPANY.legalName}</p>
       </>
     ),
   },
@@ -83,7 +85,7 @@ const sections = [
     title: '9. Changes to Terms',
     content: (
       <>
-        <p>Promex Inc. reserves the right to update or modify these Terms &amp; Conditions at any time. Changes will be posted on this page with a revised effective date. Your continued use of the website following any changes constitutes your acceptance of the updated terms.</p>
+        <p>{COMPANY.legalName} reserves the right to update or modify these Terms &amp; Conditions at any time. Changes will be posted on this page with a revised effective date. Your continued use of the website following any changes constitutes your acceptance of the updated terms.</p>
       </>
     ),
   },
@@ -93,8 +95,11 @@ const sections = [
       <>
         <p>For questions regarding these Terms &amp; Conditions, please contact us:</p>
         <ul>
-          <li><strong>Email:</strong> <a href="mailto:connect@promexph.com">connect@promexph.com</a></li>
-          <li><strong>Address:</strong> <a href="https://maps.google.com/maps?cid=0x3397c93a2fbaed95:0x6b0c659848c94dde" target="_blank" rel="noopener noreferrer">Suite A, 2/F Vision Building, 162 Pasig Blvd, Pasig City, Philippines</a></li>
+          <li><strong>Company:</strong> {COMPANY.legalName}</li>
+          <li><strong>Email:</strong> <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a></li>
+          <li><strong>Phone:</strong> {COMPANY.phone}</li>
+          <li><strong>Address:</strong> <a href={COMPANY.mapUrl} target="_blank" rel="noopener noreferrer">{COMPANY.address}</a></li>
+          <li><strong>Licence:</strong> <a href={COMPANY.licenceUrl} target="_blank" rel="noopener noreferrer">{COMPANY.licence}</a></li>
         </ul>
       </>
     ),
@@ -108,7 +113,7 @@ export default function TermsAndConditionsPage() {
         <div className="container">
           <span className={styles.legalBadge}>Legal</span>
           <h1 className={styles.legalTitle}>Terms &amp; Conditions</h1>
-          <p className={styles.legalMeta}>Effective Date: January 1, 2026</p>
+          <p className={styles.legalMeta}>Effective Date: January 1, 2026 &middot; Last Updated: November 2026</p>
         </div>
       </div>
 

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Button from '@/components/ui/Button';
+import { COMPANY, COPYRIGHT } from '@/lib/company';
 import styles from './Footer.module.css';
 
 const quickLinks = [
@@ -22,17 +23,12 @@ const socialLinks = [
 ];
 
 const contactItems: { icon: string; text: string; link?: string }[] = [
-  {
-    icon: 'fa-solid fa-location-dot',
-    text: 'Suite A, 2/F Vision Building,\n162 Pasig Blvd, Pasig, 1800 Metro Manila',
-    link: 'https://maps.google.com/maps?cid=0x3397c93a2fbaed95:0x6b0c659848c94dde',
-  },
-  { icon: 'fa-solid fa-phone',    text: '+63 2 7746 4689'            },
-  { icon: 'fa-solid fa-envelope', text: 'connect@promexph.com', link: 'mailto:connect@promexph.com' },
-  { icon: 'fa-solid fa-id-badge', text: 'License No. 149-LB-051316-R', link: 'https://dmw.gov.ph' },
+  { icon: 'fa-solid fa-building',     text: COMPANY.legalName },
+  { icon: 'fa-solid fa-location-dot', text: COMPANY.address, link: COMPANY.mapUrl },
+  { icon: 'fa-solid fa-phone',        text: COMPANY.phone },
+  { icon: 'fa-solid fa-envelope',     text: COMPANY.email, link: `mailto:${COMPANY.email}` },
+  { icon: 'fa-solid fa-id-badge',     text: COMPANY.licence, link: COMPANY.licenceUrl },
 ];
-
-const currentYear = new Date().getFullYear();
 
 export default function Footer() {
   const [email,      setEmail]      = useState('');
@@ -160,11 +156,13 @@ export default function Footer() {
       <div className={styles.footerBottom}>
         <div className={`${styles.footerContainer} ${styles.footerBottomInner}`}>
           <p className={styles.copyright}>
-            &copy; {currentYear} Promex Company. All rights reserved.
+            {COPYRIGHT}
             {' '}&middot;{' '}
             <Link href="/privacy-policy" className={styles.legalLink}>Privacy Policy</Link>
             {' '}&middot;{' '}
             <Link href="/terms-and-conditions" className={styles.legalLink}>Terms &amp; Conditions</Link>
+            {' '}&middot;{' '}
+            <Link href="/data-deletion" className={styles.legalLink}>Data Deletion</Link>
           </p>
           <p className={styles.footerBadges}>
             Established 1996 &middot; DMW Accredited &middot; Overseas Recruitment Agency
